@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, and Word Guess are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, and Connections are ready for free play.
 
 ## Local development
 
@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the ten games from the game floor.
+Vite prints the local URL after startup. Choose any of the eleven games from the game floor.
 
 ## Snake controls
 
@@ -94,9 +94,16 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Solve the word in six guesses. The same answer is used for the whole UTC date; the puzzle changes at midnight UTC. Your submitted guesses stay saved in this browser if you leave and return.
 - The lowest number of guesses used for a solve is saved as a local personal best. The daily word and guesses are generated in the app; no external game service is used.
 
+## Connections controls
+
+- Open **Connections** for the daily sixteen-word board. Select four words that share an idea, then press **Submit set**. Use **Deselect all** to clear your choice or **Shuffle** to rearrange the remaining words.
+- Find four groups before making four mistakes. A “one away” message means three selected words belong to the same group. Found groups remain visible while you finish the board; the answers are shown after the last mistake.
+- The puzzle and initial word order are the same for everyone on a UTC date. Your selected words, found groups, and mistakes are saved in this browser when you leave and return.
+- Your fewest mistakes on a completed board is saved as a local personal best. Puzzle sets are built into Arcade and do not use an external game service.
+
 ## Local records and preferences
 
-Arcade saves the highest scores for Snake, Asteroids, Space Invaders, Missile Command, Block Drop, and Breakout, Pong's highest points in a match, the fewest guesses for a Word Guess solve, the fastest Reaction time, the most Pattern Memory practice rounds completed, and the latest daily Pattern Memory completion date in browser storage. Word Guess saves its current daily progress there too. The **Reduce motion**, **Arcade sounds**, and Pong opponent pace preferences are saved there as well. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily progress and preferences stay saved. The system reduced-motion setting is always respected.
+Arcade saves the highest scores for Snake, Asteroids, Space Invaders, Missile Command, Block Drop, and Breakout, Pong's highest points in a match, the fewest guesses for a Word Guess solve, the fewest mistakes for a completed Connections board, the fastest Reaction time, the most Pattern Memory practice rounds completed, and the latest daily Pattern Memory completion date in browser storage. Word Guess and Connections save their current daily progress there too. The **Reduce motion**, **Arcade sounds**, and Pong opponent pace preferences are saved there as well. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily progress and preferences stay saved. The system reduced-motion setting is always respected.
 
 ## Install and offline play
 
