@@ -145,6 +145,16 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .records-setting strong, .records-setting small { display: block; }
 .records-setting strong { font-size: .81rem; }
 .records-setting small { margin-top: 4px; color: #777b72; font-size: .7rem; line-height: 1.5; }
+.backup-setting { grid-column: 1 / -1; padding-top: 14px; border-top: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px 20px; }
+.backup-setting strong, .backup-setting small { display: block; }
+.backup-setting strong { font-size: .81rem; }
+.backup-setting small { max-width: 620px; margin-top: 4px; color: #777b72; font-size: .7rem; line-height: 1.5; }
+.backup-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.backup-action-button { min-height: 40px; border: 1px solid var(--line); border-radius: 4px; padding: 0 12px; color: #d3c6f2; background: #211b32; box-shadow: 0 3px 0 #090811; font: 800 .61rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; cursor: pointer; }
+.backup-action-button:hover { border-color: var(--cyan); color: var(--cyan); }
+.backup-restore-confirmation { grid-column: 1 / -1; padding: 14px 16px; border-left: 3px solid var(--coral); background: #211729; }
+.backup-restore-confirmation p { margin: 0; color: #e0d7ea; font-size: .78rem; line-height: 1.55; }
+.backup-restore-confirmation > div { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
 .clear-records-button { min-height: 40px; border: 1px solid var(--line); padding: 0 12px; color: #6e514b; background: transparent; font-size: .73rem; font-weight: 700; cursor: pointer; }
 .clear-records-button:hover { border-color: var(--coral); background: rgb(242 119 94 / 9%); }
 .clear-records-confirmation { grid-column: 1 / -1; padding: 14px 16px; border-left: 3px solid var(--coral); background: rgb(255 255 255 / 32%); }
@@ -430,6 +440,10 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
   .game-card:not(.game-card-snake) { display: grid; grid-template-columns: .72fr 1.28fr; }
   .game-card:not(.game-card-snake) .card-art { height: 100%; min-height: 190px; }
   .home-preferences { margin-bottom: 32px; padding: 16px 0; grid-template-columns: 1fr; gap: 14px; }
+  .backup-setting { grid-template-columns: 1fr; }
+  .backup-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .backup-action-button { min-height: 44px; padding: 7px; }
+  .backup-restore-confirmation { grid-column: auto; padding: 13px; }
   .local-data-note, .storage-notice { grid-column: auto; }
   .snake-view { padding-top: 17px; }
   .snake-layout { margin-top: 12px; grid-template-columns: 1fr; gap: 22px; }
@@ -675,6 +689,12 @@ body {
 .install-button:active { transform: translateY(2px); box-shadow: 0 1px 0 #688d20; }
 .motion-setting input, .sound-setting input, .pong-pace-setting input { accent-color: var(--green); }
 .records-setting { border-color: #51466f; }
+.backup-setting { border-color: #51466f; }
+.backup-setting strong { color: var(--paper); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; }
+.backup-setting small { color: #b6aecb; }
+.backup-action-button { border-color: #76658f; color: #d3c6f2; }
+.backup-restore-confirmation { border-color: var(--cyan); background: #211b32; }
+.backup-restore-confirmation p { color: #e0d7ea; }
 .clear-records-button { border-color: #76658f; border-radius: 4px; color: #ffd0da; background: #21172b; box-shadow: 0 3px 0 #090811; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 900; text-transform: uppercase; }
 .clear-records-button:hover { border-color: var(--coral); background: #362033; }
 .clear-records-confirmation { border-color: var(--coral); background: #211729; }

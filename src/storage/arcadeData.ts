@@ -14,6 +14,7 @@ import { validPipsProgress, type PipsProgress } from '../games/pips'
 import { validDailyCrosswordProgress, type DailyCrosswordProgress } from '../games/dailyCrossword'
 
 export const ARCADE_DATA_KEY = 'arcade.local-data.v1'
+export const ARCADE_BACKUP_MAX_BYTES = 1_000_000
 
 export interface ArcadeBests {
   snake: number | null
@@ -277,6 +278,48 @@ export function writeArcadeData(data: ArcadeData, storage?: StorageLike): boolea
     return true
   } catch {
     return false
+  }
+}
+
+export function parseArcadeDataBackup(contents: string): ArcadeData | null {
+  if (contents.length > ARCADE_BACKUP_MAX_BYTES || new Blob([contents]).size > ARCADE_BACKUP_MAX_BYTES) return null
+
+  try {
+    const parsed: unknown = JSON.parse(contents)
+    if (!isRecord(parsed) || parsed.version !== 1) return null
+    const { bests, preferences } = parsed
+    if (!isRecord(bests) || !isRecord(preferences)) return null
+
+    const empty = emptyArcadeData()
+    if (!Object.keys(empty).every((key) => key in parsed)) return null
+    if (!Object.keys(empty.bests).every((key) => {
+      const record = bests[key]
+      return record === null || (typeof record === 'number' && Number.isSafeInteger(record) && record >= 0)
+    })) return null
+
+    if (typeof preferences.reduceMotion !== 'boolean'
+      || typeof preferences.soundEffects !== 'boolean'
+      || (preferences.pongDifficulty !== 'calm' && preferences.pongDifficulty !== 'steady' && preferences.pongDifficulty !== 'quick')) return null
+
+    const dailyFieldsAreValid = (parsed.dailyPatternCompletedDate === null || validUtcDateKey(parsed.dailyPatternCompletedDate))
+      && (parsed.dailyWordGame === null || validDailyWordProgress(parsed.dailyWordGame))
+      && (parsed.dailyConnectionsGame === null || validConnectionsProgress(parsed.dailyConnectionsGame))
+      && (parsed.dailySpellingBeeGame === null || validSpellingBeeProgress(parsed.dailySpellingBeeGame))
+      && (parsed.dailyStrandsGame === null || validStrandsProgress(parsed.dailyStrandsGame))
+      && (parsed.dailySudokuGame === null || validSudokuProgress(parsed.dailySudokuGame))
+      && (parsed.dailyMiniCrosswordGame === null || validMiniCrosswordProgress(parsed.dailyMiniCrosswordGame))
+      && (parsed.dailyLetterBoxedGame === null || validLetterBoxedProgress(parsed.dailyLetterBoxedGame))
+      && (parsed.dailyDominoLogicGame === null || validDominoLogicProgress(parsed.dailyDominoLogicGame))
+      && (parsed.dailyGlyphMatchGame === null || validGlyphMatchProgress(parsed.dailyGlyphMatchGame))
+      && (parsed.dailyVertexGame === null || validVertexProgress(parsed.dailyVertexGame))
+      && (parsed.dailyTilesGame === null || validTilesProgress(parsed.dailyTilesGame))
+      && (parsed.dailyPipsGame === null || validPipsProgress(parsed.dailyPipsGame))
+      && (parsed.dailyCrosswordGame === null || validDailyCrosswordProgress(parsed.dailyCrosswordGame))
+    if (!dailyFieldsAreValid) return null
+
+    return readArcadeData({ getItem: () => contents, setItem: () => {} })
+  } catch {
+    return null
   }
 }
 

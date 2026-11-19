@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
-import { ARCADE_DATA_KEY } from './storage/arcadeData'
+import { ARCADE_DATA_KEY, emptyArcadeData } from './storage/arcadeData'
 import { dailyPatternForDate, utcDateKey } from './games/dailyPattern'
 import { dailyWordForDate, isValidWordGuess } from './games/dailyWord'
 import { createConnectionsState } from './games/connections'
@@ -75,6 +75,38 @@ describe('Arcade navigation and game controls', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Install Arcade' }))
     await waitFor(() => expect(prompt).toHaveBeenCalledOnce())
     await waitFor(() => expect(screen.queryByRole('button', { name: 'Install Arcade' })).not.toBeInTheDocument())
+  })
+
+  it('checks a backup before restoring it and leaves data unchanged when restore is canceled', async () => {
+    const existing = emptyArcadeData()
+    existing.bests.snake = 99
+    window.localStorage.setItem(ARCADE_DATA_KEY, JSON.stringify(existing))
+
+    const replacement = emptyArcadeData()
+    replacement.bests.snake = 12
+    replacement.preferences.reduceMotion = true
+    replacement.preferences.soundEffects = true
+    const contents = JSON.stringify(replacement)
+    const file = new File([contents], 'arcade-backup.json', { type: 'application/json' })
+    if (typeof file.text !== 'function') Object.defineProperty(file, 'text', { value: async () => contents })
+
+    render(<App />)
+    const input = document.querySelector<HTMLInputElement>('input[type="file"]')
+    expect(input).not.toBeNull()
+
+    fireEvent.change(input!, { target: { files: [file] } })
+    await waitFor(() => expect(screen.getByText(/replace this browser’s saved records/i)).toBeInTheDocument())
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel restore' }))
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').bests.snake).toBe(99)
+    expect(screen.queryByRole('button', { name: 'Restore backup' })).not.toBeInTheDocument()
+
+    fireEvent.change(input!, { target: { files: [file] } })
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Restore backup' })).toBeInTheDocument())
+    fireEvent.click(screen.getByRole('button', { name: 'Restore backup' }))
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}')).toEqual(replacement)
+    expect(screen.getByText('Backup restored in this browser.')).toBeInTheDocument()
+    expect(screen.getByLabelText(/arcade sounds/i)).toBeChecked()
+    await waitFor(() => expect(document.documentElement.dataset.reduceMotion).toBe('true'))
   })
 
   it('shows the game floor and opens Snake', () => {
