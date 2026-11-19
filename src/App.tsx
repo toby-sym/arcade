@@ -32,9 +32,11 @@ import { DominoLogicGame } from './games/DominoLogicGame'
 import { createDominoLogicState, type DominoLogicProgress } from './games/dominoLogic'
 import { GlyphMatchGame } from './games/GlyphMatchGame'
 import { createGlyphMatchState, type GlyphMatchProgress } from './games/glyphMatch'
+import { VertexGame } from './games/VertexGame'
+import { createVertexState, type VertexProgress } from './games/vertex'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -60,7 +62,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -206,6 +208,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyVertexGame = (progress: VertexProgress) => {
+    const withProgress = withDailyVertexGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = createVertexState(progress.date, progress)
+    const next = completed.phase === 'complete'
+      ? withImprovedBest(withProgress, 'vertex', completed.moves) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -290,6 +303,7 @@ function App() {
   const openLetterBoxed = () => setScreen('letterboxed')
   const openDominoLogic = () => setScreen('dominologic')
   const openGlyphMatch = () => setScreen('glyphmatch')
+  const openVertex = () => setScreen('vertex')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -353,6 +367,7 @@ function App() {
             onPlayLetterBoxed={openLetterBoxed}
             onPlayDominoLogic={openDominoLogic}
             onPlayGlyphMatch={openGlyphMatch}
+            onPlayVertex={openVertex}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -478,6 +493,13 @@ function App() {
             progress={arcadeData.dailyGlyphMatchGame}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onSaveProgress={saveDailyGlyphMatchGame}
+          />
+        ) : screen === 'vertex' ? (
+          <VertexGame
+            onBack={() => setScreen('home')}
+            bestMoves={arcadeData.bests.vertex}
+            progress={arcadeData.dailyVertexGame}
+            onSaveProgress={saveDailyVertexGame}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -614,6 +636,7 @@ function Home({
   onPlayLetterBoxed,
   onPlayDominoLogic,
   onPlayGlyphMatch,
+  onPlayVertex,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -642,6 +665,7 @@ function Home({
   onPlayLetterBoxed: () => void
   onPlayDominoLogic: () => void
   onPlayGlyphMatch: () => void
+  onPlayVertex: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -676,7 +700,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">18 PLAYABLE</span>
+          <span className="section-count">19 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -908,6 +932,19 @@ function Home({
               <h3>Glyph Match</h3>
               <p>Turn over tiles, remember the symbols, and find today’s eight pairs.</p>
               <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · ARROWS</span><button className="play-card-button" type="button" onClick={onPlayGlyphMatch}>Play Glyph Match <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-vertex">
+            <div className="card-art vertex-card-art" aria-hidden="true">
+              <span className="vertex-card-web"><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /></span>
+              <span className="vertex-card-loop" />
+              <span className="card-art-index">19</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">19</span><span className="game-category">DAILY LOOP</span></div>
+              <h3>Vertex</h3>
+              <p>Read the clues, connect the lines, and close one loop around the triangle grid.</p>
+              <div className="card-bottom"><span className="controls-label">CLICK · TOUCH · KEYBOARD</span><button className="play-card-button" type="button" onClick={onPlayVertex}>Play Vertex <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
