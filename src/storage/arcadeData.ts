@@ -10,6 +10,7 @@ import { validDominoLogicProgress, type DominoLogicProgress } from '../games/dom
 import { validGlyphMatchProgress, type GlyphMatchProgress } from '../games/glyphMatch'
 import { validVertexProgress, type VertexProgress } from '../games/vertex'
 import { validTilesProgress, type TilesProgress } from '../games/tiles'
+import { validPipsProgress, type PipsProgress } from '../games/pips'
 
 export const ARCADE_DATA_KEY = 'arcade.local-data.v1'
 
@@ -34,6 +35,7 @@ export interface ArcadeBests {
   glyphMatch: number | null
   vertex: number | null
   tiles: number | null
+  pips: number | null
 }
 
 export interface ArcadeData {
@@ -51,6 +53,7 @@ export interface ArcadeData {
   dailyGlyphMatchGame: GlyphMatchProgress | null
   dailyVertexGame: VertexProgress | null
   dailyTilesGame: TilesProgress | null
+  dailyPipsGame: PipsProgress | null
   preferences: {
     reduceMotion: boolean
     soundEffects: boolean
@@ -59,9 +62,9 @@ export interface ArcadeData {
 }
 
 export function withImprovedBest(data: ArcadeData, game: keyof ArcadeBests, candidate: number): ArcadeData | null {
-  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && game !== 'letterBoxed' && game !== 'dominoLogic' && game !== 'glyphMatch' && game !== 'vertex' && game !== 'tiles' && candidate === 0)) return null
+  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && game !== 'letterBoxed' && game !== 'dominoLogic' && game !== 'glyphMatch' && game !== 'vertex' && game !== 'tiles' && game !== 'pips' && candidate === 0)) return null
   const previous = data.bests[game]
-  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword' || game === 'letterBoxed' || game === 'dominoLogic' || game === 'glyphMatch' || game === 'vertex' || game === 'tiles'
+  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword' || game === 'letterBoxed' || game === 'dominoLogic' || game === 'glyphMatch' || game === 'vertex' || game === 'tiles' || game === 'pips'
   const improved = previous === null || (lowerIsBetter ? candidate < previous : candidate > previous)
   if (!improved) return null
   return { ...data, bests: { ...data.bests, [game]: candidate } }
@@ -159,12 +162,17 @@ export function withDailyTilesGame(data: ArcadeData, progress: TilesProgress): A
   return { ...data, dailyTilesGame: { date: progress.date, clearedIndices: [...progress.clearedIndices], moves: progress.moves, mistakes: progress.mistakes } }
 }
 
+export function withDailyPipsGame(data: ArcadeData, progress: PipsProgress): ArcadeData | null {
+  if (!validPipsProgress(progress)) return null
+  return { ...data, dailyPipsGame: { date: progress.date, placements: progress.placements.map((placement) => ({ ...placement })), undos: progress.undos } }
+}
+
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null },
     dailyPatternCompletedDate: null,
     dailyWordGame: null,
     dailyConnectionsGame: null,
@@ -177,12 +185,13 @@ export function emptyArcadeData(): ArcadeData {
     dailyGlyphMatchGame: null,
     dailyVertexGame: null,
     dailyTilesGame: null,
+    dailyPipsGame: null,
     preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady' },
   }
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -210,6 +219,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
       dailyGlyphMatchGame: validGlyphMatchProgress(parsed.dailyGlyphMatchGame) ? parsed.dailyGlyphMatchGame : null,
       dailyVertexGame: validVertexProgress(parsed.dailyVertexGame) ? parsed.dailyVertexGame : null,
       dailyTilesGame: validTilesProgress(parsed.dailyTilesGame) ? parsed.dailyTilesGame : null,
+      dailyPipsGame: validPipsProgress(parsed.dailyPipsGame) ? parsed.dailyPipsGame : null,
       bests: {
         snake: validRecord(bests.snake),
         reaction: validRecord(bests.reaction),
@@ -231,6 +241,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         glyphMatch: validRecord(bests.glyphMatch),
         vertex: validRecord(bests.vertex),
         tiles: validRecord(bests.tiles),
+        pips: validRecord(bests.pips),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }

@@ -36,9 +36,11 @@ import { VertexGame } from './games/VertexGame'
 import { createVertexState, type VertexProgress } from './games/vertex'
 import { TilesGame } from './games/TilesGame'
 import { createTilesState, type TilesProgress } from './games/tiles'
+import { PipsGame } from './games/PipsGame'
+import { createPipsState, type PipsProgress } from './games/pips'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -64,7 +66,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -232,6 +234,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyPipsGame = (progress: PipsProgress) => {
+    const withProgress = withDailyPipsGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = createPipsState(progress.date, progress)
+    const next = completed.phase === 'complete'
+      ? withImprovedBest(withProgress, 'pips', completed.undos) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -318,6 +331,7 @@ function App() {
   const openGlyphMatch = () => setScreen('glyphmatch')
   const openVertex = () => setScreen('vertex')
   const openTiles = () => setScreen('tiles')
+  const openPips = () => setScreen('pips')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -383,6 +397,7 @@ function App() {
             onPlayGlyphMatch={openGlyphMatch}
             onPlayVertex={openVertex}
             onPlayTiles={openTiles}
+            onPlayPips={openPips}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -523,6 +538,13 @@ function App() {
             progress={arcadeData.dailyTilesGame}
             onSaveProgress={saveDailyTilesGame}
           />
+        ) : screen === 'pips' ? (
+          <PipsGame
+            onBack={() => setScreen('home')}
+            bestUndos={arcadeData.bests.pips}
+            progress={arcadeData.dailyPipsGame}
+            onSaveProgress={saveDailyPipsGame}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -660,6 +682,7 @@ function Home({
   onPlayGlyphMatch,
   onPlayVertex,
   onPlayTiles,
+  onPlayPips,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -690,6 +713,7 @@ function Home({
   onPlayGlyphMatch: () => void
   onPlayVertex: () => void
   onPlayTiles: () => void
+  onPlayPips: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -724,7 +748,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">20 PLAYABLE</span>
+          <span className="section-count">21 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -981,6 +1005,18 @@ function Home({
               <h3>Tiles</h3>
               <p>Match visible patterns from the open edges inward. Clear every pair to finish the board.</p>
               <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · KEYBOARD</span><button className="play-card-button" type="button" onClick={onPlayTiles}>Play Tiles <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-pips">
+            <div className="card-art pips-card-art" aria-hidden="true">
+              <span className="pips-card-grid"><i>2</i><i>5</i><i>1</i><i>6</i><i>4</i><i>3</i><i>0</i><i>5</i><i>6</i><i>2</i><i>3</i><i>1</i></span>
+              <span className="card-art-index">21</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">21</span><span className="game-category">DAILY DOMINO RULES</span></div>
+              <h3>Pips</h3>
+              <p>Place six dominoes to satisfy the different rules in each colored region.</p>
+              <div className="card-bottom"><span className="controls-label">TOUCH · ROTATE · FLIP</span><button className="play-card-button" type="button" onClick={onPlayPips}>Play Pips <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
