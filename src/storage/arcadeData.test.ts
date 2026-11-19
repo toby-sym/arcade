@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
+import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
+import { createGlyphMatchPuzzle } from '../games/glyphMatch'
 
 const emptyCrosswordBoard = () => Array.from({ length: 25 }, (_, index) => [3, 4, 20, 21].includes(index) ? '#' : '')
+const todayGlyphs = createGlyphMatchPuzzle('2026-11-19').glyphs
+const savedGlyphProgress = { date: '2026-11-19', matchedIndices: [0, todayGlyphs.findIndex((glyph, index) => index > 0 && glyph === todayGlyphs[0])], moves: 1 }
 
 class MemoryStorage {
   key: string | null = null
@@ -28,7 +31,8 @@ describe('browser-local Arcade data', () => {
       dailyMiniCrosswordGame: null,
       dailyLetterBoxedGame: null,
       dailyDominoLogicGame: null,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null },
+      dailyGlyphMatchGame: null,
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
 
@@ -70,7 +74,8 @@ describe('browser-local Arcade data', () => {
       dailyMiniCrosswordGame: { date: '2026-11-19', board: emptyCrosswordBoard(), hintsUsed: 1, hintedCells: [6] },
       dailyLetterBoxedGame: { date: '2026-11-19', words: ['CRANE'] },
       dailyDominoLogicGame: { date: '2026-11-19', placements: [{ dominoId: 0, firstCell: 0, orientation: 'horizontal' as const, flipped: false }], undos: 1 },
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null },
+      dailyGlyphMatchGame: savedGlyphProgress,
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
     expect(clearArcadeBests(initial)).toEqual({
@@ -84,7 +89,8 @@ describe('browser-local Arcade data', () => {
       dailyMiniCrosswordGame: { date: '2026-11-19', board: emptyCrosswordBoard(), hintsUsed: 1, hintedCells: [6] },
       dailyLetterBoxedGame: { date: '2026-11-19', words: ['CRANE'] },
       dailyDominoLogicGame: { date: '2026-11-19', placements: [{ dominoId: 0, firstCell: 0, orientation: 'horizontal', flipped: false }], undos: 1 },
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null },
+      dailyGlyphMatchGame: savedGlyphProgress,
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' },
     })
     expect(initial.bests.snake).toBe(12)
@@ -114,7 +120,8 @@ describe('browser-local Arcade data', () => {
       dailyMiniCrosswordGame: null,
       dailyLetterBoxedGame: null,
       dailyDominoLogicGame: null,
-      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null },
+      dailyGlyphMatchGame: null,
+      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
 
@@ -233,6 +240,22 @@ describe('browser-local Arcade data', () => {
     expect(withImprovedBest(firstBest!, 'dominoLogic', 1)).toBeNull()
     expect(withDailyDominoLogicGame(initial, { ...progress, date: '2026-02-30' })).toBeNull()
     expect(withDailyDominoLogicGame(initial, { ...progress, placements: [...progress.placements, { dominoId: 0, firstCell: 2, orientation: 'horizontal', flipped: false }] })).toBeNull()
+  })
+
+  it('saves daily Glyph Match progress and keeps the fewest turns', () => {
+    const initial = emptyArcadeData()
+    const glyphs = createGlyphMatchPuzzle('2026-11-19').glyphs
+    const firstIndex = 0
+    const secondIndex = glyphs.findIndex((glyph, index) => index > firstIndex && glyph === glyphs[firstIndex])
+    const progress = { date: '2026-11-19', matchedIndices: [firstIndex, secondIndex], moves: 2 }
+    const saved = withDailyGlyphMatchGame(initial, progress)
+    const firstBest = withImprovedBest(saved!, 'glyphMatch', 2)
+
+    expect(saved?.dailyGlyphMatchGame).toEqual(progress)
+    expect(firstBest?.bests.glyphMatch).toBe(2)
+    expect(withImprovedBest(firstBest!, 'glyphMatch', 3)).toBeNull()
+    expect(withDailyGlyphMatchGame(initial, { ...progress, date: '2026-02-30' })).toBeNull()
+    expect(withDailyGlyphMatchGame(initial, { ...progress, matchedIndices: [firstIndex] })).toBeNull()
   })
 
   it('uses defaults for unknown versions, corrupt JSON, and unavailable storage', () => {
