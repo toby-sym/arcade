@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, and Spelling Bee are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, and Strands are ready for free play.
 
 ## Local development
 
@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the twelve games from the game floor.
+Vite prints the local URL after startup. Choose any of the thirteen games from the game floor.
 
 ## Snake controls
 
@@ -108,9 +108,16 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - The same hive and local word list are used for the whole UTC date. Found words stay saved in this browser if you leave and return. Find every word to complete the board.
 - The highest score for a completed hive is saved as a local personal best. Hives and word lists are bundled with Arcade; no external game service is used.
 
+## Strands controls
+
+- Open **Strands** for the daily six-row letter field. Tap, click, or focus adjacent letters in order to trace five theme words and the spanning word. Diagonal neighbors count.
+- Use **Undo** to remove the last letter, **Clear path** to start over, or **Hint** to reveal a letter from an unsolved word.
+- The spanning word reaches both sides of the field. The same puzzle and found words are saved in this browser for the UTC date.
+- The fewest hints for a completed board is saved as a local personal best. Puzzles are bundled with Arcade; no external game service is used.
+
 ## Local records and preferences
 
-Arcade saves the highest scores for Snake, Asteroids, Space Invaders, Missile Command, Block Drop, Breakout, and a completed Spelling Bee hive; Pong's highest points in a match; the fewest guesses for a Word Guess solve; the fewest mistakes for a completed Connections board; the fastest Reaction time; the most Pattern Memory practice rounds completed; and the latest daily Pattern Memory completion date in browser storage. Word Guess, Connections, and Spelling Bee save their current daily progress there too. The **Reduce motion**, **Arcade sounds**, and Pong opponent pace preferences are saved there as well. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily progress and preferences stay saved. The system reduced-motion setting is always respected.
+Arcade saves the highest scores for Snake, Asteroids, Space Invaders, Missile Command, Block Drop, Breakout, and a completed Spelling Bee hive; Pong's highest points in a match; the fewest guesses for a Word Guess solve; the fewest mistakes for a completed Connections board; the fewest hints for a completed Strands board; the fastest Reaction time; the most Pattern Memory practice rounds completed; and the latest daily Pattern Memory completion date in browser storage. Word Guess, Connections, Spelling Bee, and Strands save their current daily progress there too. The **Reduce motion**, **Arcade sounds**, and Pong opponent pace preferences are saved there as well. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily progress and preferences stay saved. The system reduced-motion setting is always respected.
 
 ## Install and offline play
 
