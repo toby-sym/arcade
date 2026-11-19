@@ -1,6 +1,6 @@
 # Arcade
 
-A small browser arcade for a quick break. Snake and Reaction are playable; pattern memory is planned next.
+A small browser arcade for a quick break. Snake, Reaction, and Pattern Memory are playable.
 
 ## Local development
 
@@ -31,13 +31,20 @@ Collect dots without hitting the walls or your tail. The game pauses when the br
 
 Each reaction time is measured locally with a high-resolution browser timer. No attempt data is sent or saved.
 
+## Pattern Memory controls
+
+- Select **Start game** and watch the tiles light up in order.
+- Tap or click the same tiles in the same order. Each completed round adds a tile; a mistake ends the run.
+- Keyboard users can Tab to a tile and press **Enter** or **Space**.
+- **Pause** holds the sequence or your input position. A hidden browser tab pauses the game; **Resume** continues it. **Restart** clears the run.
+
 ## Checks
 
 ```sh
 npm run check
 ```
 
-This runs TypeScript checks, Snake and Reaction interface tests, release-promotion integration checks, a dependency audit, and a production build.
+This runs TypeScript checks, game logic and interface tests, release-promotion integration checks, a dependency audit, and a production build.
 
 ## Container
 

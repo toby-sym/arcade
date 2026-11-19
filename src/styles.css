@@ -83,7 +83,7 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .section-count { padding-bottom: 5px; color: var(--muted); font-size: .66rem; letter-spacing: .14em; font-weight: 750; }
 .game-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .game-card { min-width: 0; border: 1px solid var(--line); background: rgb(255 255 255 / 22%); transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
-.game-card-snake:hover, .game-card-reaction:hover { transform: translateY(-3px); border-color: #a5ae91; box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.game-card-snake:hover, .game-card-reaction:hover, .game-card-pattern:hover { transform: translateY(-3px); border-color: #a5ae91; box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
 .card-art { height: 146px; position: relative; overflow: hidden; }
 .card-art-index { position: absolute; right: 14px; bottom: 12px; z-index: 2; color: rgb(245 240 232 / 62%); font-size: .63rem; letter-spacing: .1em; }
 .snake-card-art { background: #b7d15e; }
@@ -236,6 +236,31 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .reaction-status { min-height: 24px; margin: 12px 2px 0; color: #72766d; font-size: .74rem; line-height: 1.5; }
 .game-card-reaction .card-info { min-height: 205px; }
 .game-card-reaction .card-bottom { align-items: end; }
+.pattern-layout { grid-template-columns: minmax(230px, .72fr) minmax(320px, 1.28fr); }
+.pattern-play-column { max-width: 570px; }
+.pattern-console { padding: 14px; background: var(--night); box-shadow: 0 15px 36px rgb(36 39 34 / 15%); }
+.pattern-console .frame-topline { height: 22px; padding: 0 1px 11px; }
+.pattern-console .frame-light i { background: #92968d; }
+.phase-showing .pattern-console .frame-light i { background: var(--violet); box-shadow: 0 0 8px rgb(139 122 228 / 70%); }
+.phase-input .pattern-console .frame-light i { background: var(--green); box-shadow: 0 0 8px rgb(203 244 92 / 75%); }
+.phase-failed .pattern-console .frame-light i { background: var(--coral); box-shadow: 0 0 8px rgb(242 119 94 / 60%); }
+.pattern-board { width: 100%; aspect-ratio: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.pattern-tile { min-width: 0; min-height: 0; border: 0; display: grid; place-items: center; color: rgb(245 240 232 / 74%); font-size: clamp(1.25rem, 3vw, 2.25rem); font-weight: 700; font-variant-numeric: tabular-nums; cursor: pointer; touch-action: manipulation; user-select: none; transition: filter .14s ease, transform .14s ease, box-shadow .14s ease; }
+.pattern-tile-0 { background: #566d31; }
+.pattern-tile-1 { background: #884c40; }
+.pattern-tile-2 { background: #574f8d; }
+.pattern-tile-3 { background: #376660; }
+.pattern-tile[aria-disabled='true'] { cursor: default; }
+.pattern-tile.tile-active { color: var(--ink); filter: brightness(1.7); box-shadow: inset 0 0 0 4px rgb(245 240 232 / 84%), inset 0 0 32px rgb(255 255 255 / 26%); }
+.pattern-tile-0.tile-active { background: var(--green); }
+.pattern-tile-1.tile-active { background: var(--coral); }
+.pattern-tile-2.tile-active { background: var(--violet); }
+.pattern-tile-3.tile-active { background: #55a99f; }
+.pattern-tile.tile-error { background: #9b493d; box-shadow: inset 0 0 0 4px var(--coral); }
+.phase-paused .pattern-board { opacity: .6; }
+.pattern-console-footer { height: 28px; padding: 10px 1px 0; display: flex; justify-content: space-between; color: rgb(245 240 232 / 51%); font-size: .53rem; letter-spacing: .15em; font-weight: 700; }
+.pattern-status { min-height: 24px; margin: 12px 2px 0; color: #72766d; font-size: .74rem; line-height: 1.5; }
+.pattern-copy .score-card { margin-top: 20px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 .site-footer { min-height: 64px; margin-top: auto; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 14px; color: #81847b; font-size: .66rem; }
@@ -286,6 +311,7 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
   .snake-view { padding-top: 17px; }
   .snake-layout { margin-top: 12px; grid-template-columns: 1fr; gap: 22px; }
   .reaction-layout { gap: 22px; }
+  .pattern-layout { gap: 22px; }
   .snake-copy { padding: 0; }
   .snake-copy .eyebrow { margin-bottom: 12px; }
   .snake-copy h1 { font-size: 3.55rem; }
@@ -297,15 +323,21 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
   .keyboard-hint { display: none; }
   .play-column { max-width: 540px; justify-self: center; }
   .reaction-play-column { max-width: 540px; }
+  .pattern-play-column { max-width: 540px; }
   .play-frame { padding: 8px 8px 6px; }
   .reaction-console { padding: 8px; }
+  .pattern-console { padding: 8px; }
   .reaction-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .pattern-console .frame-topline { height: 20px; padding-bottom: 8px; }
   .reaction-target { min-height: min(92vw, 390px); }
   .reaction-target strong { font-size: clamp(1.55rem, 8vw, 2.3rem); }
   .reaction-target-mark { width: 48px; height: 48px; margin-bottom: 19px; }
   .reaction-target::before { width: 170px; }
   .reaction-target::after { width: 250px; }
   .reaction-status { margin-top: 9px; }
+  .pattern-board { gap: 7px; }
+  .pattern-tile { font-size: 1.8rem; }
+  .pattern-status { margin-top: 9px; }
   .frame-topline { height: 20px; padding-bottom: 8px; }
   .frame-bottomline { height: 21px; padding-top: 7px; }
   .touch-controls { margin-top: 11px; }

@@ -7,7 +7,7 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-describe('Arcade navigation and Snake controls', () => {
+describe('Arcade navigation and game controls', () => {
   it('shows the game floor and opens Snake', () => {
     render(<App />)
 
@@ -59,7 +59,7 @@ describe('Arcade navigation and Snake controls', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
     render(<App />)
 
-    expect(screen.getByText('02 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('03 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play reaction/i }))
     expect(screen.getByRole('heading', { name: 'Reaction' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /start a round/i })).toBeInTheDocument()
@@ -88,5 +88,50 @@ describe('Arcade navigation and Snake controls', () => {
     expect(screen.getByRole('button', { name: /start a round/i })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /all games/i }))
     expect(screen.getByRole('heading', { name: 'Choose your game' })).toBeInTheDocument()
+  })
+
+  it('opens Pattern Memory, repeats the sequence, pauses, and restarts', () => {
+    vi.useFakeTimers()
+    vi.spyOn(Math, 'random').mockReturnValue(0)
+    render(<App />)
+
+    expect(screen.getByText('03 PLAYABLE')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /play pattern/i }))
+    expect(screen.getByRole('heading', { name: 'Remember' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /start game/i }))
+
+    const topLeft = screen.getByRole('button', { name: /top left tile, 1/i })
+    expect(topLeft).toHaveAttribute('aria-disabled', 'true')
+    act(() => { vi.advanceTimersByTime(300) })
+    expect(topLeft).toHaveAttribute('aria-pressed', 'true')
+    act(() => { vi.advanceTimersByTime(440) })
+    expect(topLeft).toHaveAttribute('aria-disabled', 'false')
+    fireEvent.click(topLeft)
+
+    expect(screen.getByText('ROUND 02')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent('Pattern complete. Round 2 is next.')
+    fireEvent.click(screen.getByRole('button', { name: /pause/i }))
+    expect(screen.getByRole('button', { name: /resume/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /resume/i }))
+    expect(screen.getByRole('status')).toHaveTextContent('Watch the pattern again.')
+    fireEvent.click(screen.getByRole('button', { name: /restart/i }))
+    expect(screen.getByRole('button', { name: /start game/i })).toBeInTheDocument()
+    expect(screen.getByLabelText('0 rounds cleared this run')).toBeInTheDocument()
+  })
+
+  it('ends a Pattern Memory run on a wrong tile and lets the player start again', () => {
+    vi.useFakeTimers()
+    vi.spyOn(Math, 'random').mockReturnValue(0)
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: /play pattern/i }))
+    fireEvent.click(screen.getByRole('button', { name: /start game/i }))
+    act(() => { vi.advanceTimersByTime(300) })
+    act(() => { vi.advanceTimersByTime(440) })
+    fireEvent.click(screen.getByRole('button', { name: /top right tile, 2/i }))
+
+    expect(screen.getByRole('status')).toHaveTextContent(/pattern broken/i)
+    expect(screen.getByRole('button', { name: /play again/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /play again/i }))
+    expect(screen.getByRole('status')).toHaveTextContent('Watch the pattern. It will light one tile at a time.')
   })
 })

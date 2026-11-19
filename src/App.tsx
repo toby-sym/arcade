@@ -7,6 +7,7 @@ import {
   type Point,
 } from './games/snake'
 import { ReactionGame } from './games/ReactionGame'
+import { PatternGame } from './games/PatternGame'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -27,7 +28,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const boardRef = useRef<HTMLDivElement>(null)
 
@@ -53,6 +54,7 @@ function App() {
     setScreen('snake')
   }
   const openReaction = () => setScreen('reaction')
+  const openPattern = () => setScreen('pattern')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -94,9 +96,11 @@ function App() {
 
       <main id="main" className="main-content">
         {screen === 'home' ? (
-          <Home onPlaySnake={openSnake} onPlayReaction={openReaction} />
+          <Home onPlaySnake={openSnake} onPlayReaction={openReaction} onPlayPattern={openPattern} />
         ) : screen === 'reaction' ? (
           <ReactionGame onBack={() => setScreen('home')} />
+        ) : screen === 'pattern' ? (
+          <PatternGame onBack={() => setScreen('home')} />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -207,7 +211,7 @@ function App() {
   )
 }
 
-function Home({ onPlaySnake, onPlayReaction }: { onPlaySnake: () => void; onPlayReaction: () => void }) {
+function Home({ onPlaySnake, onPlayReaction, onPlayPattern }: { onPlaySnake: () => void; onPlayReaction: () => void; onPlayPattern: () => void }) {
   return (
     <>
       <section className="home-hero" aria-labelledby="home-title">
@@ -230,7 +234,7 @@ function Home({ onPlaySnake, onPlayReaction }: { onPlaySnake: () => void; onPlay
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">02 PLAYABLE</span>
+          <span className="section-count">03 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -261,7 +265,7 @@ function Home({ onPlaySnake, onPlayReaction }: { onPlaySnake: () => void; onPlay
               <div className="card-bottom"><span className="controls-label">MOUSE · TOUCH · SPACE</span><button className="play-card-button" type="button" onClick={onPlayReaction}>Play Reaction <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-soon">
+          <article className="game-card game-card-pattern">
             <div className="card-art memory-card-art" aria-hidden="true">
               <span className="memory-tile tile-a" /><span className="memory-tile tile-b" /><span className="memory-tile tile-c" /><span className="memory-tile tile-d" />
               <span className="card-art-index">03</span>
@@ -270,7 +274,7 @@ function Home({ onPlaySnake, onPlayReaction }: { onPlaySnake: () => void; onPlay
               <div className="card-heading-line"><span className="game-number">03</span><span className="game-category">PATTERN MEMORY</span></div>
               <h3>Remember</h3>
               <p>Watch the lights. Play the pattern back.</p>
-              <div className="card-bottom"><span className="controls-label">TOUCH · MOUSE · KEY</span><span className="coming-label">COMING NEXT</span></div>
+              <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · KEY</span><button className="play-card-button" type="button" onClick={onPlayPattern}>Play Pattern <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
