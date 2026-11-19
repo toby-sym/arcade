@@ -672,7 +672,9 @@ describe('Arcade navigation and game controls', () => {
 
     for (const edgeId of puzzle.solutionEdges) {
       const edge = puzzle.edges.find((candidate) => candidate.id === edgeId)!
-      fireEvent.click(screen.getByRole('button', { name: `Line from vertex ${edge.from + 1} to vertex ${edge.to + 1}, not selected` }))
+      const from = puzzle.vertices[edge.from]!
+      const to = puzzle.vertices[edge.to]!
+      fireEvent.click(screen.getByRole('button', { name: `Line from vertex ${edge.from + 1} (clue ${from.clue}) to vertex ${edge.to + 1} (clue ${to.clue}), not selected` }))
     }
 
     expect(screen.getByText(`Loop complete in ${puzzle.solutionEdges.length} moves. A fresh puzzle arrives tomorrow.`)).toBeInTheDocument()

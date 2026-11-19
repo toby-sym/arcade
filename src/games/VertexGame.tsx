@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 import { useArcadeSound } from '../audio/arcadeAudio'
 import { utcDateKey } from './dailyPattern'
 import { createVertexState, vertexProgress, vertexReducer, type VertexAction, type VertexProgress } from './vertex'
@@ -13,6 +13,7 @@ interface VertexGameProps {
 export function VertexGame({ onBack, bestMoves, progress, onSaveProgress }: VertexGameProps) {
   const today = utcDateKey()
   const playSound = useArcadeSound()
+  const firstEdgeRef = useRef<SVGGElement>(null)
   const [state, dispatch] = useReducer(
     vertexReducer,
     { date: today, progress: progress?.date === today ? progress : null },
@@ -20,14 +21,15 @@ export function VertexGame({ onBack, bestMoves, progress, onSaveProgress }: Vert
   )
 
   useEffect(() => {
-    if (state.phase === 'complete') playSound('win')
-  }, [state.phase, playSound])
+    firstEdgeRef.current?.focus()
+  }, [])
 
   const sendAction = (action: VertexAction) => {
     const next = vertexReducer(state, action)
     if (next === state) return
     dispatch(action)
     if (next.moves !== state.moves) onSaveProgress(vertexProgress(next))
+    if (state.phase !== 'complete' && next.phase === 'complete') playSound('win')
   }
 
   const resetDisabled = state.phase === 'complete' || (state.moves === 0 && state.selectedEdges.length === 0)
@@ -76,9 +78,10 @@ export function VertexGame({ onBack, bestMoves, progress, onSaveProgress }: Vert
                   <g
                     className="vertex-edge-control"
                     key={edge.id}
+                    ref={edge.id === state.edges[0]?.id ? firstEdgeRef : null}
                     role="button"
                     tabIndex={0}
-                    aria-label={`Line from vertex ${edge.from + 1} to vertex ${edge.to + 1}, ${selected ? 'selected' : 'not selected'}`}
+                    aria-label={`Line from vertex ${edge.from + 1} (clue ${from.clue}) to vertex ${edge.to + 1} (clue ${to.clue}), ${selected ? 'selected' : 'not selected'}`}
                     aria-pressed={selected}
                     onClick={() => sendAction({ type: 'toggle-edge', edgeId: edge.id })}
                     onKeyDown={(event) => {
@@ -93,9 +96,9 @@ export function VertexGame({ onBack, bestMoves, progress, onSaveProgress }: Vert
                 )
               })}
               {state.vertices.map((vertex) => (
-                <g className="vertex-point" key={vertex.id} aria-hidden="true">
-                  <circle cx={vertex.x} cy={vertex.y} r="11" />
-                  <text x={vertex.x} y={vertex.y + 3.5}>{vertex.clue}</text>
+                <g className="vertex-point" key={vertex.id} role="img" aria-label={`Vertex ${vertex.id + 1}, ${vertex.clue} lines required`}>
+                  <circle cx={vertex.x} cy={vertex.y} r="11" aria-hidden="true" />
+                  <text x={vertex.x} y={vertex.y + 3.5} aria-hidden="true">{vertex.clue}</text>
                 </g>
               ))}
             </svg>

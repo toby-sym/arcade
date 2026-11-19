@@ -21,6 +21,15 @@ describe('daily Vertex loop puzzles', () => {
     for (const vertex of puzzle.vertices) expect(degree.get(vertex.id)).toBe(vertex.clue)
   })
 
+  it('keeps every daily board solvable across a month of dates', () => {
+    for (let day = 1; day <= 30; day += 1) {
+      const date = `2026-11-${String(day).padStart(2, '0')}`
+      const initial = createVertexState(date)
+      const solved = initial.solutionEdges.reduce((state, edgeId) => vertexReducer(state, { type: 'toggle-edge', edgeId }), initial)
+      expect(solved.phase).toBe('complete')
+    }
+  })
+
   it('completes only after all clues form one closed loop', () => {
     const initial = createVertexState('2025-06-12')
     let state = initial
