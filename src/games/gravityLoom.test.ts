@@ -34,6 +34,15 @@ describe('Gravity Loom', () => {
           expect(puzzle.portals?.[0]).not.toBe(puzzle.portals?.[1])
           expect(puzzle.walls).not.toContain(puzzle.portals?.[0])
           expect(puzzle.walls).not.toContain(puzzle.portals?.[1])
+          let position = puzzle.start
+          let portalUsed = false
+          for (const direction of solution!) {
+            const move = rollGravityLoomSpark(puzzle, position, direction)
+            portalUsed ||= move.usedPortal
+            position = move.position
+            if (move.reachedReceiver) break
+          }
+          expect(portalUsed).toBe(true)
         }
       }
     }

@@ -61,6 +61,7 @@ export function gravityLoomPuzzleForDate(date: string, stage: number): GravityLo
   }
   const cell = () => 1 + Math.floor(random() * (GRAVITY_LOOM_BOARD_SIZE - 2))
   let easiest: GravityLoomPuzzle | null = null
+  let easiestPortalRoute: GravityLoomPuzzle | null = null
 
   for (let attempt = 0; attempt < 240; attempt += 1) {
     const start = cell() * GRAVITY_LOOM_BOARD_SIZE + cell()
@@ -90,9 +91,13 @@ export function gravityLoomPuzzleForDate(date: string, stage: number): GravityLo
     if (!solution) continue
     candidate.par = solution.length
     if (!easiest || solution.length < easiest.par) easiest = candidate
+    const usesPortal = solutionUsesPortal(candidate, solution)
+    if (usesPortal && (!easiestPortalRoute || solution.length < easiestPortalRoute.par)) easiestPortalRoute = candidate
+    if (stage > 0 && !usesPortal) continue
     if (solution.length >= 2 && solution.length <= 12) return candidate
   }
 
+  if (easiestPortalRoute) return easiestPortalRoute
   if (easiest) return easiest
   throw new Error('Could not create a solvable daily chamber. Please try again.')
 }
@@ -114,6 +119,17 @@ export function solveGravityLoomPuzzle(puzzle: GravityLoomPuzzle): GravityLoomDi
     }
   }
   return null
+}
+
+function solutionUsesPortal(puzzle: GravityLoomPuzzle, solution: GravityLoomDirection[]): boolean {
+  let position = puzzle.start
+  for (const direction of solution) {
+    const result = rollGravityLoomSpark(puzzle, position, direction)
+    if (result.usedPortal) return true
+    position = result.position
+    if (result.reachedReceiver) break
+  }
+  return false
 }
 
 export function rollGravityLoomSpark(
