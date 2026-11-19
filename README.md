@@ -61,7 +61,7 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 ## Space Invaders controls
 
 - Select **Start game**, then move with the **left and right arrow keys** or **A and D** while the playfield is focused. Hold a direction to keep moving.
-- Press **Space** to fire. On touch screens, tap the direction buttons and **Fire** below the field.
+- Hold the **left** or **right arrow keys** or **A** and **D** to move; movement follows the time held. Press **Space** to fire. On touch screens, hold a direction button to move and tap **Fire** below the field.
 - **Pause** in the game panel or press **Escape** while the playfield is focused. The game pauses when the browser tab is hidden; **Restart** begins with three ships and a fresh formation.
 - Clear the formation before it reaches your ship. Your highest score is saved as a local personal best.
 

@@ -1,9 +1,10 @@
-import { useEffect, useReducer, useRef, type KeyboardEvent } from 'react'
+import { useEffect, useReducer, useRef, useState, type KeyboardEvent, type PointerEvent, type MouseEvent } from 'react'
 import { useHeldKeys } from '../hooks/useHeldKeys'
 import { useArcadeSound } from '../audio/arcadeAudio'
 import { createInvadersState, invadersReducer } from './invaders'
 
 const KEYBOARD_PLAYER_SPEED = 75
+const MAX_MOVEMENT_FRAME_MS = 50
 
 interface InvadersGameProps {
   onBack: () => void
@@ -14,9 +15,17 @@ interface InvadersGameProps {
 export function InvadersGame({ onBack, bestScore, onRecordScore }: InvadersGameProps) {
   const [state, dispatch] = useReducer(invadersReducer, undefined, createInvadersState)
   const boardRef = useRef<HTMLDivElement>(null)
+  const touchPointerStart = useRef<number | null>(null)
+  const touchMovementSinceStart = useRef(0)
+  const touchDirectionRef = useRef<'left' | 'right' | null>(null)
+  const [touchDirection, setTouchDirection] = useState<'left' | 'right' | null>(null)
   const playSound = useArcadeSound()
   const previousAudioState = useRef({ score: state.score, phase: state.phase })
   const isFresh = state.score === 0 && state.lives === 3 && state.playerX === 50
+  const clearTouchDirection = () => {
+    touchDirectionRef.current = null
+    setTouchDirection(null)
+  }
 
   useEffect(() => {
     if (state.phase !== 'playing') return
@@ -26,11 +35,48 @@ export function InvadersGame({ onBack, bestScore, onRecordScore }: InvadersGameP
 
   useEffect(() => {
     const pauseWhenHidden = () => {
-      if (document.hidden) dispatch({ type: 'pause' })
+      if (document.hidden) {
+        clearTouchDirection()
+        touchPointerStart.current = null
+        dispatch({ type: 'pause' })
+      }
+    }
+    const releaseTouchControl = () => {
+      clearTouchDirection()
+      touchPointerStart.current = null
     }
     document.addEventListener('visibilitychange', pauseWhenHidden)
-    return () => document.removeEventListener('visibilitychange', pauseWhenHidden)
+    window.addEventListener('blur', releaseTouchControl)
+    return () => {
+      document.removeEventListener('visibilitychange', pauseWhenHidden)
+      window.removeEventListener('blur', releaseTouchControl)
+    }
   }, [])
+
+  useEffect(() => {
+    if (state.phase === 'paused' || state.phase === 'over' || state.phase === 'won') {
+      clearTouchDirection()
+      touchPointerStart.current = null
+    }
+  }, [state.phase])
+
+  useEffect(() => {
+    if (state.phase !== 'playing' || touchDirection === null) return
+    let frame = 0
+    let previousTime = window.performance.now()
+    const tick = (time: number) => {
+      if (touchDirectionRef.current !== touchDirection) return
+      const deltaMs = Math.min(Math.max(time - previousTime, 0), MAX_MOVEMENT_FRAME_MS)
+      previousTime = time
+      const direction = touchDirection === 'left' ? -1 : 1
+      const amount = direction * KEYBOARD_PLAYER_SPEED * deltaMs / 1000
+      touchMovementSinceStart.current += amount
+      dispatch({ type: 'movePlayer', amount })
+      frame = window.requestAnimationFrame(tick)
+    }
+    frame = window.requestAnimationFrame(tick)
+    return () => window.cancelAnimationFrame(frame)
+  }, [state.phase, touchDirection])
 
   useEffect(() => {
     if (state.score > 0) onRecordScore(state.score)
@@ -82,6 +128,7 @@ export function InvadersGame({ onBack, bestScore, onRecordScore }: InvadersGameP
       }
     } else if (event.key === 'Escape' && state.phase === 'playing') {
       event.preventDefault()
+      clearTouchDirection()
       dispatch({ type: 'pause' })
     } else if (event.key === 'Escape' && state.phase === 'paused') {
       event.preventDefault()
@@ -90,6 +137,34 @@ export function InvadersGame({ onBack, bestScore, onRecordScore }: InvadersGameP
       event.preventDefault()
       restart()
     }
+  }
+
+  const holdTouchDirection = (direction: 'left' | 'right') => (event: PointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    touchPointerStart.current = window.performance.now()
+    touchMovementSinceStart.current = 0
+    touchDirectionRef.current = direction
+    setTouchDirection(direction)
+    if (typeof event.currentTarget.setPointerCapture === 'function') {
+      try { event.currentTarget.setPointerCapture(event.pointerId) } catch { /* Pointer capture is optional. */ }
+    }
+  }
+
+  const releaseTouchDirection = clearTouchDirection
+  const cancelTouchDirection = () => {
+    touchPointerStart.current = null
+    clearTouchDirection()
+  }
+  const moveOneTouchStep = (direction: 'left' | 'right') => (event: MouseEvent<HTMLButtonElement>) => {
+    if (event.detail !== 0) {
+      const startedAt = touchPointerStart.current
+      touchPointerStart.current = null
+      if (startedAt === null || window.performance.now() - startedAt >= 80) return
+      if (touchMovementSinceStart.current !== 0) {
+        dispatch({ type: 'movePlayer', amount: -touchMovementSinceStart.current })
+      }
+    }
+    dispatch({ type: 'movePlayer', amount: direction === 'left' ? -8 : 8 })
   }
 
   const statusLabel = state.phase === 'playing' ? 'LIVE' : state.phase.toUpperCase()
@@ -106,7 +181,7 @@ export function InvadersGame({ onBack, bestScore, onRecordScore }: InvadersGameP
           <p className="snake-lede">Hold the line, pick your shots, and keep the formation out of the cabinet.</p>
           <div className="how-to-play">
             <h2>How to play</h2>
-            <p>Move with the left and right arrows or A and D. Press Space or Fire to shoot. On a phone, use the direction buttons and Fire.</p>
+            <p>Move with the left and right arrows or A and D. Press Space or Fire to shoot. On a phone, hold a direction button to move and tap Fire.</p>
           </div>
           <div className="score-card invaders-score" aria-label={`Score: ${state.score}. ${state.lives} ${state.lives === 1 ? 'ship' : 'ships'} remaining. ${bestScore === null ? 'No personal best yet.' : `Local best: ${bestScore} points.`}`}>
             <div className="breakout-score-main">
@@ -123,7 +198,7 @@ export function InvadersGame({ onBack, bestScore, onRecordScore }: InvadersGameP
           </div>
           <div className="game-actions">
             {state.phase === 'playing' ? (
-              <button className="button button-secondary" type="button" onClick={() => dispatch({ type: 'pause' })}>Pause <span className="pause-mark" aria-hidden="true"><i /><i /></span></button>
+              <button className="button button-secondary" type="button" onClick={() => { clearTouchDirection(); dispatch({ type: 'pause' }) }}>Pause <span className="pause-mark" aria-hidden="true"><i /><i /></span></button>
             ) : state.phase === 'paused' ? (
               <button className="button button-primary" type="button" onClick={start}>Resume <span aria-hidden="true">→</span></button>
             ) : state.phase === 'ready' ? (
@@ -169,9 +244,29 @@ export function InvadersGame({ onBack, bestScore, onRecordScore }: InvadersGameP
             <div className="invaders-console-footer"><span>ARROWS / A D · SPACE</span><span>{state.lives} SHIPS</span></div>
           </div>
           <div className="invaders-touch-controls" role="group" aria-label="Touch controls">
-            <button className="dpad-button" type="button" aria-label="Move left" onClick={() => dispatch({ type: 'movePlayer', amount: -8 })}>←</button>
+            <button
+              className="dpad-button"
+              type="button"
+              aria-label="Move left"
+              aria-pressed={touchDirection === 'left'}
+              onPointerDown={holdTouchDirection('left')}
+              onPointerUp={releaseTouchDirection}
+              onPointerCancel={cancelTouchDirection}
+              onLostPointerCapture={releaseTouchDirection}
+              onClick={moveOneTouchStep('left')}
+            >←</button>
             <button className="button button-primary invaders-fire-button" type="button" disabled={state.phase !== 'playing' && state.phase !== 'ready'} onClick={() => { if (state.phase === 'ready') dispatch({ type: 'start' }); if (state.playerShots.length === 0) playSound('fire'); dispatch({ type: 'shoot' }) }}>Fire</button>
-            <button className="dpad-button" type="button" aria-label="Move right" onClick={() => dispatch({ type: 'movePlayer', amount: 8 })}>→</button>
+            <button
+              className="dpad-button"
+              type="button"
+              aria-label="Move right"
+              aria-pressed={touchDirection === 'right'}
+              onPointerDown={holdTouchDirection('right')}
+              onPointerUp={releaseTouchDirection}
+              onPointerCancel={cancelTouchDirection}
+              onLostPointerCapture={releaseTouchDirection}
+              onClick={moveOneTouchStep('right')}
+            >→</button>
           </div>
           <p id="invaders-instructions" className="invaders-status" role="status" aria-live="polite">{state.message}</p>
         </div>
