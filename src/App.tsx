@@ -48,6 +48,7 @@ const SkylineSkipGame = lazy(() => import('./games/SkylineSkipGame').then(({ Sky
 const OrbitCourierGame = lazy(() => import('./games/OrbitCourierGame').then(({ OrbitCourierGame }) => ({ default: OrbitCourierGame })))
 const ColorConduitGame = lazy(() => import('./games/ColorConduitGame').then(({ ColorConduitGame }) => ({ default: ColorConduitGame })))
 import { createColorConduitState, type ColorConduitProgress } from './games/colorConduit'
+const SwitchyardGame = lazy(() => import('./games/SwitchyardGame').then(({ SwitchyardGame }) => ({ default: SwitchyardGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -88,6 +89,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'ciphercircuit', title: 'Cipher Circuit', categories: ['daily'], terms: 'code breaker signals colors logic' },
   { id: 'orbitcourier', title: 'Orbit Courier', categories: ['arcade'], terms: 'space flight delivery thrust brake planets' },
   { id: 'colorconduit', title: 'Color Conduit', categories: ['daily'], terms: 'color route pipes signals logic' },
+  { id: 'switchyard', title: 'Switchyard', categories: ['arcade'], terms: 'trains tracks depot routing timing reaction' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -111,7 +113,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -483,6 +485,7 @@ function App() {
   const openCipherCircuit = () => setScreen('ciphercircuit')
   const openOrbitCourier = () => setScreen('orbitcourier')
   const openColorConduit = () => setScreen('colorconduit')
+  const openSwitchyard = () => setScreen('switchyard')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -557,6 +560,7 @@ function App() {
             onPlayCipherCircuit={openCipherCircuit}
             onPlayOrbitCourier={openOrbitCourier}
             onPlayColorConduit={openColorConduit}
+            onPlaySwitchyard={openSwitchyard}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -755,6 +759,13 @@ function App() {
             progress={arcadeData.dailyColorConduitGame}
             onSaveProgress={saveDailyColorConduitGame}
           />
+        ) : screen === 'switchyard' ? (
+          <SwitchyardGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.switchyard}
+            onRecordScore={(score) => recordBest('switchyard', score)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -901,6 +912,7 @@ function Home({
   onPlayCipherCircuit,
   onPlayOrbitCourier,
   onPlayColorConduit,
+  onPlaySwitchyard,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -944,6 +956,7 @@ function Home({
   onPlayCipherCircuit: () => void
   onPlayOrbitCourier: () => void
   onPlayColorConduit: () => void
+  onPlaySwitchyard: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1400,6 +1413,19 @@ function Home({
               <h3>Color Conduit</h3>
               <p>Connect four signals without crossings, then power every square on the board.</p>
               <div className="card-bottom"><span className="controls-label">1–4 · ARROWS · DRAG</span><button className="play-card-button" type="button" onClick={onPlayColorConduit}>Play Color Conduit <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-switchyard" hidden={!visibleGameIds.has('switchyard')}>
+            <div className="card-art switchyard-card-art" aria-hidden="true">
+              <span className="switchyard-card-track"><i /><i /><i /></span>
+              <span className="switchyard-card-engine">▰</span>
+              <span className="card-art-index">29</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">29</span><span className="game-category">ARCADE TIMING</span></div>
+              <h3>Switchyard</h3>
+              <p>Throw the switch before each freight car reaches the junction. Three missed depots end the shift.</p>
+              <div className="card-bottom"><span className="controls-label">1–3 · ARROWS · TOUCH</span><button className="play-card-button" type="button" onClick={onPlaySwitchyard}>Play Switchyard <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
