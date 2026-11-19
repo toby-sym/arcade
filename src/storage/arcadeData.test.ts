@@ -19,7 +19,7 @@ describe('browser-local Arcade data', () => {
       version: 1 as const,
       dailyPatternCompletedDate: '2026-11-19',
       bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220 },
-      preferences: { reduceMotion: true, pongDifficulty: 'quick' as const },
+      preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
 
     expect(writeArcadeData(saved, storage)).toBe(true)
@@ -49,13 +49,13 @@ describe('browser-local Arcade data', () => {
       version: 1 as const,
       dailyPatternCompletedDate: '2026-11-19',
       bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220 },
-      preferences: { reduceMotion: true, pongDifficulty: 'quick' as const },
+      preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
     expect(clearArcadeBests(initial)).toEqual({
       version: 1,
       dailyPatternCompletedDate: '2026-11-19',
       bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null },
-      preferences: { reduceMotion: true, pongDifficulty: 'quick' },
+      preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' },
     })
     expect(initial.bests.snake).toBe(12)
   })
@@ -67,15 +67,18 @@ describe('browser-local Arcade data', () => {
       version: 1,
       dailyPatternCompletedDate: 'not-a-date',
       bests: { snake: 9, reaction: -40, pattern: 2.5, breakout: 1.2, pong: -1, invaders: -5, asteroids: -10 },
-      preferences: { reduceMotion: true, pongDifficulty: 'too-fast' },
+      preferences: { reduceMotion: true, soundEffects: 'yes', pongDifficulty: 'too-fast' },
     })
 
     expect(readArcadeData(storage)).toEqual({
       version: 1,
       dailyPatternCompletedDate: null,
       bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null },
-      preferences: { reduceMotion: true, pongDifficulty: 'steady' },
+      preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
+
+    storage.value = JSON.stringify({ version: 1, preferences: { reduceMotion: true, pongDifficulty: 'quick' } })
+    expect(readArcadeData(storage).preferences).toEqual({ reduceMotion: true, soundEffects: false, pongDifficulty: 'quick' })
   })
 
   it('records only valid calendar dates for the shared daily challenge', () => {

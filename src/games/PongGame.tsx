@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef, type KeyboardEvent, type PointerEvent } from 'react'
 import { useHeldKeys } from '../hooks/useHeldKeys'
+import { useArcadeSound } from '../audio/arcadeAudio'
 import {
   PONG_BALL_RADIUS,
   PONG_HEIGHT,
@@ -24,6 +25,8 @@ interface PongGameProps {
 export function PongGame({ onBack, bestScore, onRecordScore, difficulty, onDifficultyChange }: PongGameProps) {
   const [state, dispatch] = useReducer(pongReducer, difficulty, createPongState)
   const boardRef = useRef<HTMLDivElement>(null)
+  const playSound = useArcadeSound()
+  const previousAudioState = useRef({ score: state.score, opponentScore: state.opponentScore, phase: state.phase, ballVx: state.ball.vx })
   const isFresh = state.score === 0 && state.opponentScore === 0
   const canChooseDifficulty = isFresh && state.phase === 'ready'
 
@@ -44,6 +47,15 @@ export function PongGame({ onBack, bestScore, onRecordScore, difficulty, onDiffi
   useEffect(() => {
     if (state.score > 0) onRecordScore(state.score)
   }, [onRecordScore, state.score])
+
+  useEffect(() => {
+    const previous = previousAudioState.current
+    if (state.phase === 'over' && previous.phase !== 'over') playSound(state.winner === 'player' ? 'win' : 'lose')
+    else if (state.score > previous.score) playSound('score')
+    else if (state.opponentScore > previous.opponentScore) playSound('miss')
+    else if (state.phase === 'playing' && previous.phase === 'playing' && Math.sign(state.ball.vx) !== Math.sign(previous.ballVx)) playSound('hit')
+    previousAudioState.current = { score: state.score, opponentScore: state.opponentScore, phase: state.phase, ballVx: state.ball.vx }
+  }, [playSound, state.ball.vx, state.opponentScore, state.phase, state.score, state.winner])
 
   const focusBoard = () => window.requestAnimationFrame(() => boardRef.current?.focus())
   const start = () => {

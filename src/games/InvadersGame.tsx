@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef, type KeyboardEvent } from 'react'
 import { useHeldKeys } from '../hooks/useHeldKeys'
+import { useArcadeSound } from '../audio/arcadeAudio'
 import { createInvadersState, invadersReducer } from './invaders'
 
 interface InvadersGameProps {
@@ -11,6 +12,8 @@ interface InvadersGameProps {
 export function InvadersGame({ onBack, bestScore, onRecordScore }: InvadersGameProps) {
   const [state, dispatch] = useReducer(invadersReducer, undefined, createInvadersState)
   const boardRef = useRef<HTMLDivElement>(null)
+  const playSound = useArcadeSound()
+  const previousAudioState = useRef({ score: state.score, phase: state.phase })
   const isFresh = state.score === 0 && state.lives === 3 && state.playerX === 50
 
   useEffect(() => {
@@ -30,6 +33,14 @@ export function InvadersGame({ onBack, bestScore, onRecordScore }: InvadersGameP
   useEffect(() => {
     if (state.score > 0) onRecordScore(state.score)
   }, [onRecordScore, state.score])
+
+  useEffect(() => {
+    const previous = previousAudioState.current
+    if (state.phase === 'won' && previous.phase !== 'won') playSound('win')
+    else if (state.phase === 'over' && previous.phase !== 'over') playSound('lose')
+    else if (state.score > previous.score) playSound('hit')
+    previousAudioState.current = { score: state.score, phase: state.phase }
+  }, [playSound, state.phase, state.score])
 
   const focusBoard = () => window.requestAnimationFrame(() => boardRef.current?.focus())
   const start = () => {
@@ -62,7 +73,9 @@ export function InvadersGame({ onBack, bestScore, onRecordScore }: InvadersGameP
       if (state.phase === 'ready') {
         dispatch({ type: 'start' })
         dispatch({ type: 'shoot' })
+        playSound('fire')
       } else if (state.phase === 'playing') {
+        if (state.playerShots.length === 0) playSound('fire')
         dispatch({ type: 'shoot' })
       }
     } else if (event.key === 'Escape' && state.phase === 'playing') {
@@ -155,7 +168,7 @@ export function InvadersGame({ onBack, bestScore, onRecordScore }: InvadersGameP
           </div>
           <div className="invaders-touch-controls" role="group" aria-label="Touch controls">
             <button className="dpad-button" type="button" aria-label="Move left" onClick={() => dispatch({ type: 'movePlayer', amount: -8 })}>←</button>
-            <button className="button button-primary invaders-fire-button" type="button" onClick={() => { if (state.phase === 'ready') dispatch({ type: 'start' }); dispatch({ type: 'shoot' }) }}>Fire</button>
+            <button className="button button-primary invaders-fire-button" type="button" disabled={state.phase !== 'playing' && state.phase !== 'ready'} onClick={() => { if (state.phase === 'ready') dispatch({ type: 'start' }); if (state.playerShots.length === 0) playSound('fire'); dispatch({ type: 'shoot' }) }}>Fire</button>
             <button className="dpad-button" type="button" aria-label="Move right" onClick={() => dispatch({ type: 'movePlayer', amount: 8 })}>→</button>
           </div>
           <p id="invaders-instructions" className="invaders-status" role="status" aria-live="polite">{state.message}</p>

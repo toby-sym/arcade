@@ -18,6 +18,7 @@ export interface ArcadeData {
   dailyPatternCompletedDate: string | null
   preferences: {
     reduceMotion: boolean
+    soundEffects: boolean
     pongDifficulty: PongDifficulty
   }
 }
@@ -42,7 +43,7 @@ export function emptyArcadeData(): ArcadeData {
     version: 1,
     bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null },
     dailyPatternCompletedDate: null,
-    preferences: { reduceMotion: false, pongDifficulty: 'steady' },
+    preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady' },
   }
 }
 
@@ -73,7 +74,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         invaders: validRecord(bests.invaders),
         asteroids: validRecord(bests.asteroids),
       },
-      preferences: { reduceMotion: preferences.reduceMotion === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
+      preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }
   } catch {
     return emptyArcadeData()

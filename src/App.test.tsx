@@ -336,25 +336,30 @@ describe('Arcade navigation and game controls', () => {
     expect(screen.getByRole('heading', { name: 'Choose your game' })).toBeInTheDocument()
   })
 
-  it('saves the reduced-motion preference and restores it on the next visit', () => {
+  it('saves motion and sound preferences and restores them on the next visit', () => {
     const firstVisit = render(<App />)
     const reduceMotion = screen.getByRole('checkbox', { name: /reduce motion/i })
+    const soundEffects = screen.getByRole('checkbox', { name: /arcade sounds/i })
     fireEvent.click(reduceMotion)
+    fireEvent.click(soundEffects)
 
     expect(reduceMotion).toBeChecked()
+    expect(soundEffects).toBeChecked()
     expect(document.documentElement).toHaveAttribute('data-reduce-motion', 'true')
     expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').preferences.reduceMotion).toBe(true)
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').preferences.soundEffects).toBe(true)
 
     firstVisit.unmount()
     render(<App />)
     expect(screen.getByRole('checkbox', { name: /reduce motion/i })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: /arcade sounds/i })).toBeChecked()
   })
 
   it('confirms record clearing, preserves the motion preference, and keeps records local', () => {
     window.localStorage.setItem(ARCADE_DATA_KEY, JSON.stringify({
       version: 1,
       bests: { snake: 8, reaction: 240, pattern: 3, breakout: 120, pong: 2, invaders: null, asteroids: null },
-      preferences: { reduceMotion: true, pongDifficulty: 'steady' },
+      preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     }))
     render(<App />)
 
@@ -369,7 +374,7 @@ describe('Arcade navigation and game controls', () => {
       version: 1,
       dailyPatternCompletedDate: null,
       bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null },
-      preferences: { reduceMotion: true, pongDifficulty: 'steady' },
+      preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
     expect(screen.getByText('No saved records.')).toBeInTheDocument()
   })

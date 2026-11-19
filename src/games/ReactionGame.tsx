@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useArcadeSound } from '../audio/arcadeAudio'
 
 type Phase = 'ready' | 'waiting' | 'go' | 'false-start' | 'result'
 
@@ -12,6 +13,15 @@ export function ReactionGame({ onBack, bestTimeMs, onRecordTime }: {
   const [notice, setNotice] = useState('Press the button when you are ready to begin.')
   const timerRef = useRef<number | null>(null)
   const signalTimeRef = useRef<number | null>(null)
+  const playSound = useArcadeSound()
+  const previousPhase = useRef(phase)
+
+  useEffect(() => {
+    if (phase === 'go' && previousPhase.current === 'waiting') playSound('signal')
+    else if (phase === 'false-start') playSound('miss')
+    else if (phase === 'result') playSound('score')
+    previousPhase.current = phase
+  }, [phase, playSound])
 
   const clearTimer = () => {
     if (timerRef.current !== null) window.clearTimeout(timerRef.current)

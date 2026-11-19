@@ -135,10 +135,12 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .home-preferences { margin: 0 0 48px; padding: 19px 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 16px 35px; }
 .home-preferences h2 { margin: 0; font-size: 1.15rem; letter-spacing: -.035em; }
 .motion-setting { display: flex; gap: 12px; align-items: center; cursor: pointer; }
+.sound-setting { display: flex; gap: 12px; align-items: center; cursor: pointer; }
 .motion-setting input { width: 19px; height: 19px; margin: 0; flex: 0 0 auto; accent-color: var(--coral); }
-.motion-setting strong, .motion-setting small { display: block; }
-.motion-setting strong { font-size: .83rem; }
-.motion-setting small { margin-top: 4px; color: #777b72; font-size: .7rem; line-height: 1.5; }
+.sound-setting input { width: 19px; height: 19px; margin: 0; flex: 0 0 auto; accent-color: var(--coral); }
+.motion-setting strong, .motion-setting small, .sound-setting strong, .sound-setting small { display: block; }
+.motion-setting strong, .sound-setting strong { font-size: .83rem; }
+.motion-setting small, .sound-setting small { margin-top: 4px; color: #777b72; font-size: .7rem; line-height: 1.5; }
 .records-setting { grid-column: 1 / -1; padding-top: 14px; border-top: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px 20px; }
 .records-setting strong, .records-setting small { display: block; }
 .records-setting strong { font-size: .81rem; }
@@ -625,8 +627,8 @@ body {
 
 .home-preferences { border-color: #51466f; }
 .topbar-note[role="status"] { display: inline-block; color: var(--cyan); }
-.motion-setting strong, .records-setting strong { color: var(--paper); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; }
-.motion-setting small, .records-setting small, .local-data-note { color: #b6aecb; }
+.motion-setting strong, .sound-setting strong, .records-setting strong { color: var(--paper); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; }
+.motion-setting small, .sound-setting small, .records-setting small, .local-data-note { color: #b6aecb; }
 .install-setting { grid-column: 1 / -1; padding-top: 14px; border-top: 1px solid #51466f; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .install-setting strong, .install-setting small { display: block; }
 .install-setting strong { color: var(--paper); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .81rem; text-transform: uppercase; }
@@ -634,7 +636,7 @@ body {
 .install-button { min-height: 39px; flex: 0 0 auto; border: 1px solid #e5ff9b; border-radius: 4px; padding: 0 12px; color: #171222; background: linear-gradient(180deg, #d8ff70, var(--green)); box-shadow: 0 3px 0 #688d20, inset 0 1px rgb(255 255 255 / 55%); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .67rem; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: transform .12s ease, background .12s ease; }
 .install-button:hover { background: linear-gradient(180deg, #e5ff9b, #baff34); }
 .install-button:active { transform: translateY(2px); box-shadow: 0 1px 0 #688d20; }
-.motion-setting input, .pong-pace-setting input { accent-color: var(--green); }
+.motion-setting input, .sound-setting input, .pong-pace-setting input { accent-color: var(--green); }
 .records-setting { border-color: #51466f; }
 .clear-records-button { border-color: #76658f; border-radius: 4px; color: #ffd0da; background: #21172b; box-shadow: 0 3px 0 #090811; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 900; text-transform: uppercase; }
 .clear-records-button:hover { border-color: var(--coral); background: #362033; }
