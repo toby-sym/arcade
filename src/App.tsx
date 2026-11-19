@@ -1,0 +1,322 @@
+import { useEffect, useReducer, useRef, useState, type KeyboardEvent } from 'react'
+import {
+  BOARD_SIZE,
+  createSnakeState,
+  snakeReducer,
+  type Direction,
+  type Point,
+} from './games/snake'
+
+const version = import.meta.env.VITE_APP_VERSION || 'Development'
+const versionLabel = version === 'Development' ? version : `v${version}`
+
+const directionKeys: Record<string, Direction> = {
+  ArrowUp: 'up',
+  w: 'up',
+  W: 'up',
+  ArrowRight: 'right',
+  d: 'right',
+  D: 'right',
+  ArrowDown: 'down',
+  s: 'down',
+  S: 'down',
+  ArrowLeft: 'left',
+  a: 'left',
+  A: 'left',
+}
+
+function App() {
+  const [screen, setScreen] = useState<'home' | 'snake'>('home')
+  const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
+  const boardRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (snake.status !== 'playing') return
+    const speed = Math.max(86, 158 - snake.score * 3)
+    const timer = window.setInterval(() => {
+      dispatch({ type: 'tick', foodRoll: Math.random() })
+    }, speed)
+    return () => window.clearInterval(timer)
+  }, [snake.status, snake.score])
+
+  useEffect(() => {
+    const pauseWhenHidden = () => {
+      if (document.hidden) dispatch({ type: 'pause' })
+    }
+    document.addEventListener('visibilitychange', pauseWhenHidden)
+    return () => document.removeEventListener('visibilitychange', pauseWhenHidden)
+  }, [])
+
+  const openSnake = () => {
+    dispatch({ type: 'restart', foodRoll: Math.random() })
+    setScreen('snake')
+  }
+
+  const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const direction = directionKeys[event.key]
+    if (direction) {
+      event.preventDefault()
+      dispatch({ type: 'turn', direction })
+      return
+    }
+
+    if (event.key === 'Escape' && (snake.status === 'playing' || snake.status === 'paused')) {
+      event.preventDefault()
+      dispatch({ type: 'pause' })
+    }
+  }
+
+  const restart = () => dispatch({ type: 'restart', foodRoll: Math.random() })
+  const focusBoard = () => window.requestAnimationFrame(() => boardRef.current?.focus())
+  const startGame = () => {
+    dispatch({ type: 'start' })
+    focusBoard()
+  }
+  const playAgain = () => {
+    dispatch({ type: 'restart', foodRoll: Math.random() })
+    dispatch({ type: 'start' })
+    focusBoard()
+  }
+
+  return (
+    <div className="app-shell">
+      <a className="skip-link" href="#main">Skip to content</a>
+      <header className="topbar">
+        <button className="brand" type="button" onClick={() => setScreen('home')} aria-label="Arcade home">
+          <span className="brand-mark" aria-hidden="true"><span /><span /><span /><span /></span>
+          <span>ARCADE</span>
+        </button>
+        <span className="topbar-note">A pocket-sized play break</span>
+        <span className="version-label">{versionLabel}</span>
+      </header>
+
+      <main id="main" className="main-content">
+        {screen === 'home' ? (
+          <Home onPlay={openSnake} />
+        ) : (
+          <section className="snake-view" aria-labelledby="snake-title">
+            <button className="back-link" type="button" onClick={() => setScreen('home')}>
+              <span aria-hidden="true">←</span> All games
+            </button>
+          <div className="snake-layout" onKeyDown={handleGameKeyDown}>
+              <div className="snake-copy">
+                <p className="eyebrow"><span className="eyebrow-dot" /> NOW PLAYING</p>
+                <h1 id="snake-title">Snake<span className="title-period" aria-hidden="true">.</span></h1>
+                <p className="snake-lede">Guide the little green line. Eat the dots. Keep your head clear.</p>
+                <div className="how-to-play">
+                  <h2>How to play</h2>
+                  <p>Steer with the arrow keys or WASD. On a phone, use the direction pad. Don’t hit the walls or your own tail.</p>
+                </div>
+                <div className="score-card" aria-label={`Score: ${snake.score}`}>
+                  <span className="score-caption">THIS RUN</span>
+                  <strong className="score-value">{String(snake.score).padStart(2, '0')}</strong>
+                  <span className="score-unit">dots collected</span>
+                </div>
+                <div className="game-actions">
+                  {snake.status === 'playing' ? (
+                    <button className="button button-secondary" type="button" onClick={() => dispatch({ type: 'pause' })}>
+                      Pause <span className="pause-mark" aria-hidden="true"><i /><i /></span>
+                    </button>
+                  ) : snake.status === 'paused' ? (
+                    <button className="button button-primary" type="button" onClick={startGame}>
+                      Resume <span aria-hidden="true">→</span>
+                    </button>
+                  ) : snake.status === 'ready' ? (
+                    <button className="button button-primary" type="button" onClick={startGame}>
+                      Start game <span aria-hidden="true">→</span>
+                    </button>
+                  ) : (
+                    <button className="button button-primary" type="button" onClick={playAgain}>
+                      Play again
+                    </button>
+                  )}
+                  {snake.status !== 'ready' && (
+                    <button className="button button-quiet" type="button" onClick={restart}>
+                      Restart
+                    </button>
+                  )}
+                </div>
+                <p className="keyboard-hint">{snake.status === 'playing' ? 'Esc to pause' : 'Take your time.'}</p>
+              </div>
+
+              <div className="play-column">
+                <div className="play-frame">
+                  <div className="frame-topline">
+                    <span>FIELD 01</span>
+                    <span className="frame-light"><i /> {snake.status === 'playing' ? 'LIVE' : snake.status.toUpperCase()}</span>
+                  </div>
+                  <div
+                    className={`game-board status-${snake.status}`}
+                    ref={boardRef}
+                    tabIndex={0}
+                    role="group"
+                    aria-label="Snake playfield"
+                    aria-describedby="snake-live-instructions"
+                    data-direction={snake.direction}
+                  >
+                    <div className="board-grid" aria-hidden="true">
+                      {Array.from({ length: BOARD_SIZE * BOARD_SIZE }, (_, index) => {
+                        const x = index % BOARD_SIZE
+                        const y = Math.floor(index / BOARD_SIZE)
+                        const kind = cellKind({ x, y }, snake.snake, snake.food)
+                        return <span className={`board-cell cell-${kind}`} key={index} />
+                      })}
+                    </div>
+                    {snake.status !== 'playing' && (
+                      <div className="board-overlay" aria-live="polite">
+                        <span className={`overlay-symbol overlay-symbol-${snake.status}`} aria-hidden="true" />
+                        <strong>{overlayTitle(snake.status)}</strong>
+                        <span>{overlayCopy(snake.status, snake.score)}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="frame-bottomline">
+                    <span>ARROWS / WASD</span>
+                    <span>18 × 18</span>
+                  </div>
+                </div>
+                <div className="touch-controls" aria-label="Touch direction controls">
+                  <span className="touch-label">STEER</span>
+                  <div className="dpad">
+                    <span className="dpad-spacer" aria-hidden="true" />
+                    <DirectionButton direction="up" onTurn={(direction) => dispatch({ type: 'turn', direction })} />
+                    <span className="dpad-spacer" aria-hidden="true" />
+                    <DirectionButton direction="left" onTurn={(direction) => dispatch({ type: 'turn', direction })} />
+                    <DirectionButton direction="down" onTurn={(direction) => dispatch({ type: 'turn', direction })} />
+                    <DirectionButton direction="right" onTurn={(direction) => dispatch({ type: 'turn', direction })} />
+                  </div>
+                  <span id="snake-live-instructions" className="sr-only" aria-live="polite">
+                    {snakeStatusText(snake.status, snake.score)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+      </main>
+
+      <footer className="site-footer">
+        <span>Made for the space between things.</span>
+        <span>ARCADE&nbsp; / &nbsp;{versionLabel}</span>
+      </footer>
+    </div>
+  )
+}
+
+function Home({ onPlay }: { onPlay: () => void }) {
+  return (
+    <>
+      <section className="home-hero" aria-labelledby="home-title">
+        <div className="hero-copy">
+          <p className="eyebrow"><span className="eyebrow-dot" /> YOUR ARCADE, OPEN</p>
+          <h1 id="home-title">A good game<br />changes the <em>pace.</em></h1>
+          <p className="hero-lede">Small games for the moments between everything else. Pick a cabinet and play a round.</p>
+        </div>
+        <div className="hero-art" aria-hidden="true">
+          <div className="hero-sun" />
+          <div className="hero-grid-mark"><span /><span /><span /><span /><span /><span /><span /><span /><span /></div>
+          <span className="hero-art-label">PRESS<br />PLAY</span>
+          <span className="hero-art-index">A / 01</span>
+        </div>
+      </section>
+
+      <section className="game-section" aria-labelledby="games-title">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">THE FLOOR</p>
+            <h2 id="games-title">Choose your game</h2>
+          </div>
+          <span className="section-count">01 PLAYABLE</span>
+        </div>
+        <div className="game-list">
+          <article className="game-card game-card-snake">
+            <div className="card-art snake-card-art" aria-hidden="true">
+              <div className="snake-art-path"><i /><i /><i /><i /><i /><b /></div>
+              <span className="card-art-index">01</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">01</span><span className="game-category">ARCADE CLASSIC</span></div>
+              <h3>Snake</h3>
+              <p>One more dot. One more turn. Don’t get tangled.</p>
+              <div className="card-bottom">
+                <span className="controls-label">ARROWS · WASD · TOUCH</span>
+                <button className="play-card-button" type="button" onClick={onPlay}>Play Snake <span className="arrow-mark" aria-hidden="true" /></button>
+              </div>
+            </div>
+          </article>
+          <article className="game-card game-card-soon">
+            <div className="card-art reaction-card-art" aria-hidden="true">
+              <span className="reaction-ring ring-one" /><span className="reaction-ring ring-two" /><span className="reaction-ring ring-three" />
+              <span className="reaction-dot" />
+              <span className="card-art-index">02</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">02</span><span className="game-category">QUICK REFLEXES</span></div>
+              <h3>Reaction</h3>
+              <p>Wait for the signal. Trust your timing.</p>
+              <div className="card-bottom"><span className="controls-label">MOUSE · TOUCH · KEY</span><span className="coming-label">COMING NEXT</span></div>
+            </div>
+          </article>
+          <article className="game-card game-card-soon">
+            <div className="card-art memory-card-art" aria-hidden="true">
+              <span className="memory-tile tile-a" /><span className="memory-tile tile-b" /><span className="memory-tile tile-c" /><span className="memory-tile tile-d" />
+              <span className="card-art-index">03</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">03</span><span className="game-category">PATTERN MEMORY</span></div>
+              <h3>Remember</h3>
+              <p>Watch the lights. Play the pattern back.</p>
+              <div className="card-bottom"><span className="controls-label">TOUCH · MOUSE · KEY</span><span className="coming-label">COMING NEXT</span></div>
+            </div>
+          </article>
+        </div>
+        <p className="home-note">No accounts, public leaderboards, or sync. Just a quick game in this browser.</p>
+      </section>
+    </>
+  )
+}
+
+function DirectionButton({ direction, onTurn }: { direction: Direction; onTurn: (direction: Direction) => void }) {
+  const arrows: Record<Direction, string> = { up: '↑', right: '→', down: '↓', left: '←' }
+  return (
+    <button
+      className={`dpad-button dpad-${direction}`}
+      type="button"
+      aria-label={`Move ${direction}`}
+      onClick={() => onTurn(direction)}
+    >
+      {arrows[direction]}
+    </button>
+  )
+}
+
+function cellKind(point: Point, snake: Point[], food: Point | null) {
+  if (snake[0] && snake[0].x === point.x && snake[0].y === point.y) return 'head'
+  if (snake.some((segment) => segment.x === point.x && segment.y === point.y)) return 'snake'
+  if (food && food.x === point.x && food.y === point.y) return 'food'
+  return 'empty'
+}
+
+function overlayTitle(status: string) {
+  if (status === 'paused') return 'Taking a breather.'
+  if (status === 'over') return 'That’s a wrap.'
+  if (status === 'won') return 'A perfect run.'
+  return 'Ready when you are.'
+}
+
+function overlayCopy(status: string, score: number) {
+  if (status === 'paused') return 'Press resume when you’re ready.'
+  if (status === 'over') return `${score} ${score === 1 ? 'dot' : 'dots'} collected. Fancy another?`
+  if (status === 'won') return 'You filled the whole field.'
+  return 'Collect a dot. Find your rhythm.'
+}
+
+function snakeStatusText(status: string, score: number) {
+  if (status === 'playing') return `Snake is playing. Score ${score}. Use arrow keys or WASD to steer. Press Escape to pause.`
+  if (status === 'paused') return `Snake is paused. Score ${score}. Resume when ready.`
+  if (status === 'over') return `Game over. Score ${score}. Play again to restart.`
+  if (status === 'won') return 'You filled the whole field. Play again to start a new game.'
+  return 'Snake is ready. Use arrow keys or WASD to steer after starting.'
+}
+
+export default App
