@@ -80,7 +80,7 @@ describe('Arcade navigation and game controls', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
     render(<App />)
 
-    expect(screen.getByText('05 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('06 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play reaction/i }))
     expect(screen.getByRole('heading', { name: 'Reaction' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /start a round/i })).toBeInTheDocument()
@@ -117,7 +117,7 @@ describe('Arcade navigation and game controls', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
     render(<App />)
 
-    expect(screen.getByText('05 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('06 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play pattern/i }))
     expect(screen.getByRole('heading', { name: 'Remember' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /start practice/i }))
@@ -197,7 +197,7 @@ describe('Arcade navigation and game controls', () => {
     vi.useFakeTimers()
     render(<App />)
 
-    expect(screen.getByText('05 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('06 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play breakout/i }))
     expect(screen.getByRole('heading', { name: 'Breakout' })).toBeInTheDocument()
     const board = screen.getByRole('group', { name: 'Breakout playfield' })
@@ -229,7 +229,7 @@ describe('Arcade navigation and game controls', () => {
     vi.useFakeTimers()
     render(<App />)
 
-    expect(screen.getByText('05 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('06 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play pong/i }))
     expect(screen.getByRole('heading', { name: 'Pong' })).toBeInTheDocument()
     const board = screen.getByRole('group', { name: 'Pong playfield' })
@@ -262,6 +262,41 @@ describe('Arcade navigation and game controls', () => {
     expect(screen.getByRole('heading', { name: 'Choose your game' })).toBeInTheDocument()
   })
 
+  it('opens Space Invaders with keyboard and touch controls', () => {
+    vi.useFakeTimers()
+    render(<App />)
+
+    expect(screen.getByText('06 PLAYABLE')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /play invaders/i }))
+    expect(screen.getByRole('heading', { name: 'Space Invaders' })).toBeInTheDocument()
+    const board = screen.getByRole('group', { name: 'Space Invaders playfield' })
+
+    fireEvent.click(screen.getByRole('button', { name: /start game/i }))
+    act(() => { vi.advanceTimersByTime(20) })
+    expect(board).toHaveFocus()
+    const player = board.querySelector('.invader-player')
+    fireEvent.keyDown(board, { key: 'ArrowRight' })
+    expect(player).toHaveStyle({ left: '51.2%' })
+    fireEvent.keyUp(window, { key: 'ArrowRight' })
+    fireEvent.keyDown(board, { key: ' ', code: 'Space' })
+    expect(board.querySelector('.invader-player-shot')).not.toBeNull()
+    expect(screen.getByRole('button', { name: /pause/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /pause/i }))
+    expect(screen.getByRole('button', { name: /resume/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /resume/i }))
+    fireEvent.click(screen.getByRole('button', { name: 'Move left' }))
+    expect(player).toHaveStyle({ left: '43.2%' })
+    fireEvent.click(screen.getByRole('button', { name: /restart/i }))
+    expect(screen.getByRole('button', { name: /start game/i })).toBeInTheDocument()
+    fireEvent.keyDown(board, { key: ' ', code: 'Space' })
+    expect(screen.getByRole('button', { name: /pause/i })).toBeInTheDocument()
+    expect(board.querySelector('.invader-player-shot')).not.toBeNull()
+    fireEvent.keyDown(board, { key: 'Escape' })
+    expect(screen.getByRole('button', { name: /resume/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /all games/i }))
+    expect(screen.getByRole('heading', { name: 'Choose your game' })).toBeInTheDocument()
+  })
+
   it('saves the reduced-motion preference and restores it on the next visit', () => {
     const firstVisit = render(<App />)
     const reduceMotion = screen.getByRole('checkbox', { name: /reduce motion/i })
@@ -279,7 +314,7 @@ describe('Arcade navigation and game controls', () => {
   it('confirms record clearing, preserves the motion preference, and keeps records local', () => {
     window.localStorage.setItem(ARCADE_DATA_KEY, JSON.stringify({
       version: 1,
-      bests: { snake: 8, reaction: 240, pattern: 3, breakout: 120, pong: 2 },
+      bests: { snake: 8, reaction: 240, pattern: 3, breakout: 120, pong: 2, invaders: null },
       preferences: { reduceMotion: true, pongDifficulty: 'steady' },
     }))
     render(<App />)
@@ -294,7 +329,7 @@ describe('Arcade navigation and game controls', () => {
     expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}')).toEqual({
       version: 1,
       dailyPatternCompletedDate: null,
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null },
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null },
       preferences: { reduceMotion: true, pongDifficulty: 'steady' },
     })
     expect(screen.getByText('No saved records.')).toBeInTheDocument()
