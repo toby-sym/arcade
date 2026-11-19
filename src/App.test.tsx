@@ -12,6 +12,23 @@ afterEach(() => {
 })
 
 describe('Arcade navigation and game controls', () => {
+  it('offers an install action when the browser allows Arcade to be installed', async () => {
+    render(<App />)
+    const prompt = vi.fn().mockResolvedValue(undefined)
+    const installEvent = new Event('beforeinstallprompt', { cancelable: true })
+    Object.assign(installEvent, {
+      prompt,
+      userChoice: Promise.resolve({ outcome: 'accepted', platform: 'web' }),
+    })
+
+    act(() => { window.dispatchEvent(installEvent) })
+
+    expect(installEvent.defaultPrevented).toBe(true)
+    fireEvent.click(screen.getByRole('button', { name: 'Install Arcade' }))
+    await waitFor(() => expect(prompt).toHaveBeenCalledOnce())
+    await waitFor(() => expect(screen.queryByRole('button', { name: 'Install Arcade' })).not.toBeInTheDocument())
+  })
+
   it('shows the game floor and opens Snake', () => {
     render(<App />)
 
