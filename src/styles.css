@@ -83,7 +83,7 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .section-count { padding-bottom: 5px; color: var(--muted); font-size: .66rem; letter-spacing: .14em; font-weight: 750; }
 .game-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .game-card { min-width: 0; border: 1px solid var(--line); background: rgb(255 255 255 / 22%); transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
-.game-card-snake:hover { transform: translateY(-3px); border-color: #a5ae91; box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.game-card-snake:hover, .game-card-reaction:hover { transform: translateY(-3px); border-color: #a5ae91; box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
 .card-art { height: 146px; position: relative; overflow: hidden; }
 .card-art-index { position: absolute; right: 14px; bottom: 12px; z-index: 2; color: rgb(245 240 232 / 62%); font-size: .63rem; letter-spacing: .1em; }
 .snake-card-art { background: #b7d15e; }
@@ -189,6 +189,53 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .dpad-right { grid-column: 3; grid-row: 2; }
 .dpad-spacer:first-child { grid-column: 1; grid-row: 1; }
 .dpad-spacer:nth-child(3) { grid-column: 3; grid-row: 1; }
+.reaction-layout { grid-template-columns: minmax(230px, .72fr) minmax(320px, 1.28fr); }
+.reaction-result { max-width: 220px; margin: 20px 0 17px; display: grid; grid-template-columns: 1fr; gap: 1px; }
+.reaction-time { min-height: 42px; display: flex; align-items: baseline; font-size: 2.1rem; font-variant-numeric: tabular-nums; letter-spacing: -.07em; }
+.reaction-time span { margin-left: 4px; color: #73776e; font-size: .78rem; letter-spacing: 0; }
+.reaction-time-placeholder { color: #868980; }
+.reaction-play-column { max-width: 570px; }
+.reaction-console { padding: 14px; background: var(--night); box-shadow: 0 15px 36px rgb(36 39 34 / 15%); }
+.reaction-console .frame-topline { height: 22px; padding: 0 1px 11px; }
+.reaction-console .frame-light i { background: #92968d; }
+.phase-waiting .frame-light i, .phase-false-start .frame-light i { background: var(--coral); box-shadow: 0 0 8px rgb(242 119 94 / 60%); }
+.phase-go .frame-light i { background: var(--green); box-shadow: 0 0 8px rgb(203 244 92 / 75%); }
+.reaction-target {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: clamp(300px, 38vw, 440px);
+  border: 0;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: var(--paper);
+  background: #303b3c;
+  text-align: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  transition: background-color .2s ease, color .2s ease;
+}
+.reaction-target::before, .reaction-target::after { content: ""; position: absolute; z-index: -1; top: 50%; left: 50%; width: 210px; aspect-ratio: 1; border: 1px solid rgb(245 240 232 / 14%); border-radius: 50%; transform: translate(-50%, -50%); }
+.reaction-target::after { width: 310px; }
+.reaction-target-mark { width: 56px; height: 56px; margin-bottom: 24px; border: 1px solid rgb(245 240 232 / 43%); border-radius: 50%; box-shadow: 0 0 0 9px rgb(245 240 232 / 6%); }
+.reaction-target strong { font-size: clamp(1.65rem, 4vw, 2.8rem); letter-spacing: -.06em; }
+.reaction-target-hint { margin-top: 11px; color: rgb(245 240 232 / 73%); font-size: .78rem; }
+.phase-waiting .reaction-target, .phase-false-start .reaction-target { background: #9b493d; }
+.phase-waiting .reaction-target-mark, .phase-false-start .reaction-target-mark { border-color: rgb(255 244 237 / 70%); box-shadow: 0 0 0 9px rgb(255 244 237 / 11%); }
+.phase-go .reaction-target { color: var(--ink); background: var(--green); }
+.phase-go .reaction-target::before, .phase-go .reaction-target::after { border-color: rgb(32 37 33 / 16%); }
+.phase-go .reaction-target-mark { border-color: rgb(32 37 33 / 43%); box-shadow: 0 0 0 9px rgb(32 37 33 / 7%); }
+.phase-go .reaction-target-hint { color: rgb(32 37 33 / 72%); }
+.phase-result .reaction-target { background: #273032; }
+.reaction-console-footer { height: 28px; padding: 10px 1px 0; display: flex; justify-content: space-between; color: rgb(245 240 232 / 51%); font-size: .53rem; letter-spacing: .15em; font-weight: 700; }
+.reaction-status { min-height: 24px; margin: 12px 2px 0; color: #72766d; font-size: .74rem; line-height: 1.5; }
+.game-card-reaction .card-info { min-height: 205px; }
+.game-card-reaction .card-bottom { align-items: end; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 .site-footer { min-height: 64px; margin-top: auto; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 14px; color: #81847b; font-size: .66rem; }
@@ -238,6 +285,7 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
   .home-note { font-size: .71rem; line-height: 1.5; }
   .snake-view { padding-top: 17px; }
   .snake-layout { margin-top: 12px; grid-template-columns: 1fr; gap: 22px; }
+  .reaction-layout { gap: 22px; }
   .snake-copy { padding: 0; }
   .snake-copy .eyebrow { margin-bottom: 12px; }
   .snake-copy h1 { font-size: 3.55rem; }
@@ -248,7 +296,16 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
   .game-actions { margin-top: 15px; }
   .keyboard-hint { display: none; }
   .play-column { max-width: 540px; justify-self: center; }
+  .reaction-play-column { max-width: 540px; }
   .play-frame { padding: 8px 8px 6px; }
+  .reaction-console { padding: 8px; }
+  .reaction-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .reaction-target { min-height: min(92vw, 390px); }
+  .reaction-target strong { font-size: clamp(1.55rem, 8vw, 2.3rem); }
+  .reaction-target-mark { width: 48px; height: 48px; margin-bottom: 19px; }
+  .reaction-target::before { width: 170px; }
+  .reaction-target::after { width: 250px; }
+  .reaction-status { margin-top: 9px; }
   .frame-topline { height: 20px; padding-bottom: 8px; }
   .frame-bottomline { height: 21px; padding-top: 7px; }
   .touch-controls { margin-top: 11px; }
