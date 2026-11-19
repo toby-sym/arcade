@@ -42,7 +42,7 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 ## Breakout controls
 
 - Select **Start game** or press **Space** to launch the ball. After losing a life, press **Launch ball** or **Space** to serve again.
-- Move the paddle with the **left and right arrow keys** or **A and D** while the playfield is focused.
+- Move the paddle with the **left and right arrow keys** or **A and D** while the playfield is focused. Hold a direction to keep moving; release it to stop.
 - On touch screens, drag across the field to steer the paddle.
 - **Pause** in the game panel or press **Escape** while the playfield is focused. The game also pauses when the browser tab is hidden.
 - Clear all bricks to finish the run. **Restart** begins with three lives and a fresh wall.
@@ -50,7 +50,7 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 ## Pong controls
 
 - Select **Start match** or press **Space** to serve. After either player scores, press **Serve** or **Space** to continue.
-- Move your paddle with the **up and down arrow keys** or **W and S** while the playfield is focused.
+- Move your paddle with the **up and down arrow keys** or **W and S** while the playfield is focused. Hold a direction to keep moving; release it to stop.
 - On touch screens, drag up or down across the field to move the paddle.
 - Choose **Calm**, **Steady**, or **Quick** computer pace before the match. The choice is saved in this browser and can be changed for the next match.
 - **Pause** in the game panel or press **Escape** while the playfield is focused. The match also pauses when the browser tab is hidden.

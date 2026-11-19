@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useRef, type KeyboardEvent, type PointerEvent } from 'react'
+import { useHeldKeys } from '../hooks/useHeldKeys'
 import {
   BALL_RADIUS,
   BREAKOUT_HEIGHT,
@@ -54,15 +55,18 @@ export function BreakoutGame({ onBack, bestScore, onRecordScore }: BreakoutGameP
     focusBoard()
   }
 
+  const handleHeldKey = useHeldKeys({
+    ArrowLeft: () => dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 - 6 }),
+    a: () => dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 - 6 }),
+    ArrowRight: () => dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 + 6 }),
+    d: () => dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 + 6 }),
+  }, state.phase !== 'paused' && state.phase !== 'over' && state.phase !== 'won')
+
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    handleHeldKey(event)
+    if (event.defaultPrevented) return
     const key = event.key.toLowerCase()
-    if (event.key === 'ArrowLeft' || key === 'a') {
-      event.preventDefault()
-      dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 - 22 })
-    } else if (event.key === 'ArrowRight' || key === 'd') {
-      event.preventDefault()
-      dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 + 22 })
-    } else if (event.code === 'Space' && state.phase === 'ready') {
+    if (event.code === 'Space' && state.phase === 'ready') {
       event.preventDefault()
       dispatch({ type: 'start' })
     } else if (event.key === 'Escape' && state.phase === 'playing') {

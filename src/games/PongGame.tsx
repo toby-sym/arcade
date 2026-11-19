@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useRef, type KeyboardEvent, type PointerEvent } from 'react'
+import { useHeldKeys } from '../hooks/useHeldKeys'
 import {
   PONG_BALL_RADIUS,
   PONG_HEIGHT,
@@ -54,15 +55,18 @@ export function PongGame({ onBack, bestScore, onRecordScore, difficulty, onDiffi
     focusBoard()
   }
 
+  const handleHeldKey = useHeldKeys({
+    ArrowUp: () => dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 - 6 }),
+    w: () => dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 - 6 }),
+    ArrowDown: () => dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 + 6 }),
+    s: () => dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 + 6 }),
+  }, state.phase !== 'paused' && state.phase !== 'over')
+
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    handleHeldKey(event)
+    if (event.defaultPrevented) return
     const key = event.key.toLowerCase()
-    if (event.key === 'ArrowUp' || key === 'w') {
-      event.preventDefault()
-      dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 - 22 })
-    } else if (event.key === 'ArrowDown' || key === 's') {
-      event.preventDefault()
-      dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 + 22 })
-    } else if (event.code === 'Space' && state.phase === 'ready') {
+    if (event.code === 'Space' && state.phase === 'ready') {
       event.preventDefault()
       dispatch({ type: 'start' })
     } else if (event.key === 'Escape' && state.phase === 'playing') {
