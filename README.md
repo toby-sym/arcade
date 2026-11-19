@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, and Prism Dash are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, and Gravity Loom are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -189,6 +189,12 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Open **Prism Dash** for the same three-lane course on a UTC date. Each checkpoint places a shard and a gate in different lanes; catch the shard for points or move to the open lane to stay safe.
 - Shift one lane with **Left / Right** or **A / D**. Press **1–3** or tap a lane button to move directly. Three gate hits end the run; clear all 24 checkpoints to reach the finish.
 - **Space** starts or resumes, **Escape** pauses, and **R** restarts the course. The highest run score is saved locally in this browser and does not sync.
+
+## Gravity Loom controls
+
+- Open **Gravity Loom** for the same four chamber route on a UTC date. Tilt north, east, south, or west; the spark rolls until a wall stops it. A portal carries it to its pair and the spark keeps rolling in that direction. Guide it into each receiver to light the next chamber.
+- Use the **Arrow keys**, **W A S D**, or the four touch controls. Each tilt counts, even if the spark cannot move. The route is complete when all four receivers are lit.
+- **Space** starts or resumes, **Escape** pauses, and **R** restarts today's route. Your fewest-tilt solve is saved locally in this browser and does not sync.
 
 ## Letter Boxed controls
 

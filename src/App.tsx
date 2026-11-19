@@ -50,10 +50,12 @@ const ColorConduitGame = lazy(() => import('./games/ColorConduitGame').then(({ C
 import { createColorConduitState, type ColorConduitProgress } from './games/colorConduit'
 const SwitchyardGame = lazy(() => import('./games/SwitchyardGame').then(({ SwitchyardGame }) => ({ default: SwitchyardGame })))
 const PrismDashGame = lazy(() => import('./games/PrismDashGame').then(({ PrismDashGame }) => ({ default: PrismDashGame })))
+const GravityLoomGame = lazy(() => import('./games/GravityLoomGame').then(({ GravityLoomGame }) => ({ default: GravityLoomGame })))
+import { createGravityLoomState, type GravityLoomProgress } from './games/gravityLoom'
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -92,6 +94,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'colorconduit', title: 'Color Conduit', categories: ['daily'], terms: 'color route pipes signals logic' },
   { id: 'switchyard', title: 'Switchyard', categories: ['arcade'], terms: 'trains tracks depot routing timing reaction' },
   { id: 'prismdash', title: 'Prism Dash', categories: ['arcade'], terms: 'runner reflex lanes shards gates dodge daily' },
+  { id: 'gravityloom', title: 'Gravity Loom', categories: ['daily'], terms: 'gravity tilt portals spark receiver daily puzzle physics' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -115,7 +118,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -393,6 +396,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyGravityLoomGame = (progress: GravityLoomProgress | null) => {
+    const withProgress = withDailyGravityLoomGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = progress?.phase === 'complete' ? createGravityLoomState(progress.date, progress) : null
+    const next = completed?.phase === 'complete'
+      ? withImprovedBest(withProgress, 'gravityLoom', completed.totalMoves) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -489,6 +503,7 @@ function App() {
   const openColorConduit = () => setScreen('colorconduit')
   const openSwitchyard = () => setScreen('switchyard')
   const openPrismDash = () => setScreen('prismdash')
+  const openGravityLoom = () => setScreen('gravityloom')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -565,6 +580,7 @@ function App() {
             onPlayColorConduit={openColorConduit}
             onPlaySwitchyard={openSwitchyard}
             onPlayPrismDash={openPrismDash}
+            onPlayGravityLoom={openGravityLoom}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -777,6 +793,14 @@ function App() {
             onRecordScore={(score) => recordBest('prismDash', score)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'gravityloom' ? (
+          <GravityLoomGame
+            onBack={() => setScreen('home')}
+            bestMoves={arcadeData.bests.gravityLoom}
+            progress={arcadeData.dailyGravityLoomGame}
+            onSaveProgress={saveDailyGravityLoomGame}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -925,6 +949,7 @@ function Home({
   onPlayColorConduit,
   onPlaySwitchyard,
   onPlayPrismDash,
+  onPlayGravityLoom,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -970,6 +995,7 @@ function Home({
   onPlayColorConduit: () => void
   onPlaySwitchyard: () => void
   onPlayPrismDash: () => void
+  onPlayGravityLoom: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1453,6 +1479,20 @@ function Home({
               <h3>Prism Dash</h3>
               <p>Shift across three lanes to catch bright shards and slip past the gates.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · A-D · 1–3</span><button className="play-card-button" type="button" onClick={onPlayPrismDash}>Play Prism Dash <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-gravityloom" hidden={!visibleGameIds.has('gravityloom')}>
+            <div className="card-art gravity-loom-card-art" aria-hidden="true">
+              <span className="gravity-card-grid"><i /><i /><i /><i /><i /><i /><i /><i /><i /></span>
+              <span className="gravity-card-spark">✦</span>
+              <span className="gravity-card-portal" />
+              <span className="card-art-index">31</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">31</span><span className="game-category">DAILY LOGIC</span></div>
+              <h3>Gravity Loom</h3>
+              <p>Tilt the chamber, ride paired portals, and guide the spark into four receivers.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · W-A-S-D · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayGravityLoom}>Play Gravity Loom <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
