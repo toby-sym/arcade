@@ -33,6 +33,10 @@ export function emptyArcadeData(): ArcadeData {
   }
 }
 
+export function clearArcadeBests(data: ArcadeData): ArcadeData {
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null } }
+}
+
 export function readArcadeData(storage?: StorageLike): ArcadeData {
   try {
     const target = storage ?? getBrowserStorage()

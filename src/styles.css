@@ -133,6 +133,18 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .motion-setting strong, .motion-setting small { display: block; }
 .motion-setting strong { font-size: .83rem; }
 .motion-setting small { margin-top: 4px; color: #777b72; font-size: .7rem; line-height: 1.5; }
+.records-setting { grid-column: 1 / -1; padding-top: 14px; border-top: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px 20px; }
+.records-setting strong, .records-setting small { display: block; }
+.records-setting strong { font-size: .81rem; }
+.records-setting small { margin-top: 4px; color: #777b72; font-size: .7rem; line-height: 1.5; }
+.clear-records-button { min-height: 40px; border: 1px solid var(--line); padding: 0 12px; color: #6e514b; background: transparent; font-size: .73rem; font-weight: 700; cursor: pointer; }
+.clear-records-button:hover { border-color: var(--coral); background: rgb(242 119 94 / 9%); }
+.clear-records-confirmation { grid-column: 1 / -1; padding: 14px 16px; border-left: 3px solid var(--coral); background: rgb(255 255 255 / 32%); }
+.clear-records-confirmation p { margin: 0; color: #666c63; font-size: .78rem; line-height: 1.55; }
+.clear-records-confirmation > div { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+.button-danger { color: #fff8f2; background: #8d4037; }
+.button-danger:hover { background: #76362f; }
+.records-clear-note { justify-self: end; }
 .local-data-note { grid-column: 1 / -1; margin: 0; color: #777b72; font-size: .73rem; }
 .storage-notice { grid-column: 1 / -1; margin: -10px 0 0; color: #99483d; font-size: .73rem; }
 .storage-notice:empty { display: none; }
