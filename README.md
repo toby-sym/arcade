@@ -34,7 +34,7 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 ## Pattern Memory controls
 
 - Select **Start practice** to watch a growing pattern, then repeat it. Each completed round adds a tile.
-- Select **Daily challenge** for the same fixed eight-tile pattern on a given UTC date. A new pattern appears each day.
+- Select **Daily challenge** for the same fixed eight-tile pattern on a given UTC date. A new pattern appears each day. Completing it marks that UTC date complete in this browser; you can still replay it.
 - Tap or click the tiles in the same order. A mistake ends that attempt; you can retry.
 - Keyboard users can Tab to a tile and press **Enter** or **Space**.
 - **Pause** holds the sequence or your input position. A hidden browser tab pauses the game; **Resume** continues it. **Restart** resets the current mode.
@@ -58,7 +58,7 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 
 ## Local records and preferences
 
-Arcade saves Snake's highest score, Breakout's highest score, Pong's highest points in a match, the fastest Reaction time, and the most Pattern Memory practice rounds completed in browser storage. The **Reduce motion** and Pong opponent pace preferences are saved there too. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; preferences stay saved. The system reduced-motion setting is always respected.
+Arcade saves Snake's highest score, Breakout's highest score, Pong's highest points in a match, the fastest Reaction time, the most Pattern Memory practice rounds completed, and the latest daily Pattern Memory completion date in browser storage. The **Reduce motion** and Pong opponent pace preferences are saved there too. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily completion and preferences stay saved. The system reduced-motion setting is always respected.
 
 ## Checks
 

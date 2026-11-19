@@ -11,7 +11,7 @@ import { PatternGame } from './games/PatternGame'
 import { BreakoutGame } from './games/BreakoutGame'
 import { PongGame } from './games/PongGame'
 import type { PongDifficulty } from './games/pong'
-import { clearArcadeBests, readArcadeData, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { clearArcadeBests, readArcadeData, withDailyPatternCompletion, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -59,6 +59,13 @@ function App() {
 
   const clearRecords = () => {
     const next = clearArcadeBests(arcadeData)
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
+  const recordDailyCompletion = (date: string) => {
+    const next = withDailyPatternCompletion(arcadeData, date)
+    if (!next) return
     setArcadeData(next)
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
@@ -160,6 +167,8 @@ function App() {
             onBack={() => setScreen('home')}
             bestRounds={arcadeData.bests.pattern}
             onRecordRounds={(rounds) => recordBest('pattern', rounds)}
+            dailyCompletedDate={arcadeData.dailyPatternCompletedDate}
+            onDailyComplete={recordDailyCompletion}
           />
         ) : screen === 'breakout' ? (
           <BreakoutGame
@@ -443,7 +452,7 @@ function Home({
               aria-labelledby="clear-records-question"
               onKeyDown={(event) => { if (event.key === 'Escape') setConfirmClearRecords(false) }}
             >
-              <p id="clear-records-question">Clear all personal bests saved in this browser? This cannot be undone. Your motion preference will stay as it is.</p>
+              <p id="clear-records-question">Clear all personal bests saved in this browser? This cannot be undone. Your preferences and today's daily completion will stay saved.</p>
               <div>
                 <button className="button button-quiet" type="button" onClick={() => setConfirmClearRecords(false)}>Keep records</button>
                 <button className="button button-danger" type="button" onClick={() => { onClearRecords(); setConfirmClearRecords(false) }}>Clear all records</button>
@@ -451,7 +460,7 @@ function Home({
             </div>
           )}
         </div>
-        <p className="local-data-note">No accounts or public leaderboards. Personal bests and this preference stay in this browser and do not sync.</p>
+        <p className="local-data-note">No accounts or public leaderboards. Personal bests and these preferences stay in this browser and do not sync.</p>
         <p className="storage-notice" role="status" aria-live="polite">{storageNotice}</p>
       </section>
     </>

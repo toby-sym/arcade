@@ -13,6 +13,7 @@ export interface ArcadeBests {
 export interface ArcadeData {
   version: 1
   bests: ArcadeBests
+  dailyPatternCompletedDate: string | null
   preferences: {
     reduceMotion: boolean
     pongDifficulty: PongDifficulty
@@ -27,12 +28,18 @@ export function withImprovedBest(data: ArcadeData, game: keyof ArcadeBests, cand
   return { ...data, bests: { ...data.bests, [game]: candidate } }
 }
 
+export function withDailyPatternCompletion(data: ArcadeData, date: string): ArcadeData | null {
+  if (!validUtcDateKey(date)) return null
+  return { ...data, dailyPatternCompletedDate: date }
+}
+
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
     bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null },
+    dailyPatternCompletedDate: null,
     preferences: { reduceMotion: false, pongDifficulty: 'steady' },
   }
 }
@@ -54,6 +61,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
     const preferences = isRecord(parsed.preferences) ? parsed.preferences : {}
     return {
       version: 1,
+      dailyPatternCompletedDate: validUtcDateKey(parsed.dailyPatternCompletedDate) ? parsed.dailyPatternCompletedDate : null,
       bests: {
         snake: validRecord(bests.snake),
         reaction: validRecord(bests.reaction),
@@ -93,6 +101,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function validRecord(value: unknown): number | null {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0 ? value : null
+}
+
+function validUtcDateKey(value: unknown): value is string {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
+  const timestamp = new Date(`${value}T00:00:00.000Z`)
+  return !Number.isNaN(timestamp.getTime()) && timestamp.toISOString().slice(0, 10) === value
 }
 
 function validPongDifficulty(value: unknown): PongDifficulty {
