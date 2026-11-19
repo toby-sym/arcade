@@ -209,4 +209,27 @@ describe('Arcade navigation and game controls', () => {
     render(<App />)
     expect(screen.getByRole('checkbox', { name: /reduce motion/i })).toBeChecked()
   })
+
+  it('confirms record clearing, preserves the motion preference, and keeps records local', () => {
+    window.localStorage.setItem(ARCADE_DATA_KEY, JSON.stringify({
+      version: 1,
+      bests: { snake: 8, reaction: 240, pattern: 3, breakout: 120 },
+      preferences: { reduceMotion: true },
+    }))
+    render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear records' }))
+    expect(screen.getByRole('group', { name: /clear all personal bests saved in this browser/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Keep records' }))
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').bests.snake).toBe(8)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear records' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Clear all records' }))
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}')).toEqual({
+      version: 1,
+      bests: { snake: null, reaction: null, pattern: null, breakout: null },
+      preferences: { reduceMotion: true },
+    })
+    expect(screen.getByText('No saved records.')).toBeInTheDocument()
+  })
 })

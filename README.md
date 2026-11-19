@@ -49,7 +49,7 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 
 ## Local records and preferences
 
-Arcade saves Snake's highest score, Breakout's highest score, the fastest Reaction time, and the most Pattern Memory practice rounds completed in browser storage. The **Reduce motion** preference is saved there too. These records and preferences stay on this browser and do not sync or leave the app. The system reduced-motion setting is always respected.
+Arcade saves Snake's highest score, Breakout's highest score, the fastest Reaction time, and the most Pattern Memory practice rounds completed in browser storage. The **Reduce motion** preference is saved there too. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; the motion preference stays saved. The system reduced-motion setting is always respected.
 
 ## Checks
 

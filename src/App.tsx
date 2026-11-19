@@ -9,7 +9,7 @@ import {
 import { ReactionGame } from './games/ReactionGame'
 import { PatternGame } from './games/PatternGame'
 import { BreakoutGame } from './games/BreakoutGame'
-import { readArcadeData, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { clearArcadeBests, readArcadeData, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -45,6 +45,12 @@ function App() {
 
   const setReduceMotion = (reduceMotion: boolean) => {
     const next = { ...arcadeData, preferences: { ...arcadeData.preferences, reduceMotion } }
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
+  const clearRecords = () => {
+    const next = clearArcadeBests(arcadeData)
     setArcadeData(next)
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
@@ -129,6 +135,8 @@ function App() {
             onPlayBreakout={openBreakout}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
+            hasRecords={Object.values(arcadeData.bests).some((record) => record !== null)}
+            onClearRecords={clearRecords}
             storageNotice={storageNotice}
           />
         ) : screen === 'reaction' ? (
@@ -271,6 +279,8 @@ function Home({
   onPlayBreakout,
   reduceMotion,
   onReduceMotionChange,
+  hasRecords,
+  onClearRecords,
   storageNotice,
 }: {
   onPlaySnake: () => void
@@ -279,8 +289,12 @@ function Home({
   onPlayBreakout: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
+  hasRecords: boolean
+  onClearRecords: () => void
   storageNotice: string
 }) {
+  const [confirmClearRecords, setConfirmClearRecords] = useState(false)
+
   return (
     <>
       <section className="home-hero" aria-labelledby="home-title">
@@ -370,6 +384,38 @@ function Home({
           <input type="checkbox" checked={reduceMotion} onChange={(event) => onReduceMotionChange(event.currentTarget.checked)} />
           <span><strong>Reduce motion</strong><small>Animations are reduced. Your system setting also applies.</small></span>
         </label>
+        <div className="records-setting">
+          <div>
+            <strong>Personal bests</strong>
+            <small>Saved in this browser. They do not sync.</small>
+          </div>
+          {hasRecords ? (
+            <button
+              className="clear-records-button"
+              type="button"
+              aria-expanded={confirmClearRecords}
+              aria-controls="clear-records-confirmation"
+              onClick={() => setConfirmClearRecords((open) => !open)}
+            >
+              Clear records
+            </button>
+          ) : <small className="records-clear-note">No saved records.</small>}
+          {confirmClearRecords && hasRecords && (
+            <div
+              id="clear-records-confirmation"
+              className="clear-records-confirmation"
+              role="group"
+              aria-labelledby="clear-records-question"
+              onKeyDown={(event) => { if (event.key === 'Escape') setConfirmClearRecords(false) }}
+            >
+              <p id="clear-records-question">Clear all personal bests saved in this browser? This cannot be undone. Your motion preference will stay as it is.</p>
+              <div>
+                <button className="button button-quiet" type="button" onClick={() => setConfirmClearRecords(false)}>Keep records</button>
+                <button className="button button-danger" type="button" onClick={() => { onClearRecords(); setConfirmClearRecords(false) }}>Clear all records</button>
+              </div>
+            </div>
+          )}
+        </div>
         <p className="local-data-note">No accounts or public leaderboards. Personal bests and this preference stay in this browser and do not sync.</p>
         <p className="storage-notice" role="status" aria-live="polite">{storageNotice}</p>
       </section>
