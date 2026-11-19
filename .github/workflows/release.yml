@@ -1,0 +1,91 @@
+name: Arcade checks and release
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Release bump when manually promoting from main
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: patch
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arcade-release
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Check app and container
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Run type, behavior, promotion, and production build checks
+        run: npm run check
+
+      - name: Build production container
+        run: docker build --build-arg APP_VERSION=Development --tag arcade:${GITHUB_SHA} .
+
+  promote:
+    name: Promote main to production release
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out main and release history
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Configure release author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Choose release bump
+        env:
+          DISPATCH_BUMP: ${{ inputs.bump }}
+        run: |
+          bump=patch
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            bump="${DISPATCH_BUMP:-patch}"
+          else
+            trailer=$(git log -1 --format=%B | sed -nE 's/^Release-Bump: (patch|minor|major)$/\1/p' | tail -n 1)
+            bump="${trailer:-patch}"
+          fi
+          echo "BUMP=$bump" >> "$GITHUB_ENV"
+
+      - name: Calculate version and atomically push release branch and tag
+        id: promotion
+        run: bash scripts/promote-release.sh
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.promotion.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.promotion.outputs.version }}
+        run: gh release create "$RELEASE_TAG" --title "Arcade ${RELEASE_TAG}" --generate-notes
