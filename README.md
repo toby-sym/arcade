@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose Snake or Reaction from the game floor.
+Vite prints the local URL after startup. Choose any of the three games from the game floor.
 
 ## Snake controls
 
@@ -29,7 +29,7 @@ Collect dots without hitting the walls or your tail. The game pauses when the br
 - Pressing before the signal ends the round. **Restart** resets the current attempt.
 - If the browser tab is hidden during a round, the attempt resets.
 
-Each reaction time is measured locally with a high-resolution browser timer. No attempt data is sent or saved.
+Each reaction time is measured locally with a high-resolution browser timer. Only the best time is kept in this browser; attempts are not sent or saved.
 
 ## Pattern Memory controls
 
@@ -38,13 +38,17 @@ Each reaction time is measured locally with a high-resolution browser timer. No 
 - Keyboard users can Tab to a tile and press **Enter** or **Space**.
 - **Pause** holds the sequence or your input position. A hidden browser tab pauses the game; **Resume** continues it. **Restart** clears the run.
 
+## Local records and preferences
+
+Arcade saves Snake's highest score, the fastest Reaction time, and the most Pattern Memory rounds completed in browser storage. The **Reduce motion** preference is saved there too. These records and preferences stay on this browser and do not sync or leave the app. The system reduced-motion setting is always respected.
+
 ## Checks
 
 ```sh
 npm run check
 ```
 
-This runs TypeScript checks, game logic and interface tests, release-promotion integration checks, a dependency audit, and a production build.
+This runs TypeScript checks, game logic, interface, and local-storage tests, release-promotion integration checks, a dependency audit, and a production build.
 
 ## Container
 

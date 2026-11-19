@@ -8,6 +8,7 @@ import {
 } from './games/snake'
 import { ReactionGame } from './games/ReactionGame'
 import { PatternGame } from './games/PatternGame'
+import { readArcadeData, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -30,7 +31,30 @@ const directionKeys: Record<string, Direction> = {
 function App() {
   const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
+  const [arcadeData, setArcadeData] = useState(readArcadeData)
+  const [storageNotice, setStorageNotice] = useState('')
   const boardRef = useRef<HTMLDivElement>(null)
+
+  const recordBest = (game: keyof ArcadeBests, candidate: number) => {
+    const next = withImprovedBest(arcadeData, game, candidate)
+    if (!next) return
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
+  const setReduceMotion = (reduceMotion: boolean) => {
+    const next = { ...arcadeData, preferences: { ...arcadeData.preferences, reduceMotion } }
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
+  useEffect(() => {
+    document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
+  }, [arcadeData.preferences.reduceMotion])
+
+  useEffect(() => {
+    if (snake.score > 0) recordBest('snake', snake.score)
+  }, [snake.score])
 
   useEffect(() => {
     if (snake.status !== 'playing') return
@@ -96,11 +120,26 @@ function App() {
 
       <main id="main" className="main-content">
         {screen === 'home' ? (
-          <Home onPlaySnake={openSnake} onPlayReaction={openReaction} onPlayPattern={openPattern} />
+          <Home
+            onPlaySnake={openSnake}
+            onPlayReaction={openReaction}
+            onPlayPattern={openPattern}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+            onReduceMotionChange={setReduceMotion}
+            storageNotice={storageNotice}
+          />
         ) : screen === 'reaction' ? (
-          <ReactionGame onBack={() => setScreen('home')} />
+          <ReactionGame
+            onBack={() => setScreen('home')}
+            bestTimeMs={arcadeData.bests.reaction}
+            onRecordTime={(time) => recordBest('reaction', time)}
+          />
         ) : screen === 'pattern' ? (
-          <PatternGame onBack={() => setScreen('home')} />
+          <PatternGame
+            onBack={() => setScreen('home')}
+            bestRounds={arcadeData.bests.pattern}
+            onRecordRounds={(rounds) => recordBest('pattern', rounds)}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -115,10 +154,15 @@ function App() {
                   <h2>How to play</h2>
                   <p>Steer with the arrow keys or WASD. On a phone, use the direction pad. Don’t hit the walls or your own tail.</p>
                 </div>
-                <div className="score-card" aria-label={`Score: ${snake.score}`}>
+                <div className="score-card" aria-label={`Score: ${snake.score}. ${arcadeData.bests.snake === null ? 'No personal best yet.' : `Local best: ${arcadeData.bests.snake} dots.`}`}>
                   <span className="score-caption">THIS RUN</span>
                   <strong className="score-value">{String(snake.score).padStart(2, '0')}</strong>
                   <span className="score-unit">dots collected</span>
+                  <div className="local-best-readout">
+                    <span className="score-caption">BEST IN THIS BROWSER</span>
+                    <strong className="score-value">{arcadeData.bests.snake === null ? '—' : String(arcadeData.bests.snake).padStart(2, '0')}</strong>
+                    <span className="score-unit">dots</span>
+                  </div>
                 </div>
                 <div className="game-actions">
                   {snake.status === 'playing' ? (
@@ -211,7 +255,21 @@ function App() {
   )
 }
 
-function Home({ onPlaySnake, onPlayReaction, onPlayPattern }: { onPlaySnake: () => void; onPlayReaction: () => void; onPlayPattern: () => void }) {
+function Home({
+  onPlaySnake,
+  onPlayReaction,
+  onPlayPattern,
+  reduceMotion,
+  onReduceMotionChange,
+  storageNotice,
+}: {
+  onPlaySnake: () => void
+  onPlayReaction: () => void
+  onPlayPattern: () => void
+  reduceMotion: boolean
+  onReduceMotionChange: (reduceMotion: boolean) => void
+  storageNotice: string
+}) {
   return (
     <>
       <section className="home-hero" aria-labelledby="home-title">
@@ -278,7 +336,17 @@ function Home({ onPlaySnake, onPlayReaction, onPlayPattern }: { onPlaySnake: () 
             </div>
           </article>
         </div>
-        <p className="home-note">No accounts, public leaderboards, or sync. Just a quick game in this browser.</p>
+      </section>
+      <section className="home-preferences" aria-labelledby="preferences-title">
+        <div>
+          <h2 id="preferences-title">Preferences</h2>
+        </div>
+        <label className="motion-setting">
+          <input type="checkbox" checked={reduceMotion} onChange={(event) => onReduceMotionChange(event.currentTarget.checked)} />
+          <span><strong>Reduce motion</strong><small>Animations are reduced. Your system setting also applies.</small></span>
+        </label>
+        <p className="local-data-note">No accounts or public leaderboards. Personal bests and this preference stay in this browser and do not sync.</p>
+        <p className="storage-notice" role="status" aria-live="polite">{storageNotice}</p>
       </section>
     </>
   )
