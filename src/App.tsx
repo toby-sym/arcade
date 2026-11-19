@@ -10,6 +10,7 @@ import { ReactionGame } from './games/ReactionGame'
 import { PatternGame } from './games/PatternGame'
 import { BreakoutGame } from './games/BreakoutGame'
 import { PongGame } from './games/PongGame'
+import type { PongDifficulty } from './games/pong'
 import { clearArcadeBests, readArcadeData, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
@@ -46,6 +47,12 @@ function App() {
 
   const setReduceMotion = (reduceMotion: boolean) => {
     const next = { ...arcadeData, preferences: { ...arcadeData.preferences, reduceMotion } }
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
+  const setPongDifficulty = (pongDifficulty: PongDifficulty) => {
+    const next = { ...arcadeData, preferences: { ...arcadeData.preferences, pongDifficulty } }
     setArcadeData(next)
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
@@ -165,6 +172,8 @@ function App() {
             onBack={() => setScreen('home')}
             bestScore={arcadeData.bests.pong}
             onRecordScore={(score) => recordBest('pong', score)}
+            difficulty={arcadeData.preferences.pongDifficulty}
+            onDifficultyChange={setPongDifficulty}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">

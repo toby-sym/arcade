@@ -9,18 +9,22 @@ import {
   PONG_WIDTH,
   pongReducer,
   createPongState,
+  type PongDifficulty,
 } from './pong'
 
 interface PongGameProps {
   onBack: () => void
   bestScore: number | null
   onRecordScore: (score: number) => void
+  difficulty: PongDifficulty
+  onDifficultyChange: (difficulty: PongDifficulty) => void
 }
 
-export function PongGame({ onBack, bestScore, onRecordScore }: PongGameProps) {
-  const [state, dispatch] = useReducer(pongReducer, undefined, createPongState)
+export function PongGame({ onBack, bestScore, onRecordScore, difficulty, onDifficultyChange }: PongGameProps) {
+  const [state, dispatch] = useReducer(pongReducer, difficulty, createPongState)
   const boardRef = useRef<HTMLDivElement>(null)
   const isFresh = state.score === 0 && state.opponentScore === 0
+  const canChooseDifficulty = isFresh && state.phase === 'ready'
 
   useEffect(() => {
     if (state.phase !== 'playing') return
@@ -109,6 +113,24 @@ export function PongGame({ onBack, bestScore, onRecordScore }: PongGameProps) {
             <h2>How to play</h2>
             <p>Move with the up and down arrow keys or W and S while the playfield is focused. On a phone, drag up or down across the field.</p>
           </div>
+          <fieldset className="pong-pace-setting" disabled={!canChooseDifficulty}>
+            <legend>Computer pace</legend>
+            {(['calm', 'steady', 'quick'] as const).map((pace) => (
+              <label key={pace}>
+                <input
+                  type="radio"
+                  name="pong-difficulty"
+                  value={pace}
+                  checked={difficulty === pace}
+                  onChange={() => {
+                    dispatch({ type: 'setDifficulty', difficulty: pace })
+                    onDifficultyChange(pace)
+                  }}
+                />
+                <span>{pace}</span>
+              </label>
+            ))}
+          </fieldset>
           <div className="score-card pong-score" aria-label={`You ${state.score}, computer ${state.opponentScore}. ${bestScore === null ? 'No personal best yet.' : `Local best: ${bestScore} points.`}`}>
             <span className="score-caption">YOU</span>
             <strong className="pong-score-value">{state.score}</strong>

@@ -1,3 +1,5 @@
+import type { PongDifficulty } from '../games/pong'
+
 export const ARCADE_DATA_KEY = 'arcade.local-data.v1'
 
 export interface ArcadeBests {
@@ -13,6 +15,7 @@ export interface ArcadeData {
   bests: ArcadeBests
   preferences: {
     reduceMotion: boolean
+    pongDifficulty: PongDifficulty
   }
 }
 
@@ -30,7 +33,7 @@ export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
     bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null },
-    preferences: { reduceMotion: false },
+    preferences: { reduceMotion: false, pongDifficulty: 'steady' },
   }
 }
 
@@ -58,7 +61,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         breakout: validRecord(bests.breakout),
         pong: validRecord(bests.pong),
       },
-      preferences: { reduceMotion: preferences.reduceMotion === true },
+      preferences: { reduceMotion: preferences.reduceMotion === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }
   } catch {
     return emptyArcadeData()
@@ -90,4 +93,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function validRecord(value: unknown): number | null {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0 ? value : null
+}
+
+function validPongDifficulty(value: unknown): PongDifficulty {
+  return value === 'calm' || value === 'steady' || value === 'quick' ? value : 'steady'
 }

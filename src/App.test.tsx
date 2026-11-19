@@ -206,8 +206,13 @@ describe('Arcade navigation and game controls', () => {
     const board = screen.getByRole('group', { name: 'Pong playfield' })
     const paddle = board.querySelector('.pong-player-paddle')
     const initialPaddle = paddle?.getAttribute('style')
+    const quickPace = screen.getByRole('radio', { name: /quick/i })
+    fireEvent.click(quickPace)
+    expect(quickPace).toBeChecked()
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').preferences.pongDifficulty).toBe('quick')
 
     fireEvent.click(screen.getByRole('button', { name: /start match/i }))
+    expect(quickPace).toBeDisabled()
     act(() => { vi.advanceTimersByTime(20) })
     expect(board).toHaveFocus()
     fireEvent.keyDown(board, { key: 'ArrowUp' })
@@ -241,7 +246,7 @@ describe('Arcade navigation and game controls', () => {
     window.localStorage.setItem(ARCADE_DATA_KEY, JSON.stringify({
       version: 1,
       bests: { snake: 8, reaction: 240, pattern: 3, breakout: 120, pong: 2 },
-      preferences: { reduceMotion: true },
+      preferences: { reduceMotion: true, pongDifficulty: 'steady' },
     }))
     render(<App />)
 
@@ -255,7 +260,7 @@ describe('Arcade navigation and game controls', () => {
     expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}')).toEqual({
       version: 1,
       bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null },
-      preferences: { reduceMotion: true },
+      preferences: { reduceMotion: true, pongDifficulty: 'steady' },
     })
     expect(screen.getByText('No saved records.')).toBeInTheDocument()
   })

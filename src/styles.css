@@ -363,6 +363,13 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .pong-score-divider { grid-column: 3; color: #9a9d93; font-size: 1.2rem; }
 .pong-opponent-caption { grid-column: 5; text-align: right; }
 .pong-score .local-best-readout { max-width: 240px; }
+.pong-pace-setting { max-width: 365px; margin: 16px 0 2px; padding: 0; border: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.pong-pace-setting legend { width: 100%; margin-bottom: 7px; color: #62685f; font-size: .74rem; font-weight: 750; }
+.pong-pace-setting label { min-height: 36px; border: 1px solid var(--line); padding: 0 9px; display: inline-flex; flex: 1; gap: 6px; justify-content: center; align-items: center; color: #62685f; font-size: .68rem; text-transform: capitalize; cursor: pointer; }
+.pong-pace-setting input { width: 14px; height: 14px; margin: 0; accent-color: var(--coral); }
+.pong-pace-setting label:has(input:checked) { border-color: #a9ad9f; color: var(--ink); background: rgb(255 255 255 / 28%); }
+.pong-pace-setting:disabled label { opacity: .62; cursor: default; }
+.pong-pace-setting:disabled legend::after { content: " · change after restart"; color: #888b83; font-size: .64rem; font-weight: 500; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 .site-footer { min-height: 64px; margin-top: auto; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 14px; color: #81847b; font-size: .66rem; }
