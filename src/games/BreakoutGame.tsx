@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef, type KeyboardEvent, type PointerEvent } from 'react'
 import { useHeldKeys } from '../hooks/useHeldKeys'
+import { useArcadeSound } from '../audio/arcadeAudio'
 import {
   BALL_RADIUS,
   BREAKOUT_HEIGHT,
@@ -24,6 +25,8 @@ interface BreakoutGameProps {
 export function BreakoutGame({ onBack, bestScore, onRecordScore }: BreakoutGameProps) {
   const [state, dispatch] = useReducer(breakoutReducer, undefined, createBreakoutState)
   const boardRef = useRef<HTMLDivElement>(null)
+  const playSound = useArcadeSound()
+  const previousAudioState = useRef({ score: state.score, lives: state.lives, phase: state.phase, ballVx: state.ball.vx })
   const remaining = remainingBricks(state.bricks)
   const isFresh = state.score === 0 && remaining === state.bricks.length && state.lives === 3
 
@@ -44,6 +47,16 @@ export function BreakoutGame({ onBack, bestScore, onRecordScore }: BreakoutGameP
   useEffect(() => {
     if (state.score > 0) onRecordScore(state.score)
   }, [onRecordScore, state.score])
+
+  useEffect(() => {
+    const previous = previousAudioState.current
+    if (state.phase === 'won' && previous.phase !== 'won') playSound('win')
+    else if (state.phase === 'over' && previous.phase !== 'over') playSound('lose')
+    else if (state.score > previous.score) playSound('hit')
+    else if (state.lives < previous.lives) playSound('miss')
+    else if (state.phase === 'playing' && previous.phase === 'playing' && Math.sign(state.ball.vx) !== Math.sign(previous.ballVx)) playSound('hit')
+    previousAudioState.current = { score: state.score, lives: state.lives, phase: state.phase, ballVx: state.ball.vx }
+  }, [playSound, state.ball.vx, state.lives, state.phase, state.score])
 
   const focusBoard = () => window.requestAnimationFrame(() => boardRef.current?.focus())
   const start = () => {

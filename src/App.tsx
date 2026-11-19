@@ -12,6 +12,7 @@ import { BreakoutGame } from './games/BreakoutGame'
 import { PongGame } from './games/PongGame'
 import { InvadersGame } from './games/InvadersGame'
 import { AsteroidsGame } from './games/AsteroidsGame'
+import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
 import { clearArcadeBests, readArcadeData, withDailyPatternCompletion, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
@@ -46,6 +47,7 @@ function App() {
   const [isOnline, setIsOnline] = useState(() => navigator.onLine)
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const boardRef = useRef<HTMLDivElement>(null)
+  const previousSnakeState = useRef({ score: snake.score, status: snake.status })
 
   const recordBest = (game: keyof ArcadeBests, candidate: number) => {
     const next = withImprovedBest(arcadeData, game, candidate)
@@ -56,6 +58,14 @@ function App() {
 
   const setReduceMotion = (reduceMotion: boolean) => {
     const next = { ...arcadeData, preferences: { ...arcadeData.preferences, reduceMotion } }
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
+  const setSoundEffects = (soundEffects: boolean) => {
+    if (soundEffects) setArcadeAudioEnabled(true)
+    else setArcadeAudioEnabled(false)
+    const next = { ...arcadeData, preferences: { ...arcadeData.preferences, soundEffects } }
     setArcadeData(next)
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
@@ -118,6 +128,14 @@ function App() {
   }, [snake.score])
 
   useEffect(() => {
+    const previous = previousSnakeState.current
+    if (snake.status === 'over' && previous.status !== 'over') playArcadeSound('lose', arcadeData.preferences.soundEffects)
+    else if (snake.status === 'won' && previous.status !== 'won') playArcadeSound('win', arcadeData.preferences.soundEffects)
+    else if (snake.score > previous.score) playArcadeSound('score', arcadeData.preferences.soundEffects)
+    previousSnakeState.current = { score: snake.score, status: snake.status }
+  }, [snake.score, snake.status, arcadeData.preferences.soundEffects])
+
+  useEffect(() => {
     if (snake.status !== 'playing') return
     const speed = Math.max(86, 158 - snake.score * 3)
     const timer = window.setInterval(() => {
@@ -172,6 +190,7 @@ function App() {
   }
 
   return (
+    <ArcadeAudioProvider enabled={arcadeData.preferences.soundEffects}>
     <div className="app-shell">
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="topbar">
@@ -197,6 +216,8 @@ function App() {
             onPlayAsteroids={openAsteroids}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
+            soundEffects={arcadeData.preferences.soundEffects}
+            onSoundEffectsChange={setSoundEffects}
             hasRecords={Object.values(arcadeData.bests).some((record) => record !== null)}
             onClearRecords={clearRecords}
             storageNotice={storageNotice}
@@ -355,6 +376,7 @@ function App() {
         <span>ARCADE&nbsp; / &nbsp;{versionLabel}</span>
       </footer>
     </div>
+    </ArcadeAudioProvider>
   )
 }
 
@@ -368,6 +390,8 @@ function Home({
   onPlayAsteroids,
   reduceMotion,
   onReduceMotionChange,
+  soundEffects,
+  onSoundEffectsChange,
   hasRecords,
   onClearRecords,
   storageNotice,
@@ -383,6 +407,8 @@ function Home({
   onPlayAsteroids: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
+  soundEffects: boolean
+  onSoundEffectsChange: (enabled: boolean) => void
   hasRecords: boolean
   onClearRecords: () => void
   storageNotice: string
@@ -520,6 +546,10 @@ function Home({
         <label className="motion-setting">
           <input type="checkbox" checked={reduceMotion} onChange={(event) => onReduceMotionChange(event.currentTarget.checked)} />
           <span><strong>Reduce motion</strong><small>Animations are reduced. Your system setting also applies.</small></span>
+        </label>
+        <label className="sound-setting">
+          <input type="checkbox" checked={soundEffects} onChange={(event) => onSoundEffectsChange(event.currentTarget.checked)} />
+          <span><strong>Arcade sounds</strong><small>Short beeps are made in your browser. Off by default.</small></span>
         </label>
         <div className="install-setting">
           <span><strong>Offline play</strong><small>After your first visit, the games are ready without a connection.</small></span>
