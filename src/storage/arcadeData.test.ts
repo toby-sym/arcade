@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
+import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
 import { createGlyphMatchPuzzle } from '../games/glyphMatch'
 import { createVertexPuzzle } from '../games/vertex'
+import { createTilesPuzzle } from '../games/tiles'
 
 const emptyCrosswordBoard = () => Array.from({ length: 25 }, (_, index) => [3, 4, 20, 21].includes(index) ? '#' : '')
 const todayGlyphs = createGlyphMatchPuzzle('2026-11-19').glyphs
@@ -34,7 +35,8 @@ describe('browser-local Arcade data', () => {
       dailyDominoLogicGame: null,
       dailyGlyphMatchGame: null,
       dailyVertexGame: null,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null },
+      dailyTilesGame: null,
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
 
@@ -78,7 +80,8 @@ describe('browser-local Arcade data', () => {
       dailyDominoLogicGame: { date: '2026-11-19', placements: [{ dominoId: 0, firstCell: 0, orientation: 'horizontal' as const, flipped: false }], undos: 1 },
       dailyGlyphMatchGame: savedGlyphProgress,
       dailyVertexGame: { date: '2026-11-19', selectedEdges: [], moves: 0 },
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null },
+      dailyTilesGame: { date: '2026-11-19', clearedIndices: [], moves: 0, mistakes: 0 },
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
     expect(clearArcadeBests(initial)).toEqual({
@@ -94,7 +97,8 @@ describe('browser-local Arcade data', () => {
       dailyDominoLogicGame: { date: '2026-11-19', placements: [{ dominoId: 0, firstCell: 0, orientation: 'horizontal', flipped: false }], undos: 1 },
       dailyGlyphMatchGame: savedGlyphProgress,
       dailyVertexGame: { date: '2026-11-19', selectedEdges: [], moves: 0 },
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null },
+      dailyTilesGame: { date: '2026-11-19', clearedIndices: [], moves: 0, mistakes: 0 },
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' },
     })
     expect(initial.bests.snake).toBe(12)
@@ -126,7 +130,8 @@ describe('browser-local Arcade data', () => {
       dailyDominoLogicGame: null,
       dailyGlyphMatchGame: null,
       dailyVertexGame: null,
-      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null },
+      dailyTilesGame: null,
+      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
 
@@ -275,6 +280,20 @@ describe('browser-local Arcade data', () => {
     expect(withImprovedBest(firstBest!, 'vertex', 15)).toBeNull()
     expect(withDailyVertexGame(initial, { ...progress, date: '2026-02-30' })).toBeNull()
     expect(withDailyVertexGame(initial, { ...progress, selectedEdges: ['not-an-edge'] })).toBeNull()
+  })
+
+  it('saves daily Tiles progress and keeps the fewest mistakes', () => {
+    const initial = emptyArcadeData()
+    const puzzle = createTilesPuzzle('2026-11-19')
+    const progress = { date: puzzle.date, clearedIndices: puzzle.solutionPairs[0]!, moves: 2, mistakes: 1 }
+    const saved = withDailyTilesGame(initial, progress)
+    const firstBest = withImprovedBest(saved!, 'tiles', 0)
+
+    expect(saved?.dailyTilesGame).toEqual(progress)
+    expect(firstBest?.bests.tiles).toBe(0)
+    expect(withImprovedBest(firstBest!, 'tiles', 1)).toBeNull()
+    expect(withDailyTilesGame(initial, { ...progress, date: '2026-02-30' })).toBeNull()
+    expect(withDailyTilesGame(initial, { ...progress, clearedIndices: [0] })).toBeNull()
   })
 
   it('uses defaults for unknown versions, corrupt JSON, and unavailable storage', () => {

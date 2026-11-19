@@ -34,9 +34,11 @@ import { GlyphMatchGame } from './games/GlyphMatchGame'
 import { createGlyphMatchState, type GlyphMatchProgress } from './games/glyphMatch'
 import { VertexGame } from './games/VertexGame'
 import { createVertexState, type VertexProgress } from './games/vertex'
+import { TilesGame } from './games/TilesGame'
+import { createTilesState, type TilesProgress } from './games/tiles'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -62,7 +64,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -219,6 +221,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyTilesGame = (progress: TilesProgress) => {
+    const withProgress = withDailyTilesGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = createTilesState(progress.date, progress)
+    const next = completed.phase === 'complete'
+      ? withImprovedBest(withProgress, 'tiles', completed.mistakes) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -304,6 +317,7 @@ function App() {
   const openDominoLogic = () => setScreen('dominologic')
   const openGlyphMatch = () => setScreen('glyphmatch')
   const openVertex = () => setScreen('vertex')
+  const openTiles = () => setScreen('tiles')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -368,6 +382,7 @@ function App() {
             onPlayDominoLogic={openDominoLogic}
             onPlayGlyphMatch={openGlyphMatch}
             onPlayVertex={openVertex}
+            onPlayTiles={openTiles}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -500,6 +515,13 @@ function App() {
             bestMoves={arcadeData.bests.vertex}
             progress={arcadeData.dailyVertexGame}
             onSaveProgress={saveDailyVertexGame}
+          />
+        ) : screen === 'tiles' ? (
+          <TilesGame
+            onBack={() => setScreen('home')}
+            bestMistakes={arcadeData.bests.tiles}
+            progress={arcadeData.dailyTilesGame}
+            onSaveProgress={saveDailyTilesGame}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -637,6 +659,7 @@ function Home({
   onPlayDominoLogic,
   onPlayGlyphMatch,
   onPlayVertex,
+  onPlayTiles,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -666,6 +689,7 @@ function Home({
   onPlayDominoLogic: () => void
   onPlayGlyphMatch: () => void
   onPlayVertex: () => void
+  onPlayTiles: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -700,7 +724,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">19 PLAYABLE</span>
+          <span className="section-count">20 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -945,6 +969,18 @@ function Home({
               <h3>Vertex</h3>
               <p>Read the clues, connect the lines, and close one loop around the triangle grid.</p>
               <div className="card-bottom"><span className="controls-label">CLICK · TOUCH · KEYBOARD</span><button className="play-card-button" type="button" onClick={onPlayVertex}>Play Vertex <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-tiles">
+            <div className="card-art tiles-card-art" aria-hidden="true">
+              <span className="tiles-card-patterns"><i>✦</i><i>☾</i><i>◆</i><i>▲</i><i>●</i><i>✿</i><i>⬟</i><i>⌁</i><i>■</i><i>✧</i></span>
+              <span className="tiles-card-index card-art-index">20</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">20</span><span className="game-category">DAILY PATTERNS</span></div>
+              <h3>Tiles</h3>
+              <p>Match visible patterns from the open edges inward. Clear every pair to finish the board.</p>
+              <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · KEYBOARD</span><button className="play-card-button" type="button" onClick={onPlayTiles}>Play Tiles <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
