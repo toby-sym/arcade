@@ -38,6 +38,8 @@ const TilesGame = lazy(() => import('./games/TilesGame').then(({ TilesGame }) =>
 import { createTilesState, type TilesProgress } from './games/tiles'
 const PipsGame = lazy(() => import('./games/PipsGame').then(({ PipsGame }) => ({ default: PipsGame })))
 import { createPipsState, type PipsProgress } from './games/pips'
+const CipherCircuitGame = lazy(() => import('./games/CipherCircuitGame').then(({ CipherCircuitGame }) => ({ default: CipherCircuitGame })))
+import { createCipherCircuitState, type CipherCircuitProgress } from './games/cipherCircuit'
 const DailyCrosswordGame = lazy(() => import('./games/DailyCrosswordGame').then(({ DailyCrosswordGame }) => ({ default: DailyCrosswordGame })))
 import { createDailyCrosswordState, type DailyCrosswordProgress } from './games/dailyCrossword'
 const MinesweeperGame = lazy(() => import('./games/MinesweeperGame').then(({ MinesweeperGame }) => ({ default: MinesweeperGame })))
@@ -46,7 +48,7 @@ const SkylineSkipGame = lazy(() => import('./games/SkylineSkipGame').then(({ Sky
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -80,6 +82,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'minesweeper', title: 'Minesweeper', categories: ['daily'], terms: 'minesweeper mines flags numbers logic' },
   { id: 'mazedash', title: 'Maze Dash', categories: ['arcade'], terms: 'maze chase gems sentries' },
   { id: 'skylineskip', title: 'Skyline Skip', categories: ['arcade'], terms: 'platform runner rooftop jumps' },
+  { id: 'ciphercircuit', title: 'Cipher Circuit', categories: ['daily'], terms: 'code breaker signals colors logic' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -103,7 +106,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -359,6 +362,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyCipherCircuitGame = (progress: CipherCircuitProgress) => {
+    const withProgress = withDailyCipherCircuitGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = createCipherCircuitState(progress.date, progress)
+    const next = completed.phase === 'solved'
+      ? withImprovedBest(withProgress, 'cipherCircuit', completed.guesses.length) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -450,6 +464,7 @@ function App() {
   const openMinesweeper = () => setScreen('minesweeper')
   const openMazeDash = () => setScreen('mazedash')
   const openSkylineSkip = () => setScreen('skylineskip')
+  const openCipherCircuit = () => setScreen('ciphercircuit')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -521,6 +536,7 @@ function App() {
             onPlayMinesweeper={openMinesweeper}
             onPlayMazeDash={openMazeDash}
             onPlaySkylineSkip={openSkylineSkip}
+            onPlayCipherCircuit={openCipherCircuit}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -699,6 +715,13 @@ function App() {
             bestScore={arcadeData.bests.skylineSkip}
             onRecordScore={(score) => recordBest('skylineSkip', score)}
           />
+        ) : screen === 'ciphercircuit' ? (
+          <CipherCircuitGame
+            onBack={() => setScreen('home')}
+            bestPulses={arcadeData.bests.cipherCircuit}
+            progress={arcadeData.dailyCipherCircuitGame}
+            onSaveProgress={saveDailyCipherCircuitGame}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -842,6 +865,7 @@ function Home({
   onPlayMinesweeper,
   onPlayMazeDash,
   onPlaySkylineSkip,
+  onPlayCipherCircuit,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -882,6 +906,7 @@ function Home({
   onPlayMinesweeper: () => void
   onPlayMazeDash: () => void
   onPlaySkylineSkip: () => void
+  onPlayCipherCircuit: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1298,6 +1323,19 @@ function Home({
               <h3>Skyline Skip</h3>
               <p>Leap the gaps, collect signal shards, and sprint between rooftop beacons.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · A-D · JUMP</span><button className="play-card-button" type="button" onClick={onPlaySkylineSkip}>Play Skyline Skip <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-ciphercircuit" hidden={!visibleGameIds.has('ciphercircuit')}>
+            <div className="card-art cipher-circuit-card-art" aria-hidden="true">
+              <span className="cipher-circuit-card-code"><i>●</i><i>▲</i><i>◆</i><i>✦</i></span>
+              <span className="cipher-circuit-card-feedback"><i /><i /><i /><i /></span>
+              <span className="card-art-index">26</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">26</span><span className="game-category">DAILY CODE</span></div>
+              <h3>Cipher Circuit</h3>
+              <p>Read the feedback, reroute the signals, and align the four-slot key.</p>
+              <div className="card-bottom"><span className="controls-label">1–6 · ENTER · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayCipherCircuit}>Play Cipher Circuit <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>

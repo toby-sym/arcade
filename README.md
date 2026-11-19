@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, and Skyline Skip are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, and Cipher Circuit are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the twenty-five games from the game floor.
+Vite prints the local URL after startup. Choose any of the twenty-six games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -157,6 +157,13 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Keep momentum over gaps, land on the next roof, and leap over signal spikes. Collect shards for points and reach each beacon to set a checkpoint. A fall or spike costs one of three lives.
 - **Pause** in the game panel or press **Escape** while the course is focused. A hidden browser tab pauses the run; **Restart run** begins at the first rooftop.
 - Reach the beacon at the far end to finish. Your highest score is saved locally in this browser and does not sync.
+
+## Cipher Circuit controls
+
+- Open **Cipher Circuit** for the daily four-signal code. The same key is used for everyone on the UTC date; a new pattern arrives at midnight UTC.
+- Choose four signals from the palette by touch, click, or keys **1–6**. Press **Enter** or **Send pulse** to check a row. **Backspace** removes the latest signal; **Clear row** empties the current pulse.
+- **Locked** means the signal and socket are correct. **Rerouted** means the signal belongs in another socket. Repeated signals are possible, and each signal can only contribute to feedback once. Solve the key in eight pulses.
+- Your rows and unfinished input stay saved in this browser. The fewest pulses for a solve is saved as a local personal best; progress and records do not sync.
 
 ## Letter Boxed controls
 
