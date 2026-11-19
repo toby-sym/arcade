@@ -798,3 +798,52 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .invaders-console { padding: 8px; border-width: 2px; border-radius: 10px; }
   .invaders-field { aspect-ratio: 1.08; }
 }
+
+.game-card-asteroids { grid-column: 2; }
+.game-card-asteroids:hover { transform: translateY(-3px); border-color: #65d5ef; box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.asteroids-card-art { border-color: #0d0b18; background: radial-gradient(ellipse at 50% 48%, #302848, #0e0b19 80%); }
+.asteroids-card-rock { position: absolute; width: 38px; height: 35px; background: #9287a6; clip-path: polygon(22% 3%, 54% 0, 78% 14%, 97% 44%, 83% 77%, 59% 99%, 27% 84%, 4% 63%, 0 27%); }
+.asteroids-card-art .rock-one { top: 29%; left: 25%; transform: rotate(-23deg); }
+.asteroids-card-art .rock-two { top: 51%; right: 22%; width: 26px; height: 24px; background: #b7a4c8; transform: rotate(17deg); }
+.asteroids-card-art .rock-three { bottom: 13%; left: 36%; width: 19px; height: 18px; background: #756c8d; transform: rotate(40deg); }
+.asteroids-card-ship { position: absolute; top: 53%; left: 50%; width: 19px; height: 29px; background: var(--green); clip-path: polygon(50% 0, 89% 100%, 50% 78%, 11% 100%); transform: translate(-50%, -50%) rotate(42deg); filter: drop-shadow(0 0 5px rgb(202 255 64 / 70%)); }
+.asteroids-card-shot { position: absolute; top: 31%; left: 58%; width: 3px; height: 12px; background: #fff8e4; box-shadow: 0 0 7px rgb(255 248 228 / 82%); transform: rotate(42deg); }
+.asteroids-layout { grid-template-columns: minmax(220px, .78fr) minmax(320px, 1.22fr); }
+.asteroids-copy h1 { font-size: clamp(2rem, 3.2vw, 2.6rem); letter-spacing: -.075em; }
+.asteroids-score { max-width: 240px; margin-top: 14px; }
+.asteroids-play-column { max-width: 650px; }
+.asteroids-console { padding: 14px; border: 3px solid #574873; border-radius: 15px; background: linear-gradient(145deg, #29223b 0%, #171425 80%); box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.asteroids-console .frame-topline { height: 22px; padding: 0 1px 11px; }
+.asteroids-field { position: relative; width: 100%; aspect-ratio: 1; overflow: hidden; border: 2px solid #403458; border-radius: 8px; background-color: #0e0b19; background-image: radial-gradient(circle, rgb(187 150 255 / 55%) 0 1px, transparent 1.5px), radial-gradient(circle, rgb(69 231 255 / 46%) 0 1px, transparent 1.5px); background-position: 26px 18px, 77px 51px; background-size: 91px 83px, 137px 109px; box-shadow: inset 0 0 36px rgb(69 231 255 / 5%); outline: none; user-select: none; }
+.asteroids-field::after { content: ""; position: absolute; z-index: 3; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0 3px, rgb(5 4 12 / 17%) 3px 4px); pointer-events: none; }
+.asteroids-field:focus-visible { outline: 3px solid var(--green); outline-offset: 4px; }
+.asteroids-ship { position: absolute; z-index: 1; width: 20px; height: 28px; background: var(--green); clip-path: polygon(50% 0, 91% 100%, 50% 79%, 9% 100%); filter: drop-shadow(0 0 6px rgb(202 255 64 / 70%)); }
+.asteroids-ship.ship-blinking { animation: ship-blink .14s steps(2, end) infinite; }
+@keyframes ship-blink { to { opacity: .16; } }
+.asteroid-rock { position: absolute; z-index: 1; background: #9085a2; clip-path: polygon(23% 1%, 53% 0, 78% 13%, 98% 42%, 89% 70%, 70% 96%, 44% 100%, 24% 87%, 2% 66%, 0 32%); box-shadow: inset 0 0 12px rgb(255 255 255 / 26%); }
+.asteroid-large { width: 58px; height: 58px; }
+.asteroid-medium { width: 36px; height: 36px; background: #a79ab8; }
+.asteroid-small { width: 20px; height: 20px; background: #bcb0ca; }
+.asteroids-shot { position: absolute; z-index: 1; width: 3px; height: 6px; border-radius: 50%; background: #fff8e4; box-shadow: 0 0 8px rgb(255 248 228 / 86%); transform: translate(-50%, -50%); }
+.asteroids-overlay { position: absolute; z-index: 2; inset: 0; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: rgb(12 9 23 / 67%); }
+.asteroids-overlay strong { color: var(--green); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: clamp(1.1rem, 3vw, 1.7rem); text-transform: uppercase; text-shadow: 0 0 14px rgb(202 255 64 / 18%); }
+.asteroids-overlay span { max-width: 260px; margin-top: 8px; color: #e0d8e9; font-size: .76rem; line-height: 1.5; }
+.asteroids-console-footer { height: 26px; padding: 9px 1px 0; display: flex; justify-content: space-between; align-items: center; color: #c1b5d5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .53rem; letter-spacing: .12em; }
+.asteroids-touch-controls { width: 100%; max-width: 540px; margin: 12px 0 0; display: grid; grid-template-columns: 52px minmax(0, 1fr) 52px minmax(0, 1fr); align-items: center; gap: 8px; }
+.asteroids-touch-controls .dpad-button { width: 52px; height: 46px; font-size: 1.15rem; touch-action: none; user-select: none; }
+.asteroids-thrust-button, .asteroids-fire-button { width: 100%; min-width: 0; min-height: 46px; touch-action: none; user-select: none; }
+.asteroids-touch-controls button:disabled { opacity: .44; cursor: default; }
+.asteroids-status { min-height: 24px; margin: 12px 2px 0; color: #bfb5d1; font-size: .74rem; line-height: 1.5; }
+
+@media (max-width: 860px) {
+  .game-card-asteroids { grid-column: auto; }
+}
+
+@media (max-width: 650px) {
+  .asteroids-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .asteroids-copy h1 { font-size: clamp(1.95rem, 9vw, 2.55rem); }
+  .asteroids-play-column { width: 100%; max-width: 540px; justify-self: center; }
+  .asteroids-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .asteroids-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .asteroids-status { margin-top: 9px; }
+}
