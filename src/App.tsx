@@ -6,6 +6,7 @@ import {
   type Direction,
   type Point,
 } from './games/snake'
+import { ReactionGame } from './games/ReactionGame'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -26,7 +27,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const boardRef = useRef<HTMLDivElement>(null)
 
@@ -51,6 +52,7 @@ function App() {
     dispatch({ type: 'restart', foodRoll: Math.random() })
     setScreen('snake')
   }
+  const openReaction = () => setScreen('reaction')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -92,7 +94,9 @@ function App() {
 
       <main id="main" className="main-content">
         {screen === 'home' ? (
-          <Home onPlay={openSnake} />
+          <Home onPlaySnake={openSnake} onPlayReaction={openReaction} />
+        ) : screen === 'reaction' ? (
+          <ReactionGame onBack={() => setScreen('home')} />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -203,7 +207,7 @@ function App() {
   )
 }
 
-function Home({ onPlay }: { onPlay: () => void }) {
+function Home({ onPlaySnake, onPlayReaction }: { onPlaySnake: () => void; onPlayReaction: () => void }) {
   return (
     <>
       <section className="home-hero" aria-labelledby="home-title">
@@ -226,7 +230,7 @@ function Home({ onPlay }: { onPlay: () => void }) {
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">01 PLAYABLE</span>
+          <span className="section-count">02 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -240,11 +244,11 @@ function Home({ onPlay }: { onPlay: () => void }) {
               <p>One more dot. One more turn. Don’t get tangled.</p>
               <div className="card-bottom">
                 <span className="controls-label">ARROWS · WASD · TOUCH</span>
-                <button className="play-card-button" type="button" onClick={onPlay}>Play Snake <span className="arrow-mark" aria-hidden="true" /></button>
+                <button className="play-card-button" type="button" onClick={onPlaySnake}>Play Snake <span className="arrow-mark" aria-hidden="true" /></button>
               </div>
             </div>
           </article>
-          <article className="game-card game-card-soon">
+          <article className="game-card game-card-reaction">
             <div className="card-art reaction-card-art" aria-hidden="true">
               <span className="reaction-ring ring-one" /><span className="reaction-ring ring-two" /><span className="reaction-ring ring-three" />
               <span className="reaction-dot" />
@@ -254,7 +258,7 @@ function Home({ onPlay }: { onPlay: () => void }) {
               <div className="card-heading-line"><span className="game-number">02</span><span className="game-category">QUICK REFLEXES</span></div>
               <h3>Reaction</h3>
               <p>Wait for the signal. Trust your timing.</p>
-              <div className="card-bottom"><span className="controls-label">MOUSE · TOUCH · KEY</span><span className="coming-label">COMING NEXT</span></div>
+              <div className="card-bottom"><span className="controls-label">MOUSE · TOUCH · SPACE</span><button className="play-card-button" type="button" onClick={onPlayReaction}>Play Reaction <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
           <article className="game-card game-card-soon">
