@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useRef, type KeyboardEvent, type PointerEvent } from 'react'
+import { useHeldKeys } from '../hooks/useHeldKeys'
 import { useArcadeSound } from '../audio/arcadeAudio'
 import { missileCommandReducer, createMissileCommandState, MISSILE_CITY_X, MISSILE_CITY_Y, MISSILE_COMMAND_HEIGHT, MISSILE_COMMAND_WIDTH, MISSILE_SILO_X, MISSILE_SILO_Y } from './missileCommand'
 
@@ -8,16 +9,7 @@ interface MissileCommandGameProps {
   onRecordScore: (score: number) => void
 }
 
-const aimKeys: Record<string, { dx: number; dy: number }> = {
-  ArrowLeft: { dx: -26, dy: 0 },
-  a: { dx: -26, dy: 0 },
-  ArrowRight: { dx: 26, dy: 0 },
-  d: { dx: 26, dy: 0 },
-  ArrowUp: { dx: 0, dy: -26 },
-  w: { dx: 0, dy: -26 },
-  ArrowDown: { dx: 0, dy: 26 },
-  s: { dx: 0, dy: 26 },
-}
+const AIM_SPEED = 960
 
 export function MissileCommandGame({ onBack, bestScore, onRecordScore }: MissileCommandGameProps) {
   const [state, dispatch] = useReducer(missileCommandReducer, undefined, createMissileCommandState)
@@ -26,6 +18,17 @@ export function MissileCommandGame({ onBack, bestScore, onRecordScore }: Missile
   const previousAudioState = useRef({ score: state.score, wave: state.wave, phase: state.phase })
   const isFresh = state.score === 0 && state.wave === 1 && state.cities.every(Boolean)
   const statusLabel = state.phase === 'playing' ? 'LIVE' : state.phase.toUpperCase()
+
+  const handleHeldKey = useHeldKeys({
+    ArrowLeft: (deltaMs) => dispatch({ type: 'moveAim', dx: -AIM_SPEED * deltaMs / 1000, dy: 0 }),
+    a: (deltaMs) => dispatch({ type: 'moveAim', dx: -AIM_SPEED * deltaMs / 1000, dy: 0 }),
+    ArrowRight: (deltaMs) => dispatch({ type: 'moveAim', dx: AIM_SPEED * deltaMs / 1000, dy: 0 }),
+    d: (deltaMs) => dispatch({ type: 'moveAim', dx: AIM_SPEED * deltaMs / 1000, dy: 0 }),
+    ArrowUp: (deltaMs) => dispatch({ type: 'moveAim', dx: 0, dy: -AIM_SPEED * deltaMs / 1000 }),
+    w: (deltaMs) => dispatch({ type: 'moveAim', dx: 0, dy: -AIM_SPEED * deltaMs / 1000 }),
+    ArrowDown: (deltaMs) => dispatch({ type: 'moveAim', dx: 0, dy: AIM_SPEED * deltaMs / 1000 }),
+    s: (deltaMs) => dispatch({ type: 'moveAim', dx: 0, dy: AIM_SPEED * deltaMs / 1000 }),
+  }, state.phase !== 'paused' && state.phase !== 'over')
 
   useEffect(() => {
     if (state.phase !== 'playing') return
@@ -82,13 +85,12 @@ export function MissileCommandGame({ onBack, bestScore, onRecordScore }: Missile
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    const move = aimKeys[event.key] ?? aimKeys[event.key.toLowerCase()]
-    if (move) {
+    handleHeldKey(event)
+    if (event.defaultPrevented) return
+
+    if (event.code === 'Space') {
       event.preventDefault()
-      dispatch({ type: 'moveAim', ...move })
-    } else if (event.code === 'Space') {
-      event.preventDefault()
-      fire()
+      if (!event.repeat) fire()
     } else if (event.key === 'Escape' && state.phase === 'playing') {
       event.preventDefault()
       dispatch({ type: 'pause' })
