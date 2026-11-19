@@ -17,6 +17,7 @@ describe('Tideglass daily harbors', () => {
       const solution = solveTideglassPuzzle(puzzle)
       expect(solution).not.toBeNull()
       expect(solution).toHaveLength(puzzle.par)
+      expect(solution!.some((step) => step.type === 'sluice')).toBe(true)
 
       let state = tideglassReducer(createTideglassState(date), { type: 'start' })
       for (const step of solution!) {
