@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyConnectionsGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
 
+const emptyCrosswordBoard = () => Array.from({ length: 25 }, (_, index) => [3, 4, 20, 21].includes(index) ? '#' : '')
+
 class MemoryStorage {
   key: string | null = null
   value: string | null = null
@@ -63,7 +65,7 @@ describe('browser-local Arcade data', () => {
       dailySpellingBeeGame: { date: '2026-11-19', foundWords: ['ANGER'], phase: 'playing' as const },
       dailyStrandsGame: { date: '2026-11-19', foundWords: ['TRACE'], hintsUsed: 1, hintedCells: [1] },
       dailySudokuGame: { date: '2026-11-19', board: Array(81).fill(''), hintsUsed: 1, hintedCells: [4] },
-      dailyMiniCrosswordGame: { date: '2026-11-19', board: Array(25).fill(''), hintsUsed: 1, hintedCells: [4] },
+      dailyMiniCrosswordGame: { date: '2026-11-19', board: emptyCrosswordBoard(), hintsUsed: 1, hintedCells: [6] },
       bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4 },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
@@ -75,7 +77,7 @@ describe('browser-local Arcade data', () => {
       dailySpellingBeeGame: { date: '2026-11-19', foundWords: ['ANGER'], phase: 'playing' },
       dailyStrandsGame: { date: '2026-11-19', foundWords: ['TRACE'], hintsUsed: 1, hintedCells: [1] },
       dailySudokuGame: { date: '2026-11-19', board: Array(81).fill(''), hintsUsed: 1, hintedCells: [4] },
-      dailyMiniCrosswordGame: { date: '2026-11-19', board: Array(25).fill(''), hintsUsed: 1, hintedCells: [4] },
+      dailyMiniCrosswordGame: { date: '2026-11-19', board: emptyCrosswordBoard(), hintsUsed: 1, hintedCells: [6] },
       bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' },
     })
@@ -184,7 +186,7 @@ describe('browser-local Arcade data', () => {
 
   it('saves a daily mini crossword and keeps the fewest hints', () => {
     const initial = emptyArcadeData()
-    const progress = { date: '2026-11-19', board: Array(25).fill(''), hintsUsed: 1, hintedCells: [6] }
+    const progress = { date: '2026-11-19', board: emptyCrosswordBoard(), hintsUsed: 1, hintedCells: [6] }
     const saved = withDailyMiniCrosswordGame(initial, progress)
     const firstBest = withImprovedBest(saved!, 'miniCrossword', 0)
 
