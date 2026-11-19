@@ -24,6 +24,42 @@ afterEach(() => {
 })
 
 describe('Arcade navigation and game controls', () => {
+  it('searches the game floor and filters arcade games and daily puzzles', () => {
+    render(<App />)
+
+    const search = screen.getByRole('searchbox', { name: 'Find a game' })
+    const pipsArticle = screen.getByRole('button', { name: /play pips/i }).closest('article')
+    const snakeArticle = screen.getByRole('button', { name: /play snake/i }).closest('article')
+    expect(pipsArticle).not.toHaveAttribute('hidden')
+    expect(snakeArticle).not.toHaveAttribute('hidden')
+
+    fireEvent.change(search, { target: { value: 'domino' } })
+    expect(screen.getByText('Showing 2 of 22 games.')).toBeInTheDocument()
+    expect(pipsArticle).not.toHaveAttribute('hidden')
+    expect(screen.getByRole('button', { name: /play domino logic/i }).closest('article')).not.toHaveAttribute('hidden')
+    expect(snakeArticle).toHaveAttribute('hidden')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Arcade' }))
+    expect(screen.getByText('No games found. Try another search or filter.')).toBeInTheDocument()
+    expect(pipsArticle).toHaveAttribute('hidden')
+
+    fireEvent.change(search, { target: { value: '' } })
+    expect(screen.getByText('Showing 9 of 22 games.')).toBeInTheDocument()
+    expect(snakeArticle).not.toHaveAttribute('hidden')
+    expect(pipsArticle).toHaveAttribute('hidden')
+    expect(screen.getByRole('button', { name: 'Arcade' })).toHaveAttribute('aria-pressed', 'true')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Daily puzzles' }))
+    expect(screen.getByText('Showing 14 of 22 games.')).toBeInTheDocument()
+    expect(pipsArticle).not.toHaveAttribute('hidden')
+    expect(snakeArticle).toHaveAttribute('hidden')
+
+    fireEvent.click(screen.getByRole('button', { name: 'All games' }))
+    expect(screen.getByText('Showing all 22 games.')).toBeInTheDocument()
+    expect(pipsArticle).not.toHaveAttribute('hidden')
+    expect(snakeArticle).not.toHaveAttribute('hidden')
+  })
+
   it('offers an install action when the browser allows Arcade to be installed', async () => {
     render(<App />)
     const prompt = vi.fn().mockResolvedValue(undefined)
