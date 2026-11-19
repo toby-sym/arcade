@@ -14,6 +14,8 @@ import {
   type PongDifficulty,
 } from './pong'
 
+const KEYBOARD_PADDLE_SPEED = 375
+
 interface PongGameProps {
   onBack: () => void
   bestScore: number | null
@@ -68,10 +70,10 @@ export function PongGame({ onBack, bestScore, onRecordScore, difficulty, onDiffi
   }
 
   const handleHeldKey = useHeldKeys({
-    ArrowUp: () => dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 - 6 }),
-    w: () => dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 - 6 }),
-    ArrowDown: () => dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 + 6 }),
-    s: () => dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 + 6 }),
+    ArrowUp: (deltaMs) => dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 - KEYBOARD_PADDLE_SPEED * deltaMs / 1000 }),
+    w: (deltaMs) => dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 - KEYBOARD_PADDLE_SPEED * deltaMs / 1000 }),
+    ArrowDown: (deltaMs) => dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 + KEYBOARD_PADDLE_SPEED * deltaMs / 1000 }),
+    s: (deltaMs) => dispatch({ type: 'movePaddle', centerY: state.paddleY + PONG_PADDLE_HEIGHT / 2 + KEYBOARD_PADDLE_SPEED * deltaMs / 1000 }),
   }, state.phase !== 'paused' && state.phase !== 'over')
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {

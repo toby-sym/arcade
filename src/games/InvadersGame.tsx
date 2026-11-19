@@ -3,6 +3,8 @@ import { useHeldKeys } from '../hooks/useHeldKeys'
 import { useArcadeSound } from '../audio/arcadeAudio'
 import { createInvadersState, invadersReducer } from './invaders'
 
+const KEYBOARD_PLAYER_SPEED = 75
+
 interface InvadersGameProps {
   onBack: () => void
   bestScore: number | null
@@ -58,10 +60,10 @@ export function InvadersGame({ onBack, bestScore, onRecordScore }: InvadersGameP
   }
 
   const handleHeldKey = useHeldKeys({
-    ArrowLeft: () => dispatch({ type: 'movePlayer', amount: -1.2 }),
-    a: () => dispatch({ type: 'movePlayer', amount: -1.2 }),
-    ArrowRight: () => dispatch({ type: 'movePlayer', amount: 1.2 }),
-    d: () => dispatch({ type: 'movePlayer', amount: 1.2 }),
+    ArrowLeft: (deltaMs) => dispatch({ type: 'movePlayer', amount: -KEYBOARD_PLAYER_SPEED * deltaMs / 1000 }),
+    a: (deltaMs) => dispatch({ type: 'movePlayer', amount: -KEYBOARD_PLAYER_SPEED * deltaMs / 1000 }),
+    ArrowRight: (deltaMs) => dispatch({ type: 'movePlayer', amount: KEYBOARD_PLAYER_SPEED * deltaMs / 1000 }),
+    d: (deltaMs) => dispatch({ type: 'movePlayer', amount: KEYBOARD_PLAYER_SPEED * deltaMs / 1000 }),
   }, state.phase !== 'paused' && state.phase !== 'over' && state.phase !== 'won')
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
