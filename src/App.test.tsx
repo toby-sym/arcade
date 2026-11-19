@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { ARCADE_DATA_KEY } from './storage/arcadeData'
+import { dailyPatternForDate, utcDateKey } from './games/dailyPattern'
 
 afterEach(() => {
   vi.useRealTimers()
@@ -102,7 +103,7 @@ describe('Arcade navigation and game controls', () => {
     expect(screen.getByText('03 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play pattern/i }))
     expect(screen.getByRole('heading', { name: 'Remember' })).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: /start game/i }))
+    fireEvent.click(screen.getByRole('button', { name: /start practice/i }))
 
     const topLeft = screen.getByRole('button', { name: /top left tile, 1/i })
     expect(topLeft).toHaveAttribute('aria-disabled', 'true')
@@ -117,10 +118,11 @@ describe('Arcade navigation and game controls', () => {
     expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').bests.pattern).toBe(1)
     fireEvent.click(screen.getByRole('button', { name: /pause/i }))
     expect(screen.getByRole('button', { name: /resume/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /restart/i })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /resume/i }))
     expect(screen.getByRole('status')).toHaveTextContent('Watch the pattern again.')
     fireEvent.click(screen.getByRole('button', { name: /restart/i }))
-    expect(screen.getByRole('button', { name: /start game/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /start practice/i })).toBeInTheDocument()
     expect(screen.getByLabelText('Rounds cleared this run: 0. Local best: 1.')).toBeInTheDocument()
   })
 
@@ -129,7 +131,7 @@ describe('Arcade navigation and game controls', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /play pattern/i }))
-    fireEvent.click(screen.getByRole('button', { name: /start game/i }))
+    fireEvent.click(screen.getByRole('button', { name: /start practice/i }))
     act(() => { vi.advanceTimersByTime(300) })
     act(() => { vi.advanceTimersByTime(440) })
     fireEvent.click(screen.getByRole('button', { name: /top right tile, 2/i }))
@@ -138,6 +140,33 @@ describe('Arcade navigation and game controls', () => {
     expect(screen.getByRole('button', { name: /play again/i })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play again/i }))
     expect(screen.getByRole('status')).toHaveTextContent('Watch the pattern. It will light one tile at a time.')
+  })
+
+  it('repeats the deterministic daily pattern without changing the practice best', () => {
+    vi.useFakeTimers()
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: /play pattern/i }))
+    fireEvent.click(screen.getByRole('button', { name: /daily challenge/i }))
+
+    const sequence = dailyPatternForDate(utcDateKey())
+    const board = screen.getByRole('group', { name: 'Four pattern tiles' })
+    expect(screen.getByText('DAILY PATTERN · UTC')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent("Today's 8-tile shared challenge.")
+
+    const labels = ['Top left tile', 'Top right tile', 'Bottom left tile', 'Bottom right tile']
+    for (let index = 0; index < sequence.length; index += 1) {
+      act(() => { vi.advanceTimersByTime(300) })
+      const litTile = board.querySelector<HTMLButtonElement>('[aria-pressed="true"]')
+      expect(litTile).not.toBeNull()
+      expect(litTile).toHaveAttribute('aria-label', `${labels[sequence[index]]}, ${sequence[index] + 1}`)
+      act(() => { vi.advanceTimersByTime(440) })
+    }
+
+    for (const tile of sequence) fireEvent.click(screen.getByRole('button', { name: new RegExp(`${labels[tile]}, ${tile + 1}`, 'i') }))
+
+    expect(screen.getByRole('status')).toHaveTextContent('Daily challenge complete. You remembered all 8 tiles.')
+    expect(screen.getByRole('button', { name: /try daily again/i })).toBeInTheDocument()
+    expect(window.localStorage.getItem(ARCADE_DATA_KEY)).toBeNull()
   })
 
   it('saves the reduced-motion preference and restores it on the next visit', () => {

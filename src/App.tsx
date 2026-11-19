@@ -331,7 +331,7 @@ function Home({
             <div className="card-info">
               <div className="card-heading-line"><span className="game-number">03</span><span className="game-category">PATTERN MEMORY</span></div>
               <h3>Remember</h3>
-              <p>Watch the lights. Play the pattern back.</p>
+              <p>Practice a growing pattern or take on today's shared sequence.</p>
               <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · KEY</span><button className="play-card-button" type="button" onClick={onPlayPattern}>Play Pattern <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>

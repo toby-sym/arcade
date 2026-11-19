@@ -258,6 +258,9 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .phase-showing .pattern-console .frame-light i { background: var(--violet); box-shadow: 0 0 8px rgb(139 122 228 / 70%); }
 .phase-input .pattern-console .frame-light i { background: var(--green); box-shadow: 0 0 8px rgb(203 244 92 / 75%); }
 .phase-failed .pattern-console .frame-light i { background: var(--coral); box-shadow: 0 0 8px rgb(242 119 94 / 60%); }
+.phase-complete .pattern-console .frame-light i { background: var(--green); box-shadow: 0 0 8px rgb(203 244 92 / 75%); }
+.pattern-start-actions { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+.pattern-start-actions .button { width: 100%; }
 .pattern-board { width: 100%; aspect-ratio: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .pattern-tile { min-width: 0; min-height: 0; border: 0; display: grid; place-items: center; color: rgb(245 240 232 / 74%); font-size: clamp(1.25rem, 3vw, 2.25rem); font-weight: 700; font-variant-numeric: tabular-nums; cursor: pointer; touch-action: manipulation; user-select: none; transition: filter .14s ease, transform .14s ease, box-shadow .14s ease; }
 .pattern-tile-0 { background: #566d31; }

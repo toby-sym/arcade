@@ -61,4 +61,29 @@ describe('Pattern Memory rules', () => {
     expect(state.activeTile).toBeNull()
     expect(patternReducer(state, { type: 'advance' }).activeTile).toBe(3)
   })
+
+  it('finishes the fixed daily pattern without extending practice rounds', () => {
+    const sequence = [0, 3, 2]
+    let state = patternReducer(createPatternState(), { type: 'startDaily', sequence })
+    for (let index = 0; index < sequence.length; index += 1) {
+      state = patternReducer(state, { type: 'advance' })
+      state = patternReducer(state, { type: 'advance' })
+    }
+    expect(state.phase).toBe('input')
+
+    for (const tile of sequence) state = patternReducer(state, { type: 'choose', tile, nextTile: 0 })
+    expect(state.phase).toBe('complete')
+    expect(state.mode).toBe('daily')
+    expect(state.completedRounds).toBe(0)
+    expect(state.message).toBe('Daily challenge complete. You remembered all 3 tiles.')
+  })
+
+  it('ends a daily attempt after an incorrect tile', () => {
+    let state = patternReducer(createPatternState(), { type: 'startDaily', sequence: [1] })
+    state = patternReducer(state, { type: 'advance' })
+    state = patternReducer(state, { type: 'advance' })
+    state = patternReducer(state, { type: 'choose', tile: 0, nextTile: 2 })
+    expect(state.phase).toBe('failed')
+    expect(state.message).toContain('Daily challenge over for this run')
+  })
 })
