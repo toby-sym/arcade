@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, and Switchyard are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, and Prism Dash are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -183,6 +183,12 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Open **Switchyard** for the same freight timetable on a UTC date. Each car shows its depot; press **1–3**, use the arrow keys, or tap a switch button to set the route before the car reaches the junction.
 - A matching route delivers the cargo, builds your streak, and adds points. Three missed depots end the shift; safely route fifteen cars to finish. The timetable grows faster as your deliveries climb.
 - **Space** starts or resumes, **Escape** pauses, and **R** restarts the run. The best score is saved locally in this browser and does not sync.
+
+## Prism Dash controls
+
+- Open **Prism Dash** for the same three-lane course on a UTC date. Each checkpoint places a shard and a gate in different lanes; catch the shard for points or move to the open lane to stay safe.
+- Shift one lane with **Left / Right** or **A / D**. Press **1–3** or tap a lane button to move directly. Three gate hits end the run; clear all 24 checkpoints to reach the finish.
+- **Space** starts or resumes, **Escape** pauses, and **R** restarts the course. The highest run score is saved locally in this browser and does not sync.
 
 ## Letter Boxed controls
 

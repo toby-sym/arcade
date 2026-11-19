@@ -35,13 +35,13 @@ Arcade games use original names, presentation, rules, and puzzle content. Daily 
 | Orbit Courier | Pilot a drifting ship through debris and deliver cargo to three stations |
 | Color Conduit | Route four colored signals through a full board without crossing |
 | Switchyard | Time track switches to deliver freight cars to matching depots |
+| Prism Dash | Change lanes to catch light shards and dodge gates in a daily reflex run |
 
 ## Next candidates
 
 These ideas are ordered to add mechanics Arcade does not already have. Recheck the shipped catalogue before starting each game.
 
-1. **Prism Dash** — a one-button reflex run that changes lanes to catch light fragments and slip past shifting gates.
-2. **Gravity Loom** — rotate a chamber to redirect a rolling spark through portals and onto its matching receiver.
-3. **Tideglass** — plan short currents and open sluices to guide three drifting buoys into their marked harbor slots.
+1. **Gravity Loom** — rotate a chamber to redirect a rolling spark through portals and onto its matching receiver.
+2. **Tideglass** — plan short currents and open sluices to guide three drifting buoys into their marked harbor slots.
 
 Ideas can change as the catalogue grows. Keep each game self-contained, accessible, responsive, and playable offline; save personal bests in this browser.
