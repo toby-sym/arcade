@@ -801,7 +801,6 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .invaders-field { aspect-ratio: 1.08; }
 }
 
-.game-card-asteroids { grid-column: 2; }
 .game-card-asteroids:hover { transform: translateY(-3px); border-color: #65d5ef; box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
 .asteroids-card-art { border-color: #0d0b18; background: radial-gradient(ellipse at 50% 48%, #302848, #0e0b19 80%); }
 .asteroids-card-rock { position: absolute; width: 38px; height: 35px; background: #9287a6; clip-path: polygon(22% 3%, 54% 0, 78% 14%, 97% 44%, 83% 77%, 59% 99%, 27% 84%, 4% 63%, 0 27%); }
@@ -848,4 +847,70 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .asteroids-console { padding: 8px; border-width: 2px; border-radius: 10px; }
   .asteroids-console .frame-topline { height: 20px; padding-bottom: 8px; }
   .asteroids-status { margin-top: 9px; }
+}
+
+.game-card-missile:hover { border-color: #ff697d; transform: translateY(-3px); box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.missile-card-art { border-color: #0d0b18; background: radial-gradient(ellipse at 50% 64%, #352448, #0e0b19 78%); }
+.missile-card-trail { position: absolute; width: 2px; height: 64px; background: linear-gradient(transparent, #ff6687); transform-origin: top; box-shadow: 0 0 8px rgb(255 95 131 / 58%); }
+.missile-card-art .trail-one { top: 9%; left: 27%; transform: rotate(28deg); }
+.missile-card-art .trail-two { top: 4%; right: 25%; height: 48px; transform: rotate(-33deg); }
+.missile-card-blast { position: absolute; top: 56%; left: 50%; width: 48px; height: 48px; border: 2px solid #eaff91; border-radius: 50%; background: rgb(202 255 64 / 12%); box-shadow: 0 0 20px rgb(202 255 64 / 36%), inset 0 0 12px rgb(202 255 64 / 24%); transform: translate(-50%, -50%); }
+.missile-card-city { position: absolute; bottom: 10%; width: 27px; height: 21px; background: #a58bca; clip-path: polygon(0 35%, 25% 35%, 25% 0, 58% 0, 58% 25%, 100% 25%, 100% 100%, 0 100%); box-shadow: 0 0 10px rgb(187 150 255 / 42%); }
+.missile-card-art .city-one { left: 20%; }
+.missile-card-art .city-two { left: calc(50% - 13px); height: 29px; background: #c1a0eb; }
+.missile-card-art .city-three { right: 20%; width: 34px; }
+
+.missile-layout { grid-template-columns: minmax(220px, .78fr) minmax(320px, 1.22fr); }
+.missile-copy h1 { font-size: clamp(2rem, 3.2vw, 2.6rem); letter-spacing: -.075em; }
+.missile-score { max-width: 290px; margin-top: 14px; }
+.missile-silo-readout { margin-top: 12px; padding-top: 10px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; border-top: 1px solid #51466f; color: #b6aecb; font-size: .68rem; }
+.missile-silo-readout .score-caption { grid-column: 1 / -1; }
+.missile-silo-readout > span:not(.score-caption) { white-space: nowrap; }
+.missile-silo-readout strong { color: var(--cyan); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.missile-play-column { max-width: 650px; }
+.missile-console { padding: 14px; border: 3px solid #574873; border-radius: 15px; background: linear-gradient(145deg, #29223b 0%, #171425 80%); box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.missile-console .frame-topline { height: 22px; padding: 0 1px 11px; }
+.missile-field { position: relative; width: 100%; aspect-ratio: 1; overflow: hidden; border: 2px solid #403458; border-radius: 8px; background-color: #0e0b19; background-image: radial-gradient(circle, rgb(187 150 255 / 45%) 0 1px, transparent 1.5px), radial-gradient(circle, rgb(69 231 255 / 35%) 0 1px, transparent 1.5px), linear-gradient(180deg, transparent 76%, rgb(54 42 72 / 35%)); background-position: 26px 18px, 77px 51px, 0 0; background-size: 91px 83px, 137px 109px, 100% 100%; box-shadow: inset 0 0 36px rgb(69 231 255 / 5%); outline: none; cursor: crosshair; touch-action: none; user-select: none; }
+.missile-field::after { content: ""; position: absolute; z-index: 3; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0 3px, rgb(5 4 12 / 17%) 3px 4px); pointer-events: none; }
+.missile-field:focus-visible { outline: 3px solid var(--green); outline-offset: 4px; }
+.incoming-missile, .defense-missile { position: absolute; z-index: 1; width: 2px; height: 20px; transform-origin: center; }
+.incoming-missile { background: linear-gradient(transparent, #ff6687 48%, #fff1e9); box-shadow: 0 0 7px rgb(255 95 131 / 64%); }
+.defense-missile { width: 3px; height: 25px; background: linear-gradient(transparent, #69efff 55%, #fff8e4); box-shadow: 0 0 8px rgb(69 231 255 / 72%); }
+.missile-blast { position: absolute; z-index: 1; transform: translate(-50%, -50%); border: 2px solid #eaff91; border-radius: 50%; background: rgb(202 255 64 / 12%); box-shadow: 0 0 18px rgb(202 255 64 / 34%), inset 0 0 14px rgb(69 231 255 / 19%); }
+.missile-city { position: absolute; z-index: 1; width: 30px; height: 26px; transform: translate(-50%, -50%); background: #bda0e9; clip-path: polygon(0 42%, 19% 42%, 19% 13%, 39% 13%, 39% 0, 63% 0, 63% 31%, 100% 31%, 100% 100%, 0 100%); filter: drop-shadow(0 0 6px rgb(187 150 255 / 55%)); }
+.missile-city.city-tone-1 { background: #8cddda; }
+.missile-city.city-tone-2 { background: #d5b77c; }
+.missile-city.city-lost { opacity: .13; filter: none; }
+.missile-silo { position: absolute; z-index: 1; width: 24px; height: 18px; transform: translate(-50%, -50%); border: 1px solid #7f71a0; border-radius: 8px 8px 2px 2px; color: #eaff91; background: linear-gradient(90deg, #51466f, #282238); box-shadow: 0 0 9px rgb(69 231 255 / 17%); font: 700 8px/18px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-align: center; }
+.missile-silo i { position: absolute; left: 9px; bottom: 13px; width: 5px; height: 15px; border: 1px solid #a9fcff; border-radius: 3px 3px 0 0; background: #48d9ee; box-shadow: 0 0 7px rgb(69 231 255 / 48%); }
+.missile-silo.silo-empty { color: #817991; border-color: #494055; background: #282333; box-shadow: none; }
+.missile-silo.silo-empty i { border-color: #655c71; background: #51495c; box-shadow: none; }
+.missile-aim { position: absolute; z-index: 2; width: 27px; height: 27px; transform: translate(-50%, -50%); border: 1px solid rgb(255 248 228 / 72%); border-radius: 50%; box-shadow: 0 0 7px rgb(255 248 228 / 28%); pointer-events: none; }
+.missile-aim::before, .missile-aim::after { content: ""; position: absolute; background: #fff8e4; box-shadow: 0 0 5px rgb(255 248 228 / 46%); }
+.missile-aim::before { top: 12px; left: -5px; width: 35px; height: 1px; }
+.missile-aim::after { top: -5px; left: 12px; width: 1px; height: 35px; }
+.missile-overlay { position: absolute; z-index: 2; inset: 0; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: rgb(12 9 23 / 63%); pointer-events: none; }
+.missile-overlay strong { color: var(--green); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: clamp(1.1rem, 3vw, 1.7rem); text-transform: uppercase; text-shadow: 0 0 14px rgb(202 255 64 / 18%); }
+.missile-overlay span { max-width: 280px; margin-top: 8px; color: #e0d8e9; font-size: .76rem; line-height: 1.5; }
+.missile-console-footer { height: 26px; padding: 9px 1px 0; display: flex; justify-content: space-between; align-items: center; color: #c1b5d5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .53rem; letter-spacing: .12em; }
+.missile-touch-controls { width: 100%; max-width: 540px; margin: 12px 0 0; display: grid; grid-template-columns: repeat(4, 52px) minmax(100px, 1fr); align-items: center; gap: 8px; }
+.missile-touch-controls .dpad-button { width: 52px; height: 46px; font-size: 1.15rem; }
+.missile-fire-button { width: 100%; min-width: 0; min-height: 46px; }
+.missile-touch-controls button:disabled { opacity: .44; cursor: default; }
+.missile-status { min-height: 24px; margin: 12px 2px 0; color: #bfb5d1; font-size: .74rem; line-height: 1.5; }
+
+@media (max-width: 650px) {
+  .missile-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .missile-copy h1 { font-size: clamp(1.95rem, 9vw, 2.55rem); }
+  .missile-play-column { width: 100%; max-width: 540px; justify-self: center; }
+  .missile-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .missile-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .missile-status { margin-top: 9px; }
+}
+
+@media (max-width: 430px) {
+  .missile-touch-controls { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+  .missile-touch-controls .dpad-button { width: 100%; }
+  .missile-fire-button { grid-column: 1 / -1; }
+  .missile-console-footer { font-size: .48rem; letter-spacing: .07em; }
 }
