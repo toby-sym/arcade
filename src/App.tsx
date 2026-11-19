@@ -10,6 +10,7 @@ import { ReactionGame } from './games/ReactionGame'
 import { PatternGame } from './games/PatternGame'
 import { BreakoutGame } from './games/BreakoutGame'
 import { PongGame } from './games/PongGame'
+import { InvadersGame } from './games/InvadersGame'
 import type { PongDifficulty } from './games/pong'
 import { clearArcadeBests, readArcadeData, withDailyPatternCompletion, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
@@ -37,7 +38,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -140,6 +141,7 @@ function App() {
   const openPattern = () => setScreen('pattern')
   const openBreakout = () => setScreen('breakout')
   const openPong = () => setScreen('pong')
+  const openInvaders = () => setScreen('invaders')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -189,6 +191,7 @@ function App() {
             onPlayPattern={openPattern}
             onPlayBreakout={openBreakout}
             onPlayPong={openPong}
+            onPlayInvaders={openInvaders}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             hasRecords={Object.values(arcadeData.bests).some((record) => record !== null)}
@@ -224,6 +227,12 @@ function App() {
             onRecordScore={(score) => recordBest('pong', score)}
             difficulty={arcadeData.preferences.pongDifficulty}
             onDifficultyChange={setPongDifficulty}
+          />
+        ) : screen === 'invaders' ? (
+          <InvadersGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.invaders}
+            onRecordScore={(score) => recordBest('invaders', score)}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -346,6 +355,7 @@ function Home({
   onPlayPattern,
   onPlayBreakout,
   onPlayPong,
+  onPlayInvaders,
   reduceMotion,
   onReduceMotionChange,
   hasRecords,
@@ -359,6 +369,7 @@ function Home({
   onPlayPattern: () => void
   onPlayBreakout: () => void
   onPlayPong: () => void
+  onPlayInvaders: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   hasRecords: boolean
@@ -391,7 +402,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">05 PLAYABLE</span>
+          <span className="section-count">06 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -461,6 +472,19 @@ function Home({
               <h3>Pong</h3>
               <p>Rally the computer. First to five takes the match.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · W S · DRAG</span><button className="play-card-button" type="button" onClick={onPlayPong}>Play Pong <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-invaders">
+            <div className="card-art invaders-card-art" aria-hidden="true">
+              <span className="invaders-card-alien alien-one" /><span className="invaders-card-alien alien-two" /><span className="invaders-card-alien alien-three" />
+              <span className="invaders-card-shot" /><span className="invaders-card-ship" />
+              <span className="card-art-index">06</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">06</span><span className="game-category">ARCADE SHOOTER</span></div>
+              <h3>Space Invaders</h3>
+              <p>Hold the line and clear the formation before it reaches your ship.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · A D · SPACE</span><button className="play-card-button" type="button" onClick={onPlayInvaders}>Play Invaders <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
