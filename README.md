@@ -1,6 +1,6 @@
 # Arcade
 
-A small browser arcade for a quick break. The first cabinet is Snake; reaction time and pattern memory are planned next.
+A small browser arcade for a quick break. Snake and Reaction are playable; pattern memory is planned next.
 
 ## Local development
 
@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Press **Play Snake** to open the game.
+Vite prints the local URL after startup. Choose Snake or Reaction from the game floor.
 
 ## Snake controls
 
@@ -22,13 +22,22 @@ Vite prints the local URL after startup. Press **Play Snake** to open the game.
 
 Collect dots without hitting the walls or your tail. The game pauses when the browser tab is hidden. Motion effects honor the system reduced-motion preference.
 
+## Reaction controls
+
+- Press **Start a round**, then wait for the red panel to turn green.
+- Tap or click the panel, or press **Space**, as soon as it turns green.
+- Pressing before the signal ends the round. **Restart** resets the current attempt.
+- If the browser tab is hidden during a round, the attempt resets.
+
+Each reaction time is measured locally with a high-resolution browser timer. No attempt data is sent or saved.
+
 ## Checks
 
 ```sh
 npm run check
 ```
 
-This runs TypeScript checks, Snake rule and interface tests, release-promotion integration checks, a dependency audit, and a production build.
+This runs TypeScript checks, Snake and Reaction interface tests, release-promotion integration checks, a dependency audit, and a production build.
 
 ## Container
 
