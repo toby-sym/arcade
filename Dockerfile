@@ -12,7 +12,7 @@ RUN if [ -z "$APP_VERSION" ]; then \
     fi && VITE_APP_VERSION="$APP_VERSION" npm run build
 
 FROM nginxinc/nginx-unprivileged:alpine
-COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --chmod=644 deploy/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
