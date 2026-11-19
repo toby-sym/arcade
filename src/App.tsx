@@ -45,6 +45,7 @@ import { createDailyCrosswordState, type DailyCrosswordProgress } from './games/
 const MinesweeperGame = lazy(() => import('./games/MinesweeperGame').then(({ MinesweeperGame }) => ({ default: MinesweeperGame })))
 const MazeDashGame = lazy(() => import('./games/MazeDashGame').then(({ MazeDashGame }) => ({ default: MazeDashGame })))
 const SkylineSkipGame = lazy(() => import('./games/SkylineSkipGame').then(({ SkylineSkipGame }) => ({ default: SkylineSkipGame })))
+const OrbitCourierGame = lazy(() => import('./games/OrbitCourierGame').then(({ OrbitCourierGame }) => ({ default: OrbitCourierGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -83,6 +84,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'mazedash', title: 'Maze Dash', categories: ['arcade'], terms: 'maze chase gems sentries' },
   { id: 'skylineskip', title: 'Skyline Skip', categories: ['arcade'], terms: 'platform runner rooftop jumps' },
   { id: 'ciphercircuit', title: 'Cipher Circuit', categories: ['daily'], terms: 'code breaker signals colors logic' },
+  { id: 'orbitcourier', title: 'Orbit Courier', categories: ['arcade'], terms: 'space flight delivery thrust brake planets' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -106,7 +108,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -465,6 +467,7 @@ function App() {
   const openMazeDash = () => setScreen('mazedash')
   const openSkylineSkip = () => setScreen('skylineskip')
   const openCipherCircuit = () => setScreen('ciphercircuit')
+  const openOrbitCourier = () => setScreen('orbitcourier')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -537,6 +540,7 @@ function App() {
             onPlayMazeDash={openMazeDash}
             onPlaySkylineSkip={openSkylineSkip}
             onPlayCipherCircuit={openCipherCircuit}
+            onPlayOrbitCourier={openOrbitCourier}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -722,6 +726,12 @@ function App() {
             progress={arcadeData.dailyCipherCircuitGame}
             onSaveProgress={saveDailyCipherCircuitGame}
           />
+        ) : screen === 'orbitcourier' ? (
+          <OrbitCourierGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.orbitCourier}
+            onRecordScore={(score) => recordBest('orbitCourier', score)}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -866,6 +876,7 @@ function Home({
   onPlayMazeDash,
   onPlaySkylineSkip,
   onPlayCipherCircuit,
+  onPlayOrbitCourier,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -907,6 +918,7 @@ function Home({
   onPlayMazeDash: () => void
   onPlaySkylineSkip: () => void
   onPlayCipherCircuit: () => void
+  onPlayOrbitCourier: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1336,6 +1348,21 @@ function Home({
               <h3>Cipher Circuit</h3>
               <p>Read the feedback, reroute the signals, and align the four-slot key.</p>
               <div className="card-bottom"><span className="controls-label">1–6 · ENTER · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayCipherCircuit}>Play Cipher Circuit <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-orbitcourier" hidden={!visibleGameIds.has('orbitcourier')}>
+            <div className="card-art orbit-courier-card-art" aria-hidden="true">
+              <span className="orbit-card-route"><i /><i /><i /></span>
+              <span className="orbit-card-ship">▲</span>
+              <span className="orbit-card-debris orbit-card-debris-one" />
+              <span className="orbit-card-debris orbit-card-debris-two" />
+              <span className="card-art-index">27</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">27</span><span className="game-category">ARCADE FLIGHT</span></div>
+              <h3>Orbit Courier</h3>
+              <p>Brake your drift, dodge moving debris, and deliver three packages across the field.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · WASD · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayOrbitCourier}>Play Orbit Courier <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
