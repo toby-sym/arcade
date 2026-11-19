@@ -1837,3 +1837,53 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .pips-tray { gap: 4px; }
   .pips-domino { min-height: 40px; gap: 4px; }
 }
+
+.game-card-daily-crossword:hover { border-color: #e7ce79; transform: translateY(-3px); box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.daily-crossword-card-art { border-color: #66583b; background: radial-gradient(ellipse at 50% 54%, #514738, #0e0b19 80%); }
+.daily-crossword-card-grid { position: absolute; inset: 18px 32px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: repeat(7, minmax(0, 1fr)); border: 1px solid #d1b45a; transform: rotate(-3deg); }
+.daily-crossword-card-grid i { display: grid; place-items: center; border: 1px solid #645844; color: #f6f0dc; background: #272230; font: 800 .36rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-style: normal; }
+.daily-crossword-card-grid i.daily-crossword-card-block { border-color: #090811; background: #08070d; }
+.daily-crossword-layout { grid-template-columns: minmax(250px, .78fr) minmax(380px, 1.22fr); }
+.daily-crossword-copy h1 { font-size: clamp(1.9rem, 3vw, 2.45rem); letter-spacing: -.075em; }
+.daily-crossword-score { max-width: 395px; margin-top: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+.daily-crossword-run-stat { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.daily-crossword-run-stat .score-value { font-size: 1.75rem; }
+.daily-crossword-run-stat .score-value small { color: #b6aecb; font-size: .75rem; letter-spacing: 0; }
+.daily-crossword-score .local-best-readout { min-width: 0; border-left: 1px solid #403458; padding-left: 9px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.daily-crossword-score .local-best-readout .score-value { font-size: 1.35rem; }
+.daily-crossword-local-note { max-width: 390px; margin: 13px 0 0; color: #afa5c3; font-size: .7rem; line-height: 1.55; }
+.daily-crossword-play-column { max-width: 600px; }
+.daily-crossword-console { padding: 14px; border: 3px solid #635743; border-radius: 15px; background: linear-gradient(145deg, #382f29 0%, #171425 80%); box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.daily-crossword-console .frame-topline { height: 22px; padding: 0 1px 11px; }
+.daily-crossword-grid { width: min(100%, 420px); grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: repeat(7, minmax(0, 1fr)); border-color: #d5bf7a; }
+.daily-crossword-grid .mini-crossword-cell { font-size: clamp(.9rem, 2.7vw, 1.2rem); }
+.daily-crossword-cell-number { font-size: .36rem; }
+.daily-crossword-clues { max-width: 560px; }
+.daily-crossword-clues button { min-height: 28px; font-size: .58rem; }
+.daily-crossword-keyboard { max-width: 560px; }
+.daily-crossword-actions { max-width: 560px; }
+.daily-crossword-status { min-height: 24px; margin: 8px 2px 0; color: #c5bbd8; font-size: .71rem; line-height: 1.45; text-align: center; }
+.daily-crossword-console-footer { height: 25px; padding: 8px 1px 0; display: flex; justify-content: space-between; align-items: center; color: #c1b5d5; font: 700 .48rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.daily-crossword-complete { min-height: 420px; }
+.daily-crossword-keyboard-hint { margin: 10px 0 0; color: #aaa0bd; font-size: .63rem; text-align: center; }
+
+@media (max-width: 650px) {
+  .daily-crossword-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .daily-crossword-copy h1 { font-size: clamp(1.8rem, 8.5vw, 2.45rem); }
+  .daily-crossword-play-column { width: 100%; max-width: 560px; justify-self: center; }
+  .daily-crossword-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .daily-crossword-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .daily-crossword-grid { width: min(100%, 420px); }
+  .daily-crossword-grid .mini-crossword-cell { font-size: clamp(.9rem, 4.5vw, 1.2rem); }
+}
+
+@media (max-width: 380px) {
+  .daily-crossword-score { gap: 6px; }
+  .daily-crossword-run-stat .score-value { font-size: 1.5rem; }
+  .daily-crossword-score .local-best-readout { padding-left: 6px; }
+  .daily-crossword-score .score-caption { font-size: .46rem; }
+  .daily-crossword-clues { gap: 5px; }
+  .daily-crossword-clues section { padding: 5px; }
+  .daily-crossword-clues button { padding: 4px 3px; font-size: .53rem; }
+  .daily-crossword-console-footer { font-size: .42rem; }
+}

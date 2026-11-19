@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, and Pips are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, and Pips are ready for free play.
 
 ## Local development
 
@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the twenty-one games from the game floor.
+Vite prints the local URL after startup. Choose any of the twenty-two games from the game floor.
 
 ## Snake controls
 
@@ -127,6 +127,12 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Fill all five Across and five Down clues. **Backspace** erases, **Hint** reveals and locks one square, and **Clear entries** restarts the daily board.
 - The same puzzle is shared for a UTC date. Your entries and hints stay saved in this browser. The fewest hints for a completed grid is saved as a local personal best. Puzzles are bundled with Arcade; no external game service is used.
 
+## Daily Crossword controls
+
+- Open **Daily Crossword** for a roomier seven-by-seven grid with twelve clues across and twelve down. Select a square or clue, then type **A–Z** or use the on-screen letter pad. **Arrow keys** move through open squares; **Enter** switches between Across and Down.
+- **Backspace** erases, **Hint** reveals and locks one square, and **Clear entries** resets the same daily board.
+- The same puzzle is shared for a UTC date. Your entries and hints stay saved in this browser. The fewest hints for a completed grid is saved as a local personal best. Puzzles are bundled with Arcade; no external game service is used.
+
 ## Letter Boxed controls
 
 - Open **Letter Boxed** for a daily box of twelve letters arranged on four sides. Type **A–Z** or tap the side letters to make a word, then select **Enter word** or press **Enter**.
@@ -165,7 +171,7 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 
 ## Local records and preferences
 
-Arcade saves the highest scores for Snake, Asteroids, Space Invaders, Missile Command, Block Drop, Breakout, and a completed Spelling Bee hive; Pong's highest points in a match; the fewest guesses for a Word Guess solve; the fewest mistakes for completed Connections and Tiles boards; the fewest hints for completed Strands, Sudoku, and Mini Crossword grids; the fewest words for a completed Letter Boxed chain; the fewest undos for completed Domino Logic and Pips boards; the fewest turns for a completed Glyph Match board; the fewest moves for a completed Vertex loop; the fastest Reaction time; the most Pattern Memory practice rounds completed; and the latest daily Pattern Memory completion date in browser storage. Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, and Pips save their current daily progress there too. The **Reduce motion**, **Arcade sounds**, and Pong opponent pace preferences are saved there as well. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily progress and preferences stay saved. The system reduced-motion setting is always respected.
+Arcade saves the highest scores for Snake, Asteroids, Space Invaders, Missile Command, Block Drop, Breakout, and a completed Spelling Bee hive; Pong's highest points in a match; the fewest guesses for a Word Guess solve; the fewest mistakes for completed Connections and Tiles boards; the fewest hints for completed Strands, Sudoku, Mini Crossword, and Daily Crossword grids; the fewest words for a completed Letter Boxed chain; the fewest undos for completed Domino Logic and Pips boards; the fewest turns for a completed Glyph Match board; the fewest moves for a completed Vertex loop; the fastest Reaction time; the most Pattern Memory practice rounds completed; and the latest daily Pattern Memory completion date in browser storage. Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, and Pips save their current daily progress there too. The **Reduce motion**, **Arcade sounds**, and Pong opponent pace preferences are saved there as well. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily progress and preferences stay saved. The system reduced-motion setting is always respected.
 
 ## Install and offline play
 
