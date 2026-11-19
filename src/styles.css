@@ -1610,3 +1610,52 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .domino-cell { font-size: 1.15rem; }
   .domino-console-footer { font-size: .42rem; }
 }
+
+.game-card-glyphmatch:hover { border-color: #a7e05b; transform: translateY(-3px); box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.glyphmatch-card-art { border-color: #45605a; background: radial-gradient(ellipse at 50% 52%, #273e3d, #0e0b19 80%); }
+.glyphmatch-card-grid { position: absolute; inset: 24px 35%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0, 1fr)); gap: 3px; transform: rotate(-4deg); }
+.glyphmatch-card-grid i { display: grid; place-items: center; border: 1px solid #53807a; color: #c3f3d7; background: linear-gradient(145deg, #21504f, #183031); box-shadow: inset 0 -2px rgb(0 0 0 / 23%); font: 800 .64rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-style: normal; }
+.glyphmatch-card-grid i:nth-child(4n + 1), .glyphmatch-card-grid i:nth-child(7n + 2) { border-color: #d3dd68; color: #1b2320; background: #b3d65a; }
+.glyphmatch-layout { grid-template-columns: minmax(220px, .72fr) minmax(320px, 1.28fr); }
+.glyphmatch-copy h1 { font-size: clamp(2rem, 3.2vw, 2.65rem); letter-spacing: -.075em; }
+.glyphmatch-score { max-width: 360px; margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+.glyphmatch-run-stat { display: flex; flex-direction: column; gap: 5px; }
+.glyphmatch-run-stat .score-value { font-size: 2rem; }
+.glyphmatch-run-stat .score-value small { color: #b6aecb; font-size: .8rem; letter-spacing: 0; }
+.glyphmatch-score .local-best-readout { border-left: 1px solid #403458; padding-left: 15px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.glyphmatch-score .local-best-readout .score-value { font-size: 1.45rem; }
+.glyphmatch-local-note { max-width: 365px; margin: 13px 0 0; color: #afa5c3; font-size: .7rem; line-height: 1.55; }
+.glyphmatch-play-column { max-width: 550px; }
+.glyphmatch-console { padding: 14px; border: 3px solid #536d63; border-radius: 15px; background: linear-gradient(145deg, #26342e 0%, #171425 78%); box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.glyphmatch-console .frame-topline { height: 22px; padding: 0 1px 11px; }
+.glyphmatch-console .frame-light { color: #c6dc71; }
+.glyphmatch-console .frame-light i { background: #b4dc5a; }
+.glyphmatch-console .frame-light.phase-complete i { background: #9be0a7; box-shadow: 0 0 9px rgb(155 224 167 / 65%); }
+.glyphmatch-board { width: min(100%, 440px); margin: 0 auto; padding: clamp(7px, 1.5vw, 12px); aspect-ratio: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0, 1fr)); gap: clamp(5px, 1.2vw, 10px); border: 2px solid #60766b; border-radius: 7px; background: #11131a; box-shadow: inset 0 0 28px rgb(159 211 111 / 9%); }
+.glyphmatch-tile { min-width: 0; min-height: 0; border: 1px solid #52625a; border-radius: 5px; padding: 0; display: grid; place-items: center; color: #a6d66a; background: linear-gradient(145deg, #29362f, #1a2022); box-shadow: inset 0 1px rgb(255 255 255 / 7%), 0 3px 0 #0a0b0e; font: 800 clamp(1.25rem, 5vw, 2.25rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; cursor: pointer; touch-action: manipulation; transition: border-color .14s ease, transform .14s ease, background .14s ease, color .14s ease; }
+.glyphmatch-tile:hover:not(:disabled) { transform: translateY(-2px); border-color: #c9e676; color: #e8f9b6; }
+.glyphmatch-tile:focus-visible { z-index: 1; outline: 3px solid #75d9e0; outline-offset: 2px; }
+.glyphmatch-tile-visible { border-color: #d3dd68; color: #e8f7d2; background: linear-gradient(145deg, #39594d, #253d38); box-shadow: inset 0 1px rgb(255 255 255 / 12%), 0 3px 0 #121d1a; }
+.glyphmatch-tile-matched { border-color: #8ebf53; color: #152019; background: linear-gradient(145deg, #b8df66, #80b84b); cursor: default; }
+.glyphmatch-tile-mismatch { border-color: #ff718b; color: #ffe0e5; background: linear-gradient(145deg, #713a4b, #422332); }
+.glyphmatch-tile:disabled { opacity: 1; }
+.glyphmatch-actions { margin: 11px auto 0; display: flex; justify-content: center; }
+.glyphmatch-actions .button { min-height: 36px; padding: 6px 12px; font-size: .61rem; }
+.glyphmatch-actions .button:disabled { cursor: not-allowed; opacity: .45; }
+.glyphmatch-status { min-height: 32px; margin: 8px 2px 0; color: #dfebd8; font-size: .7rem; line-height: 1.45; text-align: center; }
+.glyphmatch-console-footer { min-height: 23px; padding: 7px 1px 0; display: flex; justify-content: space-between; color: #b5c1a7; font: 700 .47rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.glyphmatch-keyboard-hint { margin: 11px 0 0; color: #aaa0bd; font-size: .62rem; text-align: center; }
+
+@media (max-width: 650px) {
+  .glyphmatch-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .glyphmatch-copy h1 { font-size: clamp(1.95rem, 9vw, 2.55rem); }
+  .glyphmatch-play-column { width: 100%; max-width: 520px; justify-self: center; }
+  .glyphmatch-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .glyphmatch-board { width: min(100%, 440px); }
+}
+
+@media (max-width: 380px) {
+  .glyphmatch-score { gap: 10px; }
+  .glyphmatch-console-footer { font-size: .42rem; }
+  .glyphmatch-tile { font-size: clamp(1.1rem, 8vw, 1.5rem); }
+}
