@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, and Cipher Circuit are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, and Orbit Courier are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the twenty-six games from the game floor.
+Vite prints the local URL after startup. Choose any of the twenty-seven games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -164,6 +164,13 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Choose four signals from the palette by touch, click, or keys **1–6**. Press **Enter** or **Send pulse** to check a row. **Backspace** removes the latest signal; **Clear row** empties the current pulse.
 - **Locked** means the signal and socket are correct. **Rerouted** means the signal belongs in another socket. Repeated signals are possible, and each signal can only contribute to feedback once. Solve the key in eight pulses.
 - Your rows and unfinished input stay saved in this browser. The fewest pulses for a solve is saved as a local personal best; progress and records do not sync.
+
+## Orbit Courier controls
+
+- Pilot with **Left / Right** or **A / D** to turn. Hold **Up / W** to thrust and **Down / S** to brake drift. The field wraps at its edges, so plan your approach around the route rather than fighting your momentum.
+- Carry three packages to their gold station rings. Enter a ring and slow below **76 units per second**, then press **Space** or **Dock cargo**. Debris strikes use one of three hull points and return you to the last dock.
+- On a phone, hold the turn, thrust, and brake buttons, then tap **Dock cargo**. **Escape** pauses the flight; **R** restarts the route.
+- A smoother dock earns more points, with time and remaining hull bonuses for a complete route. Your highest score is saved locally in this browser and does not sync.
 
 ## Letter Boxed controls
 
