@@ -47,6 +47,7 @@ describe('browser-local Arcade data', () => {
     delete (previousVersionBackup.bests as Record<string, unknown>).mazeDash
     delete (previousVersionBackup.bests as Record<string, unknown>).skylineSkip
     delete (previousVersionBackup.bests as Record<string, unknown>).cipherCircuit
+    delete (previousVersionBackup.bests as Record<string, unknown>).orbitCourier
     const parsedPreviousVersion = parseArcadeDataBackup(JSON.stringify(previousVersionBackup))
     expect(parsedPreviousVersion?.dailyMinesweeperGame).toBeNull()
     expect(parsedPreviousVersion?.bests.minesweeper).toBeNull()
@@ -54,6 +55,7 @@ describe('browser-local Arcade data', () => {
     expect(parsedPreviousVersion?.bests.skylineSkip).toBeNull()
     expect(parsedPreviousVersion?.dailyCipherCircuitGame).toBeNull()
     expect(parsedPreviousVersion?.bests.cipherCircuit).toBeNull()
+    expect(parsedPreviousVersion?.bests.orbitCourier).toBeNull()
     expect(parseArcadeDataBackup(' '.repeat(ARCADE_BACKUP_MAX_BYTES + 1))).toBeNull()
   })
 
@@ -77,7 +79,7 @@ describe('browser-local Arcade data', () => {
       dailyCrosswordGame: null,
       dailyMinesweeperGame: toMinesweeperProgress(createMinesweeperState('2026-11-19')),
       dailyCipherCircuitGame: null,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null },
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
 
@@ -109,6 +111,8 @@ describe('browser-local Arcade data', () => {
     expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, skylineSkip: 280 } }, 'skylineSkip', 260)).toBeNull()
     expect(withImprovedBest(reactionRecord!, 'cipherCircuit', 3)?.bests.cipherCircuit).toBe(3)
     expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, cipherCircuit: 3 } }, 'cipherCircuit', 4)).toBeNull()
+    expect(withImprovedBest(reactionRecord!, 'orbitCourier', 2200)?.bests.orbitCourier).toBe(2200)
+    expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, orbitCourier: 2200 } }, 'orbitCourier', 2100)).toBeNull()
     expect(withImprovedBest(reactionRecord!, 'wordPuzzle', 4)?.bests.wordPuzzle).toBe(4)
     expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, wordPuzzle: 3 } }, 'wordPuzzle', 4)).toBeNull()
   })
@@ -149,7 +153,7 @@ describe('browser-local Arcade data', () => {
       dailyCrosswordGame: null,
       dailyMinesweeperGame: toMinesweeperProgress(createMinesweeperState('2026-11-19')),
       dailyCipherCircuitGame: null,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: 61, mazeDash: null, skylineSkip: null, cipherCircuit: null },
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: 61, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
     expect(clearArcadeBests(initial)).toEqual({
@@ -170,7 +174,7 @@ describe('browser-local Arcade data', () => {
       dailyCrosswordGame: null,
       dailyMinesweeperGame: toMinesweeperProgress(createMinesweeperState('2026-11-19')),
       dailyCipherCircuitGame: null,
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null },
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' },
     })
     expect(initial.bests.snake).toBe(12)
@@ -207,7 +211,7 @@ describe('browser-local Arcade data', () => {
       dailyCrosswordGame: null,
       dailyMinesweeperGame: null,
       dailyCipherCircuitGame: null,
-      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null },
+      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
 
