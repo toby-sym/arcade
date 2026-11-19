@@ -23,15 +23,29 @@ describe('daily mini crossword', () => {
       const date = new Date(`${DATE}T00:00:00.000Z`)
       date.setUTCDate(date.getUTCDate() + offset)
       const puzzle = createMiniCrosswordPuzzle(date.toISOString().slice(0, 10))
-      expect(puzzle.across).toHaveLength(MINI_CROSSWORD_SIDE)
-      expect(puzzle.down).toHaveLength(MINI_CROSSWORD_SIDE)
-      for (let number = 0; number < MINI_CROSSWORD_SIDE; number += 1) {
-        const acrossWord = puzzle.solution.slice(number * MINI_CROSSWORD_SIDE, (number + 1) * MINI_CROSSWORD_SIDE).join('')
-        const downWord = Array.from({ length: MINI_CROSSWORD_SIDE }, (_, row) => puzzle.solution[row * MINI_CROSSWORD_SIDE + number]).join('')
-        expect(acrossWord).toBe(puzzle.across[number]!.answer)
-        expect(downWord).toBe(puzzle.down[number]!.answer)
-        expect(puzzle.across[number]!.clue.length).toBeGreaterThan(0)
-        expect(puzzle.down[number]!.clue.length).toBeGreaterThan(0)
+      expect(puzzle.across).toHaveLength(5)
+      expect(puzzle.down).toHaveLength(5)
+      expect(puzzle.solution.filter((cell) => cell !== '#')).toHaveLength(21)
+      expect(puzzle.across.map((entry) => entry.number)).toEqual([1, 4, 7, 8, 9])
+      expect(puzzle.down.map((entry) => entry.number)).toEqual([1, 2, 3, 5, 6])
+      const allEntries = [...puzzle.across, ...puzzle.down]
+      expect(new Set(allEntries.map((entry) => entry.answer)).size).toBe(10)
+      for (const entry of allEntries) {
+        expect(entry.cells.map((cell) => puzzle.solution[cell]).join('')).toBe(entry.answer)
+        expect(entry.clue.length).toBeGreaterThan(0)
+      }
+      expect(puzzle.across.map((entry) => entry.answer.length)).toEqual([3, 5, 5, 5, 3])
+      expect(puzzle.down.map((entry) => entry.answer.length)).toEqual([4, 4, 5, 4, 4])
+
+      const acrossCells = new Set(puzzle.across.flatMap((entry) => entry.cells))
+      const downCells = new Set(puzzle.down.flatMap((entry) => entry.cells))
+      expect(acrossCells.size).toBe(21)
+      expect(downCells).toEqual(acrossCells)
+      for (const cell of acrossCells) {
+        const crossingLetters = allEntries
+          .filter((entry) => entry.cells.includes(cell))
+          .map((entry) => entry.answer[entry.cells.indexOf(cell)])
+        expect(new Set(crossingLetters).size).toBe(1)
       }
       dailyBoards.add(puzzle.solution.join(''))
     }
@@ -43,8 +57,8 @@ describe('daily mini crossword', () => {
     const across = state.across[0]!
     expect(miniCrosswordEntry(state)).toEqual(across)
     for (const letter of across.answer) state = miniCrosswordReducer(state, { type: 'letter', letter })
-    expect(state.board.slice(0, 5).join('')).toBe(across.answer)
-    expect(state.selectedCell).toBe(5)
+    expect(across.cells.map((cell) => state.board[cell]).join('')).toBe(across.answer)
+    expect(state.selectedCell).toBe(across.cells.at(-1))
 
     state = miniCrosswordReducer(state, { type: 'select', index: 2 })
     state = miniCrosswordReducer(state, { type: 'toggleDirection' })
@@ -75,9 +89,11 @@ describe('daily mini crossword', () => {
     expect(restored.hintsUsed).toBe(1)
     expect(restored.hintedCells).toEqual([hintedCell])
     expect(validMiniCrosswordProgress({ ...progress, hintedCells: [25] })).toBe(false)
+    expect(miniCrosswordReducer(state, { type: 'select', index: 3 })).toBe(state)
 
     state = miniCrosswordReducer(restored, { type: 'reset' })
-    expect(state.board.every((letter) => letter === '')).toBe(true)
+    expect(state.board.filter((letter) => letter === '#')).toHaveLength(4)
+    expect(state.board.filter((letter) => letter !== '' && letter !== '#')).toHaveLength(0)
     expect(state.hintsUsed).toBe(0)
   })
 
@@ -87,6 +103,7 @@ describe('daily mini crossword', () => {
     expect(state.phase).toBe('playing')
 
     for (let index = 0; index < state.solution.length; index += 1) {
+      if (state.solution[index] === '#') continue
       state = miniCrosswordReducer(state, { type: 'select', index })
       state = miniCrosswordReducer(state, { type: 'letter', letter: state.solution[index]! })
     }
