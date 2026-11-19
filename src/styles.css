@@ -276,8 +276,6 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .phase-result .reaction-target { background: #273032; }
 .reaction-console-footer { height: 28px; padding: 10px 1px 0; display: flex; justify-content: space-between; color: rgb(245 240 232 / 51%); font-size: .53rem; letter-spacing: .15em; font-weight: 700; }
 .reaction-status { min-height: 24px; margin: 12px 2px 0; color: #72766d; font-size: .74rem; line-height: 1.5; }
-.game-card-reaction .card-info { min-height: 205px; }
-.game-card-reaction .card-bottom { align-items: end; }
 .pattern-layout { grid-template-columns: minmax(230px, .72fr) minmax(320px, 1.28fr); }
 .pattern-play-column { max-width: 570px; }
 .pattern-console { padding: 14px; background: var(--night); box-shadow: 0 15px 36px rgb(36 39 34 / 15%); }
