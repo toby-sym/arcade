@@ -2,7 +2,7 @@
   "id": "/",
   "name": "Arcade — Free Play",
   "short_name": "Arcade",
-  "description": "A personal browser arcade with thirteen quick games in a neon-lit cabinet.",
+  "description": "A personal browser arcade with fourteen quick games in a neon-lit cabinet.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
