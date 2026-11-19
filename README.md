@@ -1,6 +1,6 @@
 # Arcade
 
-A small browser arcade for a quick break. Snake, Reaction, and Pattern Memory are playable.
+A small browser arcade for a quick break. Snake, Reaction, Pattern Memory, and Breakout are playable.
 
 ## Local development
 
@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the three games from the game floor.
+Vite prints the local URL after startup. Choose any of the four games from the game floor.
 
 ## Snake controls
 
@@ -39,9 +39,17 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Keyboard users can Tab to a tile and press **Enter** or **Space**.
 - **Pause** holds the sequence or your input position. A hidden browser tab pauses the game; **Resume** continues it. **Restart** resets the current mode.
 
+## Breakout controls
+
+- Select **Start game** or press **Space** to launch the ball. After losing a life, press **Launch ball** or **Space** to serve again.
+- Move the paddle with the **left and right arrow keys** or **A and D** while the playfield is focused.
+- On touch screens, drag across the field to steer the paddle.
+- **Pause** in the game panel or press **Escape** while the playfield is focused. The game also pauses when the browser tab is hidden.
+- Clear all bricks to finish the run. **Restart** begins with three lives and a fresh wall.
+
 ## Local records and preferences
 
-Arcade saves Snake's highest score, the fastest Reaction time, and the most Pattern Memory practice rounds completed in browser storage. The **Reduce motion** preference is saved there too. These records and preferences stay on this browser and do not sync or leave the app. The system reduced-motion setting is always respected.
+Arcade saves Snake's highest score, Breakout's highest score, the fastest Reaction time, and the most Pattern Memory practice rounds completed in browser storage. The **Reduce motion** preference is saved there too. These records and preferences stay on this browser and do not sync or leave the app. The system reduced-motion setting is always respected.
 
 ## Checks
 
