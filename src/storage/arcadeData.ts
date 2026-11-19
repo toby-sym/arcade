@@ -1,4 +1,5 @@
 import type { PongDifficulty } from '../games/pong'
+import type { DailyWordProgress } from '../games/dailyWord'
 
 export const ARCADE_DATA_KEY = 'arcade.local-data.v1'
 
@@ -12,12 +13,14 @@ export interface ArcadeBests {
   asteroids: number | null
   missileCommand: number | null
   blockDrop: number | null
+  wordPuzzle: number | null
 }
 
 export interface ArcadeData {
   version: 1
   bests: ArcadeBests
   dailyPatternCompletedDate: string | null
+  dailyWordGame: DailyWordProgress | null
   preferences: {
     reduceMotion: boolean
     soundEffects: boolean
@@ -26,9 +29,10 @@ export interface ArcadeData {
 }
 
 export function withImprovedBest(data: ArcadeData, game: keyof ArcadeBests, candidate: number): ArcadeData | null {
-  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && candidate === 0)) return null
+  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && candidate === 0)) return null
   const previous = data.bests[game]
-  const improved = previous === null || (game === 'reaction' ? candidate < previous : candidate > previous)
+  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle'
+  const improved = previous === null || (lowerIsBetter ? candidate < previous : candidate > previous)
   if (!improved) return null
   return { ...data, bests: { ...data.bests, [game]: candidate } }
 }
@@ -38,19 +42,25 @@ export function withDailyPatternCompletion(data: ArcadeData, date: string): Arca
   return { ...data, dailyPatternCompletedDate: date }
 }
 
+export function withDailyWordGame(data: ArcadeData, progress: DailyWordProgress): ArcadeData | null {
+  if (!validDailyWordProgress(progress)) return null
+  return { ...data, dailyWordGame: { date: progress.date, guesses: [...progress.guesses], phase: progress.phase } }
+}
+
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null },
     dailyPatternCompletedDate: null,
+    dailyWordGame: null,
     preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady' },
   }
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -67,6 +77,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
     return {
       version: 1,
       dailyPatternCompletedDate: validUtcDateKey(parsed.dailyPatternCompletedDate) ? parsed.dailyPatternCompletedDate : null,
+      dailyWordGame: validDailyWordProgress(parsed.dailyWordGame) ? parsed.dailyWordGame : null,
       bests: {
         snake: validRecord(bests.snake),
         reaction: validRecord(bests.reaction),
@@ -77,6 +88,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         asteroids: validRecord(bests.asteroids),
         missileCommand: validRecord(bests.missileCommand),
         blockDrop: validRecord(bests.blockDrop),
+        wordPuzzle: validRecord(bests.wordPuzzle),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }
@@ -116,6 +128,15 @@ function validUtcDateKey(value: unknown): value is string {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
   const timestamp = new Date(`${value}T00:00:00.000Z`)
   return !Number.isNaN(timestamp.getTime()) && timestamp.toISOString().slice(0, 10) === value
+}
+
+function validDailyWordProgress(value: unknown): value is DailyWordProgress {
+  return isRecord(value)
+    && validUtcDateKey(value.date)
+    && Array.isArray(value.guesses)
+    && value.guesses.length <= 6
+    && value.guesses.every((guess) => typeof guess === 'string' && /^[A-Z]{5}$/.test(guess))
+    && (value.phase === 'playing' || value.phase === 'won' || value.phase === 'lost')
 }
 
 function validPongDifficulty(value: unknown): PongDifficulty {
