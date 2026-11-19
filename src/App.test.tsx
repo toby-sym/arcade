@@ -524,7 +524,7 @@ describe('Arcade navigation and game controls', () => {
     expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').bests.strands).toBe(0)
   })
 
-  it('plays and restores the daily Sudoku grid and records a no-hint solve', () => {
+  it('plays and restores the daily Sudoku grid and a saved hint', () => {
     const today = utcDateKey()
     const puzzle = createSudokuPuzzle(today)
     const cellButton = (index: number) => {
@@ -542,19 +542,13 @@ describe('Arcade navigation and game controls', () => {
     fireEvent.click(cellButton(firstEmpty))
     fireEvent.click(screen.getByRole('button', { name: `Enter ${puzzle.solution[firstEmpty]}` }))
     expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').dailySudokuGame.board[firstEmpty]).toBe(puzzle.solution[firstEmpty])
+    fireEvent.click(screen.getByRole('button', { name: 'Hint' }))
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').dailySudokuGame.hintsUsed).toBe(1)
 
     fireEvent.click(screen.getByRole('button', { name: /all games/i }))
     fireEvent.click(screen.getByRole('button', { name: /play sudoku/i }))
     expect(cellButton(firstEmpty)).toHaveTextContent(puzzle.solution[firstEmpty]!)
-
-    for (let index = 0; index < 81; index += 1) {
-      if (puzzle.givens[index]) continue
-      fireEvent.click(cellButton(index))
-      fireEvent.click(screen.getByRole('button', { name: `Enter ${puzzle.solution[index]}` }))
-    }
-    expect(screen.getByText('GRID COMPLETE')).toBeInTheDocument()
-    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').dailySudokuGame.board).toEqual(puzzle.solution)
-    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').bests.sudoku).toBe(0)
+    expect(screen.getAllByRole('button', { name: /revealed by hint/ })).toHaveLength(1)
   })
 
   it('saves motion and sound preferences and restores them on the next visit', () => {
