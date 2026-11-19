@@ -33,14 +33,15 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 
 ## Pattern Memory controls
 
-- Select **Start game** and watch the tiles light up in order.
-- Tap or click the same tiles in the same order. Each completed round adds a tile; a mistake ends the run.
+- Select **Start practice** to watch a growing pattern, then repeat it. Each completed round adds a tile.
+- Select **Daily challenge** for the same fixed eight-tile pattern on a given UTC date. A new pattern appears each day.
+- Tap or click the tiles in the same order. A mistake ends that attempt; you can retry.
 - Keyboard users can Tab to a tile and press **Enter** or **Space**.
-- **Pause** holds the sequence or your input position. A hidden browser tab pauses the game; **Resume** continues it. **Restart** clears the run.
+- **Pause** holds the sequence or your input position. A hidden browser tab pauses the game; **Resume** continues it. **Restart** resets the current mode.
 
 ## Local records and preferences
 
-Arcade saves Snake's highest score, the fastest Reaction time, and the most Pattern Memory rounds completed in browser storage. The **Reduce motion** preference is saved there too. These records and preferences stay on this browser and do not sync or leave the app. The system reduced-motion setting is always respected.
+Arcade saves Snake's highest score, the fastest Reaction time, and the most Pattern Memory practice rounds completed in browser storage. The **Reduce motion** preference is saved there too. These records and preferences stay on this browser and do not sync or leave the app. The system reduced-motion setting is always respected.
 
 ## Checks
 
