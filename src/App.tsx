@@ -30,9 +30,11 @@ import { LetterBoxedGame } from './games/LetterBoxedGame'
 import { createLetterBoxedState, type LetterBoxedProgress } from './games/letterBoxed'
 import { DominoLogicGame } from './games/DominoLogicGame'
 import { createDominoLogicState, type DominoLogicProgress } from './games/dominoLogic'
+import { GlyphMatchGame } from './games/GlyphMatchGame'
+import { createGlyphMatchState, type GlyphMatchProgress } from './games/glyphMatch'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -58,7 +60,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -193,6 +195,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyGlyphMatchGame = (progress: GlyphMatchProgress) => {
+    const withProgress = withDailyGlyphMatchGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = createGlyphMatchState(progress.date, progress)
+    const next = completed.phase === 'complete'
+      ? withImprovedBest(withProgress, 'glyphMatch', completed.moves) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -276,6 +289,7 @@ function App() {
   const openMiniCrossword = () => setScreen('minicrossword')
   const openLetterBoxed = () => setScreen('letterboxed')
   const openDominoLogic = () => setScreen('dominologic')
+  const openGlyphMatch = () => setScreen('glyphmatch')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -338,6 +352,7 @@ function App() {
             onPlayMiniCrossword={openMiniCrossword}
             onPlayLetterBoxed={openLetterBoxed}
             onPlayDominoLogic={openDominoLogic}
+            onPlayGlyphMatch={openGlyphMatch}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -455,6 +470,14 @@ function App() {
             bestUndos={arcadeData.bests.dominoLogic}
             progress={arcadeData.dailyDominoLogicGame}
             onSaveProgress={saveDailyDominoLogicGame}
+          />
+        ) : screen === 'glyphmatch' ? (
+          <GlyphMatchGame
+            onBack={() => setScreen('home')}
+            bestMoves={arcadeData.bests.glyphMatch}
+            progress={arcadeData.dailyGlyphMatchGame}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+            onSaveProgress={saveDailyGlyphMatchGame}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -590,6 +613,7 @@ function Home({
   onPlayMiniCrossword,
   onPlayLetterBoxed,
   onPlayDominoLogic,
+  onPlayGlyphMatch,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -617,6 +641,7 @@ function Home({
   onPlayMiniCrossword: () => void
   onPlayLetterBoxed: () => void
   onPlayDominoLogic: () => void
+  onPlayGlyphMatch: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -651,7 +676,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">17 PLAYABLE</span>
+          <span className="section-count">18 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -871,6 +896,18 @@ function Home({
               <h3>Domino Logic</h3>
               <p>Fit six tiles so every row and column hits its daily target.</p>
               <div className="card-bottom"><span className="controls-label">TAP · ROTATE · FLIP</span><button className="play-card-button" type="button" onClick={onPlayDominoLogic}>Play Domino Logic <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-glyphmatch">
+            <div className="card-art glyphmatch-card-art" aria-hidden="true">
+              <span className="glyphmatch-card-grid"><i>✦</i><i>☾</i><i>◆</i><i>▲</i><i>●</i><i>✿</i><i>⬟</i><i>⌁</i><i>⌁</i><i>⬟</i><i>✿</i><i>●</i><i>▲</i><i>◆</i><i>☾</i><i>✦</i></span>
+              <span className="card-art-index">18</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">18</span><span className="game-category">DAILY PAIRS</span></div>
+              <h3>Glyph Match</h3>
+              <p>Turn over tiles, remember the symbols, and find today’s eight pairs.</p>
+              <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · ARROWS</span><button className="play-card-button" type="button" onClick={onPlayGlyphMatch}>Play Glyph Match <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
