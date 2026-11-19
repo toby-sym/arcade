@@ -18,9 +18,11 @@ import { DailyWordGame } from './games/DailyWordGame'
 import type { DailyWordProgress } from './games/dailyWord'
 import { ConnectionsGame } from './games/ConnectionsGame'
 import type { ConnectionsProgress } from './games/connections'
+import { SpellingBeeGame } from './games/SpellingBeeGame'
+import { createSpellingBeeState, type SpellingBeeProgress } from './games/spellingBee'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyPatternCompletion, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -46,7 +48,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -110,6 +112,17 @@ function App() {
     if (!withProgress) return
     const next = progress.phase === 'won'
       ? withImprovedBest(withProgress, 'connections', progress.mistakes) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
+  const saveDailySpellingBeeGame = (progress: SpellingBeeProgress) => {
+    const withProgress = withDailySpellingBeeGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = createSpellingBeeState(progress.date, progress)
+    const next = completed.phase === 'complete'
+      ? withImprovedBest(withProgress, 'spellingBee', completed.score) ?? withProgress
       : withProgress
     setArcadeData(next)
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
@@ -192,6 +205,7 @@ function App() {
   const openBlockDrop = () => setScreen('blockdrop')
   const openWordGame = () => setScreen('wordgame')
   const openConnections = () => setScreen('connections')
+  const openSpellingBee = () => setScreen('spellingbee')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -248,6 +262,7 @@ function App() {
             onPlayBlockDrop={openBlockDrop}
             onPlayWordGame={openWordGame}
             onPlayConnections={openConnections}
+            onPlaySpellingBee={openSpellingBee}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -323,6 +338,13 @@ function App() {
             bestMistakes={arcadeData.bests.connections}
             progress={arcadeData.dailyConnectionsGame}
             onSaveProgress={saveDailyConnectionsGame}
+          />
+        ) : screen === 'spellingbee' ? (
+          <SpellingBeeGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.spellingBee}
+            progress={arcadeData.dailySpellingBeeGame}
+            onSaveProgress={saveDailySpellingBeeGame}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -452,6 +474,7 @@ function Home({
   onPlayBlockDrop,
   onPlayWordGame,
   onPlayConnections,
+  onPlaySpellingBee,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -473,6 +496,7 @@ function Home({
   onPlayBlockDrop: () => void
   onPlayWordGame: () => void
   onPlayConnections: () => void
+  onPlaySpellingBee: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -507,7 +531,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">11 PLAYABLE</span>
+          <span className="section-count">12 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -655,6 +679,18 @@ function Home({
               <h3>Connections</h3>
               <p>Sort sixteen words into four hidden groups. A new shared board arrives daily.</p>
               <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · KEYBOARD</span><button className="play-card-button" type="button" onClick={onPlayConnections}>Play Connections <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-spellingbee">
+            <div className="card-art spelling-bee-card-art" aria-hidden="true">
+              <span className="bee-card-hive"><i className="bee-card-hex hex-one" /><i className="bee-card-hex hex-two" /><i className="bee-card-hex hex-three" /><i className="bee-card-hex hex-four" /><i className="bee-card-hex hex-five" /><i className="bee-card-hex hex-six" /></span>
+              <span className="card-art-index">12</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">12</span><span className="game-category">DAILY WORDS</span></div>
+              <h3>Spelling Bee</h3>
+              <p>Build words from seven letters. Use the centre letter and find a pangram.</p>
+              <div className="card-bottom"><span className="controls-label">LETTER KEYS · ENTER</span><button className="play-card-button" type="button" onClick={onPlaySpellingBee}>Play Spelling Bee <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
