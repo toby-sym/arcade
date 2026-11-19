@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, and Maze Dash are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, and Skyline Skip are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the twenty-four games from the game floor.
+Vite prints the local URL after startup. Choose any of the twenty-five games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -150,6 +150,13 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Hold the **arrow keys** or **WASD** to move; on a phone, tap the direction pad to move one tile. Sentries move after every other step.
 - Collect every gem, then reach the exit in the lower-right corner. A sentry collision costs one of your three lives. **Pause**, **Resume**, and **Restart maze** are available at any time; **Escape** pauses and **R** restarts.
 - Your highest score is a local personal best saved in this browser.
+
+## Skyline Skip controls
+
+- Run with the **left and right arrow keys** or **A and D**; press **Space**, **Up**, or **W** to jump. Hold the direction buttons and tap **Jump** on a phone.
+- Keep momentum over gaps, land on the next roof, and leap over signal spikes. Collect shards for points and reach each beacon to set a checkpoint. A fall or spike costs one of three lives.
+- **Pause** in the game panel or press **Escape** while the course is focused. A hidden browser tab pauses the run; **Restart run** begins at the first rooftop.
+- Reach the beacon at the far end to finish. Your highest score is saved locally in this browser and does not sync.
 
 ## Letter Boxed controls
 
