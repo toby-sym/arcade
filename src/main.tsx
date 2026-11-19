@@ -4,7 +4,8 @@ import App from './App'
 import './styles.css'
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  void navigator.serviceWorker.register('/sw.js').catch(() => undefined)
+  const appVersion = import.meta.env.VITE_APP_VERSION || 'Development'
+  void navigator.serviceWorker.register(`/sw.js?version=${encodeURIComponent(appVersion)}`).catch(() => undefined)
 }
 
 const root = document.getElementById('root')

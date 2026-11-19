@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react'
+import { lazy, Suspense, useEffect, useReducer, useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react'
 import {
   BOARD_SIZE,
   createSnakeState,
@@ -6,41 +6,41 @@ import {
   type Direction,
   type Point,
 } from './games/snake'
-import { ReactionGame } from './games/ReactionGame'
-import { PatternGame } from './games/PatternGame'
-import { BreakoutGame } from './games/BreakoutGame'
-import { PongGame } from './games/PongGame'
-import { InvadersGame } from './games/InvadersGame'
-import { AsteroidsGame } from './games/AsteroidsGame'
-import { MissileCommandGame } from './games/MissileCommandGame'
-import { BlockDropGame } from './games/BlockDropGame'
-import { DailyWordGame } from './games/DailyWordGame'
+const ReactionGame = lazy(() => import('./games/ReactionGame').then(({ ReactionGame }) => ({ default: ReactionGame })))
+const PatternGame = lazy(() => import('./games/PatternGame').then(({ PatternGame }) => ({ default: PatternGame })))
+const BreakoutGame = lazy(() => import('./games/BreakoutGame').then(({ BreakoutGame }) => ({ default: BreakoutGame })))
+const PongGame = lazy(() => import('./games/PongGame').then(({ PongGame }) => ({ default: PongGame })))
+const InvadersGame = lazy(() => import('./games/InvadersGame').then(({ InvadersGame }) => ({ default: InvadersGame })))
+const AsteroidsGame = lazy(() => import('./games/AsteroidsGame').then(({ AsteroidsGame }) => ({ default: AsteroidsGame })))
+const MissileCommandGame = lazy(() => import('./games/MissileCommandGame').then(({ MissileCommandGame }) => ({ default: MissileCommandGame })))
+const BlockDropGame = lazy(() => import('./games/BlockDropGame').then(({ BlockDropGame }) => ({ default: BlockDropGame })))
+const DailyWordGame = lazy(() => import('./games/DailyWordGame').then(({ DailyWordGame }) => ({ default: DailyWordGame })))
 import type { DailyWordProgress } from './games/dailyWord'
-import { ConnectionsGame } from './games/ConnectionsGame'
+const ConnectionsGame = lazy(() => import('./games/ConnectionsGame').then(({ ConnectionsGame }) => ({ default: ConnectionsGame })))
 import type { ConnectionsProgress } from './games/connections'
-import { SpellingBeeGame } from './games/SpellingBeeGame'
+const SpellingBeeGame = lazy(() => import('./games/SpellingBeeGame').then(({ SpellingBeeGame }) => ({ default: SpellingBeeGame })))
 import { createSpellingBeeState, type SpellingBeeProgress } from './games/spellingBee'
-import { StrandsGame } from './games/StrandsGame'
+const StrandsGame = lazy(() => import('./games/StrandsGame').then(({ StrandsGame }) => ({ default: StrandsGame })))
 import { createStrandsState, type StrandsProgress } from './games/strands'
-import { SudokuGame } from './games/SudokuGame'
+const SudokuGame = lazy(() => import('./games/SudokuGame').then(({ SudokuGame }) => ({ default: SudokuGame })))
 import { createSudokuState, type SudokuProgress } from './games/sudoku'
-import { MiniCrosswordGame } from './games/MiniCrosswordGame'
+const MiniCrosswordGame = lazy(() => import('./games/MiniCrosswordGame').then(({ MiniCrosswordGame }) => ({ default: MiniCrosswordGame })))
 import { createMiniCrosswordState, type MiniCrosswordProgress } from './games/miniCrossword'
-import { LetterBoxedGame } from './games/LetterBoxedGame'
+const LetterBoxedGame = lazy(() => import('./games/LetterBoxedGame').then(({ LetterBoxedGame }) => ({ default: LetterBoxedGame })))
 import { createLetterBoxedState, type LetterBoxedProgress } from './games/letterBoxed'
-import { DominoLogicGame } from './games/DominoLogicGame'
+const DominoLogicGame = lazy(() => import('./games/DominoLogicGame').then(({ DominoLogicGame }) => ({ default: DominoLogicGame })))
 import { createDominoLogicState, type DominoLogicProgress } from './games/dominoLogic'
-import { GlyphMatchGame } from './games/GlyphMatchGame'
+const GlyphMatchGame = lazy(() => import('./games/GlyphMatchGame').then(({ GlyphMatchGame }) => ({ default: GlyphMatchGame })))
 import { createGlyphMatchState, type GlyphMatchProgress } from './games/glyphMatch'
-import { VertexGame } from './games/VertexGame'
+const VertexGame = lazy(() => import('./games/VertexGame').then(({ VertexGame }) => ({ default: VertexGame })))
 import { createVertexState, type VertexProgress } from './games/vertex'
-import { TilesGame } from './games/TilesGame'
+const TilesGame = lazy(() => import('./games/TilesGame').then(({ TilesGame }) => ({ default: TilesGame })))
 import { createTilesState, type TilesProgress } from './games/tiles'
-import { PipsGame } from './games/PipsGame'
+const PipsGame = lazy(() => import('./games/PipsGame').then(({ PipsGame }) => ({ default: PipsGame })))
 import { createPipsState, type PipsProgress } from './games/pips'
-import { DailyCrosswordGame } from './games/DailyCrosswordGame'
+const DailyCrosswordGame = lazy(() => import('./games/DailyCrosswordGame').then(({ DailyCrosswordGame }) => ({ default: DailyCrosswordGame })))
 import { createDailyCrosswordState, type DailyCrosswordProgress } from './games/dailyCrossword'
-import { MinesweeperGame } from './games/MinesweeperGame'
+const MinesweeperGame = lazy(() => import('./games/MinesweeperGame').then(({ MinesweeperGame }) => ({ default: MinesweeperGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -487,6 +487,7 @@ function App() {
       </header>
 
       <main id="main" className="main-content">
+        <Suspense fallback={<div className="game-loading" role="status">Loading game<span aria-hidden="true">…</span></div>}>
         {screen === 'home' ? (
           <Home
             onPlaySnake={openSnake}
@@ -783,6 +784,7 @@ function App() {
             </div>
           </section>
         )}
+        </Suspense>
       </main>
 
       <footer className="site-footer">
