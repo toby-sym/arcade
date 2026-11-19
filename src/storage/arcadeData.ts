@@ -10,6 +10,7 @@ export interface ArcadeBests {
   pong: number | null
   invaders: number | null
   asteroids: number | null
+  missileCommand: number | null
 }
 
 export interface ArcadeData {
@@ -41,14 +42,14 @@ type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null },
     dailyPatternCompletedDate: null,
     preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady' },
   }
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -73,6 +74,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         pong: validRecord(bests.pong),
         invaders: validRecord(bests.invaders),
         asteroids: validRecord(bests.asteroids),
+        missileCommand: validRecord(bests.missileCommand),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }

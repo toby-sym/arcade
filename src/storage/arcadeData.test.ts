@@ -18,7 +18,7 @@ describe('browser-local Arcade data', () => {
     const saved = {
       version: 1 as const,
       dailyPatternCompletedDate: '2026-11-19',
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220 },
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340 },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
 
@@ -42,19 +42,20 @@ describe('browser-local Arcade data', () => {
     expect(withImprovedBest(reactionRecord!, 'pong', 3)?.bests.pong).toBe(3)
     expect(withImprovedBest(reactionRecord!, 'invaders', 80)?.bests.invaders).toBe(80)
     expect(withImprovedBest(reactionRecord!, 'asteroids', 220)?.bests.asteroids).toBe(220)
+    expect(withImprovedBest(reactionRecord!, 'missileCommand', 340)?.bests.missileCommand).toBe(340)
   })
 
   it('clears all records without changing the saved preferences or original data', () => {
     const initial = {
       version: 1 as const,
       dailyPatternCompletedDate: '2026-11-19',
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220 },
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340 },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
     expect(clearArcadeBests(initial)).toEqual({
       version: 1,
       dailyPatternCompletedDate: '2026-11-19',
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null },
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' },
     })
     expect(initial.bests.snake).toBe(12)
@@ -66,14 +67,14 @@ describe('browser-local Arcade data', () => {
     storage.value = JSON.stringify({
       version: 1,
       dailyPatternCompletedDate: 'not-a-date',
-      bests: { snake: 9, reaction: -40, pattern: 2.5, breakout: 1.2, pong: -1, invaders: -5, asteroids: -10 },
+      bests: { snake: 9, reaction: -40, pattern: 2.5, breakout: 1.2, pong: -1, invaders: -5, asteroids: -10, missileCommand: -25 },
       preferences: { reduceMotion: true, soundEffects: 'yes', pongDifficulty: 'too-fast' },
     })
 
     expect(readArcadeData(storage)).toEqual({
       version: 1,
       dailyPatternCompletedDate: null,
-      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null },
+      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
 
