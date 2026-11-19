@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, and Mini Crossword are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, and Letter Boxed are ready for free play.
 
 ## Local development
 
@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the fifteen games from the game floor.
+Vite prints the local URL after startup. Choose any of the sixteen games from the game floor.
 
 ## Snake controls
 
@@ -127,9 +127,15 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Fill all five Across and five Down clues. **Backspace** erases, **Hint** reveals and locks one square, and **Clear entries** restarts the daily board.
 - The same puzzle is shared for a UTC date. Your entries and hints stay saved in this browser. The fewest hints for a completed grid is saved as a local personal best. Puzzles are bundled with Arcade; no external game service is used.
 
+## Letter Boxed controls
+
+- Open **Letter Boxed** for a daily box of twelve letters arranged on four sides. Type **A–Z** or tap the side letters to make a word, then select **Enter word** or press **Enter**.
+- Words must use letters from the box, switch sides between every pair of letters, and contain at least three letters. Each next word starts with the previous word's last letter. Cover all twelve letters to complete the box; the bundled dictionary is used offline.
+- Your daily chain and fewest-word solve stay in this browser. A new box arrives each UTC day.
+
 ## Local records and preferences
 
-Arcade saves the highest scores for Snake, Asteroids, Space Invaders, Missile Command, Block Drop, Breakout, and a completed Spelling Bee hive; Pong's highest points in a match; the fewest guesses for a Word Guess solve; the fewest mistakes for a completed Connections board; the fewest hints for completed Strands, Sudoku, and Mini Crossword grids; the fastest Reaction time; the most Pattern Memory practice rounds completed; and the latest daily Pattern Memory completion date in browser storage. Word Guess, Connections, Spelling Bee, Strands, Sudoku, and Mini Crossword save their current daily progress there too. The **Reduce motion**, **Arcade sounds**, and Pong opponent pace preferences are saved there as well. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily progress and preferences stay saved. The system reduced-motion setting is always respected.
+Arcade saves the highest scores for Snake, Asteroids, Space Invaders, Missile Command, Block Drop, Breakout, and a completed Spelling Bee hive; Pong's highest points in a match; the fewest guesses for a Word Guess solve; the fewest mistakes for a completed Connections board; the fewest hints for completed Strands, Sudoku, and Mini Crossword grids; the fewest words for a completed Letter Boxed chain; the fastest Reaction time; the most Pattern Memory practice rounds completed; and the latest daily Pattern Memory completion date in browser storage. Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, and Letter Boxed save their current daily progress there too. The **Reduce motion**, **Arcade sounds**, and Pong opponent pace preferences are saved there as well. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily progress and preferences stay saved. The system reduced-motion setting is always respected.
 
 ## Install and offline play
 
