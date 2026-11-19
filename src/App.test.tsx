@@ -1,10 +1,13 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
+import { ARCADE_DATA_KEY } from './storage/arcadeData'
 
 afterEach(() => {
   vi.useRealTimers()
   vi.restoreAllMocks()
+  window.localStorage.removeItem(ARCADE_DATA_KEY)
+  delete document.documentElement.dataset.reduceMotion
 })
 
 describe('Arcade navigation and game controls', () => {
@@ -72,7 +75,8 @@ describe('Arcade navigation and game controls', () => {
     act(() => { vi.advanceTimersByTime(237) })
     fireEvent.click(screen.getByRole('button', { name: /press now/i }))
     expect(screen.getByText(/your reaction time was \d+ milliseconds/i)).toBeInTheDocument()
-    expect(screen.getByText((_, element) => element?.tagName === 'STRONG' && /^\d+\s*ms$/.test(element.textContent ?? ''))).toBeInTheDocument()
+    expect(screen.getAllByText((_, element) => element?.tagName === 'STRONG' && /^\d+\s*ms$/.test(element.textContent ?? ''))).toHaveLength(2)
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').bests.reaction).toBeGreaterThan(0)
   })
 
   it('catches a false start, allows restart, and returns to the game floor', () => {
@@ -110,13 +114,14 @@ describe('Arcade navigation and game controls', () => {
 
     expect(screen.getByText('ROUND 02')).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('Pattern complete. Round 2 is next.')
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').bests.pattern).toBe(1)
     fireEvent.click(screen.getByRole('button', { name: /pause/i }))
     expect(screen.getByRole('button', { name: /resume/i })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /resume/i }))
     expect(screen.getByRole('status')).toHaveTextContent('Watch the pattern again.')
     fireEvent.click(screen.getByRole('button', { name: /restart/i }))
     expect(screen.getByRole('button', { name: /start game/i })).toBeInTheDocument()
-    expect(screen.getByLabelText('0 rounds cleared this run')).toBeInTheDocument()
+    expect(screen.getByLabelText('Rounds cleared this run: 0. Local best: 1.')).toBeInTheDocument()
   })
 
   it('ends a Pattern Memory run on a wrong tile and lets the player start again', () => {
@@ -133,5 +138,19 @@ describe('Arcade navigation and game controls', () => {
     expect(screen.getByRole('button', { name: /play again/i })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play again/i }))
     expect(screen.getByRole('status')).toHaveTextContent('Watch the pattern. It will light one tile at a time.')
+  })
+
+  it('saves the reduced-motion preference and restores it on the next visit', () => {
+    const firstVisit = render(<App />)
+    const reduceMotion = screen.getByRole('checkbox', { name: /reduce motion/i })
+    fireEvent.click(reduceMotion)
+
+    expect(reduceMotion).toBeChecked()
+    expect(document.documentElement).toHaveAttribute('data-reduce-motion', 'true')
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').preferences.reduceMotion).toBe(true)
+
+    firstVisit.unmount()
+    render(<App />)
+    expect(screen.getByRole('checkbox', { name: /reduce motion/i })).toBeChecked()
   })
 })

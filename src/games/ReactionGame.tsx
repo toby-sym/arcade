@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 
 type Phase = 'ready' | 'waiting' | 'go' | 'false-start' | 'result'
 
-export function ReactionGame({ onBack }: { onBack: () => void }) {
+export function ReactionGame({ onBack, bestTimeMs, onRecordTime }: {
+  onBack: () => void
+  bestTimeMs: number | null
+  onRecordTime: (timeMs: number) => void
+}) {
   const [phase, setPhase] = useState<Phase>('ready')
   const [result, setResult] = useState<number | null>(null)
   const [notice, setNotice] = useState('Press the button when you are ready to begin.')
@@ -67,6 +71,7 @@ export function ReactionGame({ onBack }: { onBack: () => void }) {
       setResult(elapsed)
       setPhase('result')
       setNotice(`Your reaction time was ${elapsed} milliseconds.`)
+      onRecordTime(elapsed)
     }
   }
 
@@ -106,6 +111,10 @@ export function ReactionGame({ onBack }: { onBack: () => void }) {
             ) : (
               <strong className="reaction-time reaction-time-placeholder">—<span> ms</span></strong>
             )}
+            <div className="local-best-readout reaction-best-readout">
+              <span className="score-caption">BEST IN THIS BROWSER</span>
+              <strong>{bestTimeMs === null ? '—' : `${bestTimeMs} ms`}</strong>
+            </div>
           </div>
           <div className="game-actions">
             <button className="button button-quiet" type="button" onClick={reset}>Restart</button>
