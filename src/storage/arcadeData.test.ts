@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { ARCADE_BACKUP_MAX_BYTES, ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, parseArcadeDataBackup, readArcadeData, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
+import { cipherCircuitProgress, cipherCircuitReducer, createCipherCircuitState } from '../games/cipherCircuit'
 import { createGlyphMatchPuzzle } from '../games/glyphMatch'
 import { createVertexPuzzle } from '../games/vertex'
 import { createTilesPuzzle } from '../games/tiles'
@@ -41,14 +42,18 @@ describe('browser-local Arcade data', () => {
 
     const previousVersionBackup = { ...backup, bests: { ...backup.bests } } as Record<string, unknown>
     delete previousVersionBackup.dailyMinesweeperGame
+    delete previousVersionBackup.dailyCipherCircuitGame
     delete (previousVersionBackup.bests as Record<string, unknown>).minesweeper
     delete (previousVersionBackup.bests as Record<string, unknown>).mazeDash
     delete (previousVersionBackup.bests as Record<string, unknown>).skylineSkip
+    delete (previousVersionBackup.bests as Record<string, unknown>).cipherCircuit
     const parsedPreviousVersion = parseArcadeDataBackup(JSON.stringify(previousVersionBackup))
     expect(parsedPreviousVersion?.dailyMinesweeperGame).toBeNull()
     expect(parsedPreviousVersion?.bests.minesweeper).toBeNull()
     expect(parsedPreviousVersion?.bests.mazeDash).toBeNull()
     expect(parsedPreviousVersion?.bests.skylineSkip).toBeNull()
+    expect(parsedPreviousVersion?.dailyCipherCircuitGame).toBeNull()
+    expect(parsedPreviousVersion?.bests.cipherCircuit).toBeNull()
     expect(parseArcadeDataBackup(' '.repeat(ARCADE_BACKUP_MAX_BYTES + 1))).toBeNull()
   })
 
@@ -71,7 +76,8 @@ describe('browser-local Arcade data', () => {
       dailyPipsGame: null,
       dailyCrosswordGame: null,
       dailyMinesweeperGame: toMinesweeperProgress(createMinesweeperState('2026-11-19')),
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null },
+      dailyCipherCircuitGame: null,
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
 
@@ -101,8 +107,27 @@ describe('browser-local Arcade data', () => {
     expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, mazeDash: 200 } }, 'mazeDash', 150)).toBeNull()
     expect(withImprovedBest(reactionRecord!, 'skylineSkip', 280)?.bests.skylineSkip).toBe(280)
     expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, skylineSkip: 280 } }, 'skylineSkip', 260)).toBeNull()
+    expect(withImprovedBest(reactionRecord!, 'cipherCircuit', 3)?.bests.cipherCircuit).toBe(3)
+    expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, cipherCircuit: 3 } }, 'cipherCircuit', 4)).toBeNull()
     expect(withImprovedBest(reactionRecord!, 'wordPuzzle', 4)?.bests.wordPuzzle).toBe(4)
     expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, wordPuzzle: 3 } }, 'wordPuzzle', 4)).toBeNull()
+  })
+
+  it('saves Cipher Circuit progress and its fewest-pulse record locally', () => {
+    const initial = emptyArcadeData()
+    let state = createCipherCircuitState('2026-11-19')
+    state = cipherCircuitReducer(state, { type: 'select', signal: 2 })
+    const progress = cipherCircuitProgress(state)
+    const saved = withDailyCipherCircuitGame(initial, progress)
+    const firstBest = withImprovedBest(saved!, 'cipherCircuit', 3)
+    const storage = new MemoryStorage()
+
+    expect(saved?.dailyCipherCircuitGame).toEqual(progress)
+    expect(firstBest?.bests.cipherCircuit).toBe(3)
+    expect(withImprovedBest(firstBest!, 'cipherCircuit', 4)).toBeNull()
+    expect(withDailyCipherCircuitGame(initial, { ...progress, date: '2026-02-31' })).toBeNull()
+    expect(writeArcadeData(saved!, storage)).toBe(true)
+    expect(readArcadeData(storage).dailyCipherCircuitGame).toEqual(progress)
   })
 
   it('clears all records without changing the saved preferences or original data', () => {
@@ -123,7 +148,8 @@ describe('browser-local Arcade data', () => {
       dailyPipsGame: null,
       dailyCrosswordGame: null,
       dailyMinesweeperGame: toMinesweeperProgress(createMinesweeperState('2026-11-19')),
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: 61, mazeDash: null, skylineSkip: null },
+      dailyCipherCircuitGame: null,
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: 61, mazeDash: null, skylineSkip: null, cipherCircuit: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
     expect(clearArcadeBests(initial)).toEqual({
@@ -143,7 +169,8 @@ describe('browser-local Arcade data', () => {
       dailyPipsGame: null,
       dailyCrosswordGame: null,
       dailyMinesweeperGame: toMinesweeperProgress(createMinesweeperState('2026-11-19')),
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null },
+      dailyCipherCircuitGame: null,
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' },
     })
     expect(initial.bests.snake).toBe(12)
@@ -179,7 +206,8 @@ describe('browser-local Arcade data', () => {
       dailyPipsGame: null,
       dailyCrosswordGame: null,
       dailyMinesweeperGame: null,
-      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null },
+      dailyCipherCircuitGame: null,
+      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
 

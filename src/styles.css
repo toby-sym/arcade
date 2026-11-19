@@ -2126,3 +2126,88 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .skyline-touch-controls .button { min-width: 48px; padding: 0 10px; }
   .skyline-touch-controls .skyline-jump-button { min-width: 96px; }
 }
+
+.cipher-circuit-card-art { background: radial-gradient(ellipse at 50% 55%, #29223d, #11101a 74%); }
+.cipher-circuit-card-code { position: absolute; top: 43%; left: 50%; display: flex; gap: 7px; transform: translate(-50%, -50%); }
+.cipher-circuit-card-code i { width: 27px; height: 27px; display: grid; place-items: center; border: 1px solid #68567b; color: #59e4f3; background: #201b2c; font-style: normal; font-size: 1.05rem; }
+.cipher-circuit-card-code i:nth-child(2) { color: #ff718c; }
+.cipher-circuit-card-code i:nth-child(3) { color: #ffc65c; }
+.cipher-circuit-card-code i:nth-child(4) { color: #b995ff; }
+.cipher-circuit-card-feedback { position: absolute; left: calc(50% - 51px); top: calc(43% + 23px); display: grid; grid-template-columns: repeat(2, 6px); gap: 3px; }
+.cipher-circuit-card-feedback i { width: 6px; height: 6px; border-radius: 50%; background: #c7f34f; }
+.cipher-circuit-card-feedback i:nth-child(2), .cipher-circuit-card-feedback i:nth-child(3) { background: #ffc65c; }
+.cipher-circuit-layout { grid-template-columns: minmax(250px, .78fr) minmax(340px, 1.22fr); gap: clamp(24px, 4vw, 64px); }
+.cipher-circuit-copy h1 { font-size: clamp(2rem, 3.4vw, 2.8rem); }
+.cipher-circuit-score { max-width: 270px; grid-template-columns: minmax(0, 1.25fr) minmax(0, .85fr); }
+.cipher-circuit-score .breakout-score-main .score-caption { white-space: nowrap; }
+.cipher-circuit-score .local-best-readout { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; }
+.cipher-circuit-score .local-best-readout .score-caption { grid-column: 1 / -1; }
+.cipher-circuit-score .local-best-readout .score-value { font-size: 1.25rem; }
+.cipher-circuit-local-note { max-width: 350px; margin: 11px 0 0; color: #a79bb8; font-size: .68rem; line-height: 1.5; }
+.cipher-circuit-play-column { max-width: 630px; }
+.cipher-circuit-console { padding: 13px; border: 3px solid #58466c; border-radius: 15px; background: linear-gradient(145deg, #241d30 0%, #13111d 80%); box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.cipher-circuit-console .frame-topline { height: 23px; padding: 0 1px 10px; }
+.cipher-circuit-board { display: grid; gap: 5px; padding: 10px; border: 1px solid #40364f; background: #100e19; outline: none; }
+.cipher-circuit-board:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+.cipher-attempt-row { min-height: 43px; display: grid; grid-template-columns: 24px minmax(0, 1fr) 139px; align-items: center; gap: 8px; padding: 4px 7px; border: 1px solid #302b3b; background: #171421; }
+.cipher-attempt-row.is-active { border-color: #5bd9e6; background: #1a1928; box-shadow: inset 3px 0 #5bd9e6; }
+.cipher-attempt-row.is-sent { border-color: #423850; }
+.cipher-row-number { color: #817790; font: 700 .57rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.cipher-sockets { display: flex; gap: 7px; }
+.cipher-socket { width: 42px; height: 34px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid #5a5066; border-radius: 3px; color: #817790; background: #211d2b; font-size: 1.1rem; }
+.cipher-socket-button { padding: 0; cursor: pointer; }
+.cipher-socket-button:hover { border-color: var(--paper); }
+.cipher-socket-button:focus-visible, .cipher-signal-button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+.signal-mint { color: #151323 !important; background: #78e2bd !important; border-color: #b4f5dc !important; }
+.signal-coral { color: #171220 !important; background: #ff778e !important; border-color: #ffc0cb !important; }
+.signal-amber { color: #211b14 !important; background: #ffc85a !important; border-color: #ffe4a7 !important; }
+.signal-sky { color: #101923 !important; background: #58d9ea !important; border-color: #b4f3fa !important; }
+.signal-violet { color: #171321 !important; background: #b99aff !important; border-color: #e0d1ff !important; }
+.signal-rose { color: #21131e !important; background: #ff9fc0 !important; border-color: #ffd3e3 !important; }
+.cipher-feedback { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; color: #c8c0d1; font: 700 .5rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .04em; }
+.cipher-feedback small { display: block; margin-top: 2px; color: #a79caf; font-size: .42rem; }
+.cipher-locked { color: #c7f34f; }
+.cipher-rerouted { color: #ffc65c; }
+.cipher-feedback-pending { color: #726a7d; font: 700 .46rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.cipher-signal-controls { margin-top: 13px; display: grid; gap: 12px; }
+.cipher-signal-palette { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }
+.cipher-signal-button { min-height: 48px; border: 1px solid transparent; display: grid; grid-template-rows: 1fr auto; justify-items: center; align-items: center; padding: 3px 4px 4px; color: var(--ink); cursor: pointer; }
+.cipher-signal-button > span { font-size: 1.25rem; line-height: 1; }
+.cipher-signal-button small { font: 700 .48rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; opacity: .7; }
+.cipher-signal-button:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.cipher-row-actions { display: flex; justify-content: space-between; gap: 8px; }
+.cipher-row-actions .button:disabled { cursor: default; opacity: .42; }
+.cipher-circuit-result { padding: 12px 10px 3px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.cipher-circuit-result > strong { color: var(--green); font: 800 .88rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; text-transform: uppercase; }
+.cipher-circuit-result > span { margin-top: 4px; color: #c7bdd4; font-size: .7rem; }
+.cipher-key-reveal { margin-top: 10px; display: flex; gap: 6px; }
+.cipher-circuit-footer { display: flex; justify-content: space-between; gap: 8px; padding: 12px 1px 0; color: #c1b5d5; font: .5rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.cipher-restart { margin-top: 13px; }
+.cipher-circuit-status { min-height: 25px; margin: 12px 2px 0; color: #bfb5d1; font-size: .72rem; line-height: 1.5; text-align: center; }
+
+@media (max-width: 650px) {
+  .cipher-circuit-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .cipher-circuit-copy h1 { font-size: clamp(1.85rem, 8vw, 2.5rem); }
+  .cipher-circuit-play-column { width: 100%; max-width: 540px; justify-self: center; }
+  .cipher-circuit-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .cipher-circuit-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .cipher-circuit-board { gap: 4px; padding: 6px; }
+  .cipher-attempt-row { min-height: 39px; grid-template-columns: 19px minmax(0, 1fr) 78px; gap: 4px; padding: 3px 4px; }
+  .cipher-sockets { gap: 4px; }
+  .cipher-socket { width: clamp(27px, 8vw, 34px); height: 30px; font-size: 1rem; }
+  .cipher-feedback { gap: 3px; font-size: .43rem; }
+  .cipher-feedback small { font-size: .36rem; }
+  .cipher-feedback-pending { font-size: .39rem; }
+  .cipher-signal-palette { gap: 5px; }
+  .cipher-signal-button { min-height: 44px; }
+  .cipher-signal-button > span { font-size: 1.1rem; }
+  .cipher-signal-button small { font-size: .43rem; }
+}
+
+@media (max-width: 380px) {
+  .cipher-attempt-row { grid-template-columns: 17px minmax(0, 1fr) 68px; gap: 3px; }
+  .cipher-socket { width: 26px; height: 28px; }
+  .cipher-feedback { font-size: .39rem; }
+  .cipher-feedback small { font-size: .34rem; }
+  .cipher-circuit-footer { font-size: .43rem; }
+}
