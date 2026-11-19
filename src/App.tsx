@@ -16,6 +16,11 @@ import { clearArcadeBests, readArcadeData, withDailyPatternCompletion, withImpro
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
 
+type BeforeInstallPromptEvent = Event & {
+  prompt: () => Promise<void>
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>
+}
+
 const directionKeys: Record<string, Direction> = {
   ArrowUp: 'up',
   w: 'up',
@@ -36,6 +41,8 @@ function App() {
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
+  const [isOnline, setIsOnline] = useState(() => navigator.onLine)
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const boardRef = useRef<HTMLDivElement>(null)
 
   const recordBest = (game: keyof ArcadeBests, candidate: number) => {
@@ -73,6 +80,36 @@ function App() {
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
+
+  useEffect(() => {
+    const updateConnection = () => setIsOnline(navigator.onLine)
+    const captureInstallPrompt = (event: Event) => {
+      event.preventDefault()
+      setInstallPrompt(event as BeforeInstallPromptEvent)
+    }
+    const clearInstallPrompt = () => setInstallPrompt(null)
+
+    window.addEventListener('online', updateConnection)
+    window.addEventListener('offline', updateConnection)
+    window.addEventListener('beforeinstallprompt', captureInstallPrompt)
+    window.addEventListener('appinstalled', clearInstallPrompt)
+    return () => {
+      window.removeEventListener('online', updateConnection)
+      window.removeEventListener('offline', updateConnection)
+      window.removeEventListener('beforeinstallprompt', captureInstallPrompt)
+      window.removeEventListener('appinstalled', clearInstallPrompt)
+    }
+  }, [])
+
+  const installArcade = async () => {
+    if (!installPrompt) return
+    try {
+      await installPrompt.prompt()
+      await installPrompt.userChoice
+    } finally {
+      setInstallPrompt(null)
+    }
+  }
 
   useEffect(() => {
     if (snake.score > 0) recordBest('snake', snake.score)
@@ -138,7 +175,9 @@ function App() {
           <span className="brand-mark" aria-hidden="true"><span /><span /><span /><span /></span>
           <span>ARCADE</span>
         </button>
-        <span className="topbar-note">FREE PLAY · 1 PLAYER</span>
+        <span className="topbar-note" role={isOnline ? undefined : 'status'}>
+          {isOnline ? 'FREE PLAY · 1 PLAYER' : 'OFFLINE'}
+        </span>
         <span className="version-label">{versionLabel}</span>
       </header>
 
@@ -155,6 +194,8 @@ function App() {
             hasRecords={Object.values(arcadeData.bests).some((record) => record !== null)}
             onClearRecords={clearRecords}
             storageNotice={storageNotice}
+            installAvailable={installPrompt !== null}
+            onInstall={installArcade}
           />
         ) : screen === 'reaction' ? (
           <ReactionGame
@@ -310,6 +351,8 @@ function Home({
   hasRecords,
   onClearRecords,
   storageNotice,
+  installAvailable,
+  onInstall,
 }: {
   onPlaySnake: () => void
   onPlayReaction: () => void
@@ -321,6 +364,8 @@ function Home({
   hasRecords: boolean
   onClearRecords: () => void
   storageNotice: string
+  installAvailable: boolean
+  onInstall: () => void
 }) {
   const [confirmClearRecords, setConfirmClearRecords] = useState(false)
 
@@ -428,6 +473,10 @@ function Home({
           <input type="checkbox" checked={reduceMotion} onChange={(event) => onReduceMotionChange(event.currentTarget.checked)} />
           <span><strong>Reduce motion</strong><small>Animations are reduced. Your system setting also applies.</small></span>
         </label>
+        <div className="install-setting">
+          <span><strong>Offline play</strong><small>After your first visit, the games are ready without a connection.</small></span>
+          {installAvailable && <button className="install-button" type="button" onClick={onInstall}>Install Arcade</button>}
+        </div>
         <div className="records-setting">
           <div>
             <strong>Personal bests</strong>
