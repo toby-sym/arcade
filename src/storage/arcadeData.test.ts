@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withImprovedBest, writeArcadeData } from './arcadeData'
+import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyPatternCompletion, withImprovedBest, writeArcadeData } from './arcadeData'
 
 class MemoryStorage {
   key: string | null = null
@@ -17,6 +17,7 @@ describe('browser-local Arcade data', () => {
     const storage = new MemoryStorage()
     const saved = {
       version: 1 as const,
+      dailyPatternCompletedDate: '2026-11-19',
       bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3 },
       preferences: { reduceMotion: true, pongDifficulty: 'quick' as const },
     }
@@ -44,11 +45,13 @@ describe('browser-local Arcade data', () => {
   it('clears all records without changing the saved preferences or original data', () => {
     const initial = {
       version: 1 as const,
+      dailyPatternCompletedDate: '2026-11-19',
       bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3 },
       preferences: { reduceMotion: true, pongDifficulty: 'quick' as const },
     }
     expect(clearArcadeBests(initial)).toEqual({
       version: 1,
+      dailyPatternCompletedDate: '2026-11-19',
       bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null },
       preferences: { reduceMotion: true, pongDifficulty: 'quick' },
     })
@@ -60,15 +63,24 @@ describe('browser-local Arcade data', () => {
     storage.key = ARCADE_DATA_KEY
     storage.value = JSON.stringify({
       version: 1,
+      dailyPatternCompletedDate: 'not-a-date',
       bests: { snake: 9, reaction: -40, pattern: 2.5, breakout: 1.2, pong: -1 },
       preferences: { reduceMotion: true, pongDifficulty: 'too-fast' },
     })
 
     expect(readArcadeData(storage)).toEqual({
       version: 1,
+      dailyPatternCompletedDate: null,
       bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null },
       preferences: { reduceMotion: true, pongDifficulty: 'steady' },
     })
+  })
+
+  it('records only valid calendar dates for the shared daily challenge', () => {
+    const initial = emptyArcadeData()
+    expect(withDailyPatternCompletion(initial, '2026-11-19')?.dailyPatternCompletedDate).toBe('2026-11-19')
+    expect(withDailyPatternCompletion(initial, '2026-02-31')).toBeNull()
+    expect(initial.dailyPatternCompletedDate).toBeNull()
   })
 
   it('uses defaults for unknown versions, corrupt JSON, and unavailable storage', () => {
