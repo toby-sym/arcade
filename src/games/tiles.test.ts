@@ -80,6 +80,13 @@ describe('daily Tiles matching puzzles', () => {
       const date = `2026-11-${String(day).padStart(2, '0')}`
       const puzzle = createTilesPuzzle(date)
       expect(puzzle.solutionPairs).toHaveLength(10)
+      const cleared: number[] = []
+      for (const pair of puzzle.solutionPairs) {
+        expect(isTilesIndexFree(pair[0]!, cleared)).toBe(true)
+        expect(isTilesIndexFree(pair[1]!, cleared)).toBe(true)
+        cleared.push(...pair)
+      }
+      expect(new Set(cleared).size).toBe(20)
     }
   })
 })
