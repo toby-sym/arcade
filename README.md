@@ -123,7 +123,7 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 
 ## Mini Crossword controls
 
-- Open **Mini Crossword** for the daily five-by-five word grid. Select a square or clue, then type **A–Z** or use the on-screen letter pad. **Arrow keys** move through the grid and **Enter** switches between Across and Down.
+- Open **Mini Crossword** for the daily five-by-five grid with black squares and independent Across and Down answers. Select a square or clue, then type **A–Z** or use the on-screen letter pad. **Arrow keys** move through open squares and **Enter** switches between Across and Down.
 - Fill all five Across and five Down clues. **Backspace** erases, **Hint** reveals and locks one square, and **Clear entries** restarts the daily board.
 - The same puzzle is shared for a UTC date. Your entries and hints stay saved in this browser. The fewest hints for a completed grid is saved as a local personal best. Puzzles are bundled with Arcade; no external game service is used.
 

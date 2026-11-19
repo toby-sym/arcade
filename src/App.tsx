@@ -791,7 +791,7 @@ function Home({
           </article>
           <article className="game-card game-card-minicrossword">
             <div className="card-art minicrossword-card-art" aria-hidden="true">
-              <span className="minicrossword-card-grid"><i>A</i><i>C</i><i>T</i><i>E</i><i>D</i><i>C</i><i>H</i><i>I</i><i>L</i><i>I</i><i>T</i><i>I</i><i>G</i><i>E</i><i>R</i><i>E</i><i>L</i><i>E</i><i>C</i><i>T</i><i>D</i><i>I</i><i>R</i><i>T</i><i>Y</i></span>
+              <span className="minicrossword-card-grid"><i>A</i><i>C</i><i>T</i><b /><b /><i>R</i><i>A</i><i>I</i><i>S</i><i>E</i><i>E</i><i>M</i><i>B</i><i>E</i><i>D</i><i>A</i><i>P</i><i>I</i><i>N</i><i>G</i><b /><b /><i>A</i><i>T</i><i>E</i></span>
               <span className="card-art-index">15</span>
             </div>
             <div className="card-info">
