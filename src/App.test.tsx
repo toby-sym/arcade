@@ -166,7 +166,14 @@ describe('Arcade navigation and game controls', () => {
 
     expect(screen.getByRole('status')).toHaveTextContent('Daily challenge complete. You remembered all 8 tiles.')
     expect(screen.getByRole('button', { name: /try daily again/i })).toBeInTheDocument()
-    expect(window.localStorage.getItem(ARCADE_DATA_KEY)).toBeNull()
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').dailyPatternCompletedDate).toBe(utcDateKey())
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').bests.pattern).toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: /all games/i }))
+    fireEvent.click(screen.getByRole('button', { name: /play pattern/i }))
+    expect(screen.getByText(/today's shared challenge is complete in this browser/i)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /daily challenge/i }))
+    expect(screen.getByRole('status')).toHaveTextContent("Today's 8-tile shared challenge.")
   })
 
   it('opens Breakout and supports keyboard paddle movement, pause, and restart', async () => {
@@ -259,6 +266,7 @@ describe('Arcade navigation and game controls', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Clear all records' }))
     expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}')).toEqual({
       version: 1,
+      dailyPatternCompletedDate: null,
       bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null },
       preferences: { reduceMotion: true, pongDifficulty: 'steady' },
     })

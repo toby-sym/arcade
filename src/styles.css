@@ -304,6 +304,7 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .pattern-console-footer { height: 28px; padding: 10px 1px 0; display: flex; justify-content: space-between; color: rgb(245 240 232 / 51%); font-size: .53rem; letter-spacing: .15em; font-weight: 700; }
 .pattern-status { min-height: 24px; margin: 12px 2px 0; color: #72766d; font-size: .74rem; line-height: 1.5; }
 .pattern-copy .score-card { max-width: 230px; margin-top: 20px; }
+.daily-completion-note { max-width: 365px; margin: 12px 0 0; padding: 10px 12px; border-left: 3px solid #879b38; color: #60685a; background: rgb(203 244 92 / 13%); font-size: .72rem; line-height: 1.5; }
 .breakout-layout { grid-template-columns: minmax(230px, .72fr) minmax(320px, 1.28fr); }
 .breakout-play-column { max-width: 650px; }
 .breakout-console { padding: 14px; background: var(--night); box-shadow: 0 15px 36px rgb(36 39 34 / 15%); }

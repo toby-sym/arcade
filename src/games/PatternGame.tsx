@@ -1,16 +1,20 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 import { dailyPatternForDate, utcDateKey } from './dailyPattern'
 import { createPatternState, patternReducer } from './pattern'
 
 const tileNames = ['Top left', 'Top right', 'Bottom left', 'Bottom right']
 
-export function PatternGame({ onBack, bestRounds, onRecordRounds }: {
+export function PatternGame({ onBack, bestRounds, onRecordRounds, dailyCompletedDate, onDailyComplete }: {
   onBack: () => void
   bestRounds: number | null
   onRecordRounds: (rounds: number) => void
+  dailyCompletedDate: string | null
+  onDailyComplete: (date: string) => void
 }) {
   const [game, dispatch] = useReducer(patternReducer, undefined, createPatternState)
+  const dailyRunDate = useRef<string | null>(null)
   const canRestart = game.phase === 'showing' || game.phase === 'input' || game.phase === 'paused'
+  const completedToday = dailyCompletedDate === utcDateKey()
 
   useEffect(() => {
     if (game.phase !== 'showing') return
@@ -32,10 +36,17 @@ export function PatternGame({ onBack, bestRounds, onRecordRounds }: {
   }, [game.completedRounds, bestRounds, onRecordRounds])
 
   const startPractice = () => dispatch({ type: 'start', tile: randomTile() })
-  const startDaily = () => dispatch({ type: 'startDaily', sequence: dailyPatternForDate(utcDateKey()) })
+  const startDaily = () => {
+    const date = utcDateKey()
+    dailyRunDate.current = date
+    dispatch({ type: 'startDaily', sequence: dailyPatternForDate(date) })
+  }
   const restart = () => game.mode === 'daily' ? startDaily() : dispatch({ type: 'reset' })
   const choose = (tile: number) => {
     if (game.phase !== 'input') return
+    if (game.mode === 'daily' && game.inputIndex === game.sequence.length - 1 && game.sequence[game.inputIndex] === tile) {
+      onDailyComplete(dailyRunDate.current ?? utcDateKey())
+    }
     dispatch({ type: 'choose', tile, nextTile: game.mode === 'daily' ? 0 : randomTile() })
   }
 
@@ -106,6 +117,9 @@ export function PatternGame({ onBack, bestRounds, onRecordRounds }: {
             )}
             {canRestart && <button className="button button-quiet" type="button" onClick={restart}>Restart</button>}
           </div>
+          {completedToday && game.phase !== 'complete' && (
+            <p className="daily-completion-note">Today's shared challenge is complete in this browser. You can still play it again.</p>
+          )}
           <p className="keyboard-hint">Tab to a tile. Press Enter or Space to repeat it.</p>
         </div>
 
