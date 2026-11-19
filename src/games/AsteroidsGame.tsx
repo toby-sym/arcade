@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useRef, type KeyboardEvent, type PointerEvent } from 'react'
+import { useArcadeSound } from '../audio/arcadeAudio'
 import { asteroidsReducer, createAsteroidsState, type AsteroidsControl } from './asteroids'
 
 interface AsteroidsGameProps {
@@ -22,6 +23,8 @@ const controlForKey = (key: string) => controlKeys[key] ?? controlKeys[key.toLow
 export function AsteroidsGame({ onBack, bestScore, onRecordScore }: AsteroidsGameProps) {
   const [state, dispatch] = useReducer(asteroidsReducer, undefined, createAsteroidsState)
   const boardRef = useRef<HTMLDivElement>(null)
+  const playSound = useArcadeSound()
+  const previousAudioState = useRef({ score: state.score, lives: state.lives, wave: state.wave, phase: state.phase, shots: state.shots.length })
 
   useEffect(() => {
     if (state.phase !== 'playing') return
@@ -57,6 +60,16 @@ export function AsteroidsGame({ onBack, bestScore, onRecordScore }: AsteroidsGam
   useEffect(() => {
     if (state.score > 0) onRecordScore(state.score)
   }, [onRecordScore, state.score])
+
+  useEffect(() => {
+    const previous = previousAudioState.current
+    if (state.phase === 'over' && previous.phase !== 'over') playSound('lose')
+    else if (state.wave > previous.wave) playSound('wave')
+    else if (state.score > previous.score) playSound('hit')
+    else if (state.lives < previous.lives) playSound('miss')
+    else if (state.shots.length > previous.shots && state.phase === 'playing') playSound('fire')
+    previousAudioState.current = { score: state.score, lives: state.lives, wave: state.wave, phase: state.phase, shots: state.shots.length }
+  }, [playSound, state.lives, state.phase, state.score, state.shots.length, state.wave])
 
   const focusBoard = () => window.requestAnimationFrame(() => boardRef.current?.focus())
   const start = () => {

@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react'
 import { dailyPatternForDate, utcDateKey } from './dailyPattern'
 import { createPatternState, patternReducer } from './pattern'
+import { useArcadeSound, useArcadeTone } from '../audio/arcadeAudio'
 
 const tileNames = ['Top left', 'Top right', 'Bottom left', 'Bottom right']
 
@@ -13,6 +14,9 @@ export function PatternGame({ onBack, bestRounds, onRecordRounds, dailyCompleted
 }) {
   const [game, dispatch] = useReducer(patternReducer, undefined, createPatternState)
   const dailyRunDate = useRef<string | null>(null)
+  const previousCompletedRounds = useRef(game.completedRounds)
+  const playSound = useArcadeSound()
+  const playTone = useArcadeTone()
   const canRestart = game.phase === 'showing' || game.phase === 'input' || game.phase === 'paused'
   const completedToday = dailyCompletedDate === utcDateKey()
 
@@ -22,6 +26,15 @@ export function PatternGame({ onBack, bestRounds, onRecordRounds, dailyCompleted
     const timer = window.setTimeout(() => dispatch({ type: 'advance' }), delay)
     return () => window.clearTimeout(timer)
   }, [game.phase, game.activeTile, game.showIndex, game.sequence.length])
+
+  useEffect(() => {
+    if (game.phase === 'showing' && game.activeTile !== null) playTone(340 + game.activeTile * 105)
+  }, [game.phase, game.activeTile, game.showIndex, playTone])
+
+  useEffect(() => {
+    if (game.completedRounds > previousCompletedRounds.current) playSound('score')
+    previousCompletedRounds.current = game.completedRounds
+  }, [game.completedRounds, playSound])
 
   useEffect(() => {
     const pauseWhenHidden = () => {
@@ -44,7 +57,12 @@ export function PatternGame({ onBack, bestRounds, onRecordRounds, dailyCompleted
   const restart = () => game.mode === 'daily' ? startDaily() : dispatch({ type: 'reset' })
   const choose = (tile: number) => {
     if (game.phase !== 'input') return
-    if (game.mode === 'daily' && game.inputIndex === game.sequence.length - 1 && game.sequence[game.inputIndex] === tile) {
+    const isCorrect = game.sequence[game.inputIndex] === tile
+    const completesDaily = game.mode === 'daily' && game.inputIndex === game.sequence.length - 1 && isCorrect
+    if (isCorrect) playTone(340 + tile * 105)
+    else playSound('miss')
+    if (completesDaily) playSound('win')
+    if (completesDaily) {
       onDailyComplete(dailyRunDate.current ?? utcDateKey())
     }
     dispatch({ type: 'choose', tile, nextTile: game.mode === 'daily' ? 0 : randomTile() })
