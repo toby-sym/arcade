@@ -1904,6 +1904,41 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
 .daily-crossword-card-grid { position: absolute; inset: 18px 32px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: repeat(7, minmax(0, 1fr)); border: 1px solid #d1b45a; transform: rotate(-3deg); }
 .daily-crossword-card-grid i { display: grid; place-items: center; border: 1px solid #645844; color: #f6f0dc; background: #272230; font: 800 .36rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-style: normal; }
 .daily-crossword-card-grid i.daily-crossword-card-block { border-color: #090811; background: #08070d; }
+.game-card-minesweeper:hover { border-color: #7fd8c7; transform: translateY(-3px); box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.minesweeper-card-art { border-color: #356e68; background: radial-gradient(ellipse at 50% 54%, #25413e, #0e0b19 80%); }
+.minesweeper-card-grid { position: absolute; top: 20px; left: calc(50% - 58px); width: 116px; height: 116px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); border: 1px solid #5c9c8b; transform: rotate(-3deg); }
+.minesweeper-card-grid i { display: grid; place-items: center; border: 1px solid #5c9c8b; color: #e4f8e6; background: #283b3a; font: 800 .62rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-style: normal; }
+.minesweeper-card-grid i:nth-child(3n + 2) { color: #49d4ef; background: #344b4c; }
+.minesweeper-card-grid i:nth-child(6) { color: #ff748e; background: #403239; }
+.minesweeper-card-grid i:nth-child(8) { color: #f1d267; background: #342e2d; }
+.minesweeper-layout { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); }
+.minesweeper-copy h1 { color: var(--paper); }
+.minesweeper-console { padding: 16px; border: 2px solid #5c4e76; border-radius: 14px; background: linear-gradient(145deg, #211b2d, #15121e); box-shadow: 0 12px 30px rgb(0 0 0 / 24%), inset 0 1px rgb(255 255 255 / 6%); }
+.minesweeper-field-shell { display: grid; place-items: center; padding: 10px; border: 1px solid #384d4a; background: radial-gradient(ellipse at 50% 35%, #293c3b, #11131a 82%); }
+.minesweeper-grid { position: relative; display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); grid-template-rows: repeat(9, minmax(0, 1fr)); gap: 2px; width: min(100%, 468px); aspect-ratio: 1; padding: 5px; border: 1px solid #618479; background: #1a2a2a; }
+.minesweeper-cell { display: grid; place-items: center; min-width: 0; min-height: 0; padding: 0; border: 1px solid #718982; border-radius: 2px; color: #f8f2df; background: linear-gradient(145deg, #71877d, #4b605c); box-shadow: inset 0 1px rgb(255 255 255 / 25%), inset 0 -2px rgb(0 0 0 / 18%); font: 800 clamp(.58rem, 2.2vw, .86rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; cursor: pointer; touch-action: manipulation; }
+.minesweeper-cell:hover:not(:disabled) { background: linear-gradient(145deg, #96aa9e, #617a70); }
+.minesweeper-cell:active:not(:disabled) { transform: translateY(1px); }
+.minesweeper-cell.is-revealed { border-color: #3b5650; color: #f5f0dc; background: #202b2c; box-shadow: inset 0 1px rgb(255 255 255 / 4%); cursor: default; }
+.minesweeper-cell.is-flagged { color: #ff7a91; text-shadow: 0 0 8px rgb(255 92 128 / 42%); }
+.minesweeper-cell.is-wrong-flag { color: #ff576c; }
+.minesweeper-cell.is-mine { color: #ff667f; background: #4a2a35; }
+.minesweeper-cell.mine-count-1 { color: #5ddbf0; }
+.minesweeper-cell.mine-count-2 { color: #b9f34f; }
+.minesweeper-cell.mine-count-3 { color: #ff7a91; }
+.minesweeper-cell.mine-count-4 { color: #c7a2ff; }
+.minesweeper-cell:disabled { opacity: 1; }
+.minesweeper-overlay { position: absolute; z-index: 2; inset: 5px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 18px; text-align: center; background: rgb(11 10 17 / 78%); }
+.minesweeper-overlay strong { color: var(--green); font: 800 clamp(1.1rem, 3vw, 1.6rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; }
+.minesweeper-overlay span { max-width: 270px; margin-top: 8px; color: #e0d8e9; font-size: .8rem; line-height: 1.5; }
+.minesweeper-console-footer { display: flex; justify-content: space-between; gap: 8px; padding: 10px 1px 0; color: #c1b5d5; font: .54rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.minesweeper-touch-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.minesweeper-touch-controls .button { min-height: 44px; }
+.minesweeper-status { min-height: 24px; margin: 12px 2px 0; color: #bfb5d1; font-size: .74rem; line-height: 1.5; }
+.minesweeper-score { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+.minesweeper-score .local-best-readout { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; }
+.minesweeper-score .local-best-readout .score-caption { grid-column: 1 / -1; }
+.minesweeper-score .local-best-readout .score-value { font-size: 1.25rem; }
 .daily-crossword-layout { grid-template-columns: minmax(250px, .78fr) minmax(380px, 1.22fr); }
 .daily-crossword-copy h1 { font-size: clamp(1.9rem, 3vw, 2.45rem); letter-spacing: -.075em; }
 .daily-crossword-score { max-width: 395px; margin-top: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
@@ -1947,4 +1982,21 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .daily-crossword-clues section { padding: 5px; }
   .daily-crossword-clues button { padding: 4px 3px; font-size: .53rem; }
   .daily-crossword-console-footer { font-size: .42rem; }
+}
+
+@media (max-width: 650px) {
+  .minesweeper-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .minesweeper-copy h1 { font-size: clamp(1.9rem, 8.5vw, 2.45rem); }
+  .minesweeper-play-column { width: 100%; max-width: 500px; justify-self: center; }
+  .minesweeper-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .minesweeper-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .minesweeper-field-shell { padding: 6px; }
+}
+
+@media (max-width: 380px) {
+  .minesweeper-console-footer { font-size: .43rem; letter-spacing: .06em; }
+  .minesweeper-grid { gap: 1px; padding: 4px; }
+  .minesweeper-cell { border-radius: 1px; font-size: clamp(.54rem, 2.7vw, .7rem); }
+  .minesweeper-score { gap: 6px; }
+  .minesweeper-score .score-caption { font-size: .46rem; }
 }
