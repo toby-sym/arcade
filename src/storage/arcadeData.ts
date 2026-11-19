@@ -3,6 +3,7 @@ import type { DailyWordProgress } from '../games/dailyWord'
 import { validConnectionsProgress, type ConnectionsProgress } from '../games/connections'
 import { validSpellingBeeProgress, type SpellingBeeProgress } from '../games/spellingBee'
 import { validStrandsProgress, type StrandsProgress } from '../games/strands'
+import { validSudokuProgress, type SudokuProgress } from '../games/sudoku'
 
 export const ARCADE_DATA_KEY = 'arcade.local-data.v1'
 
@@ -20,6 +21,7 @@ export interface ArcadeBests {
   connections: number | null
   spellingBee: number | null
   strands: number | null
+  sudoku: number | null
 }
 
 export interface ArcadeData {
@@ -30,6 +32,7 @@ export interface ArcadeData {
   dailyConnectionsGame: ConnectionsProgress | null
   dailySpellingBeeGame: SpellingBeeProgress | null
   dailyStrandsGame: StrandsProgress | null
+  dailySudokuGame: SudokuProgress | null
   preferences: {
     reduceMotion: boolean
     soundEffects: boolean
@@ -38,9 +41,9 @@ export interface ArcadeData {
 }
 
 export function withImprovedBest(data: ArcadeData, game: keyof ArcadeBests, candidate: number): ArcadeData | null {
-  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && candidate === 0)) return null
+  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && candidate === 0)) return null
   const previous = data.bests[game]
-  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands'
+  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku'
   const improved = previous === null || (lowerIsBetter ? candidate < previous : candidate > previous)
   if (!improved) return null
   return { ...data, bests: { ...data.bests, [game]: candidate } }
@@ -80,23 +83,37 @@ export function withDailyStrandsGame(data: ArcadeData, progress: StrandsProgress
   return { ...data, dailyStrandsGame: { date: progress.date, foundWords: [...progress.foundWords], hintsUsed: progress.hintsUsed, hintedCells: [...progress.hintedCells] } }
 }
 
+export function withDailySudokuGame(data: ArcadeData, progress: SudokuProgress): ArcadeData | null {
+  if (!validSudokuProgress(progress)) return null
+  return {
+    ...data,
+    dailySudokuGame: {
+      date: progress.date,
+      board: [...progress.board],
+      hintsUsed: progress.hintsUsed,
+      hintedCells: [...progress.hintedCells],
+    },
+  }
+}
+
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null },
     dailyPatternCompletedDate: null,
     dailyWordGame: null,
     dailyConnectionsGame: null,
     dailySpellingBeeGame: null,
     dailyStrandsGame: null,
+    dailySudokuGame: null,
     preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady' },
   }
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -117,6 +134,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
       dailyConnectionsGame: validConnectionsProgress(parsed.dailyConnectionsGame) ? parsed.dailyConnectionsGame : null,
       dailySpellingBeeGame: validSpellingBeeProgress(parsed.dailySpellingBeeGame) ? parsed.dailySpellingBeeGame : null,
       dailyStrandsGame: validStrandsProgress(parsed.dailyStrandsGame) ? parsed.dailyStrandsGame : null,
+      dailySudokuGame: validSudokuProgress(parsed.dailySudokuGame) ? parsed.dailySudokuGame : null,
       bests: {
         snake: validRecord(bests.snake),
         reaction: validRecord(bests.reaction),
@@ -131,6 +149,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         connections: validRecord(bests.connections),
         spellingBee: validRecord(bests.spellingBee),
         strands: validRecord(bests.strands),
+        sudoku: validRecord(bests.sudoku),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }
