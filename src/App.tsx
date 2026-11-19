@@ -41,6 +41,7 @@ import { createPipsState, type PipsProgress } from './games/pips'
 const DailyCrosswordGame = lazy(() => import('./games/DailyCrosswordGame').then(({ DailyCrosswordGame }) => ({ default: DailyCrosswordGame })))
 import { createDailyCrosswordState, type DailyCrosswordProgress } from './games/dailyCrossword'
 const MinesweeperGame = lazy(() => import('./games/MinesweeperGame').then(({ MinesweeperGame }) => ({ default: MinesweeperGame })))
+const MazeDashGame = lazy(() => import('./games/MazeDashGame').then(({ MazeDashGame }) => ({ default: MazeDashGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -76,6 +77,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'pips', title: 'Pips', categories: ['daily'], terms: 'domino regions numbers' },
   { id: 'dailycrossword', title: 'Daily Crossword', categories: ['daily'], terms: 'clues words grid' },
   { id: 'minesweeper', title: 'Minesweeper', categories: ['daily'], terms: 'minesweeper mines flags numbers logic' },
+  { id: 'mazedash', title: 'Maze Dash', categories: ['arcade'], terms: 'maze chase gems sentries' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -99,7 +101,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -444,6 +446,7 @@ function App() {
   const openPips = () => setScreen('pips')
   const openCrossword = () => setScreen('crossword')
   const openMinesweeper = () => setScreen('minesweeper')
+  const openMazeDash = () => setScreen('mazedash')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -513,6 +516,7 @@ function App() {
             onPlayPips={openPips}
             onPlayCrossword={openCrossword}
             onPlayMinesweeper={openMinesweeper}
+            onPlayMazeDash={openMazeDash}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -679,6 +683,12 @@ function App() {
             progress={arcadeData.dailyMinesweeperGame}
             onSaveProgress={saveDailyMinesweeperGame}
           />
+        ) : screen === 'mazedash' ? (
+          <MazeDashGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.mazeDash}
+            onRecordScore={(score) => recordBest('mazeDash', score)}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -820,6 +830,7 @@ function Home({
   onPlayPips,
   onPlayCrossword,
   onPlayMinesweeper,
+  onPlayMazeDash,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -858,6 +869,7 @@ function Home({
   onPlayPips: () => void
   onPlayCrossword: () => void
   onPlayMinesweeper: () => void
+  onPlayMazeDash: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1247,6 +1259,19 @@ function Home({
               <h3>Minesweeper</h3>
               <p>Read the numbers, mark the mines, and clear today's shared field.</p>
               <div className="card-bottom"><span className="controls-label">TOUCH · C · F · ARROWS</span><button className="play-card-button" type="button" onClick={onPlayMinesweeper}>Play Minesweeper <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-mazedash" hidden={!visibleGameIds.has('mazedash')}>
+            <div className="card-art maze-dash-card-art" aria-hidden="true">
+              <span className="maze-dash-card-grid"><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /></span>
+              <span className="maze-dash-card-player" />
+              <span className="card-art-index">24</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">24</span><span className="game-category">ARCADE CLASSIC</span></div>
+              <h3>Maze Dash</h3>
+              <p>Collect the gems, reach the exit, and stay ahead of the sentries.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · WASD · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayMazeDash}>Play Maze Dash <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
