@@ -18,7 +18,7 @@ describe('browser-local Arcade data', () => {
     const saved = {
       version: 1 as const,
       bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3 },
-      preferences: { reduceMotion: true },
+      preferences: { reduceMotion: true, pongDifficulty: 'quick' as const },
     }
 
     expect(writeArcadeData(saved, storage)).toBe(true)
@@ -45,12 +45,12 @@ describe('browser-local Arcade data', () => {
     const initial = {
       version: 1 as const,
       bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3 },
-      preferences: { reduceMotion: true },
+      preferences: { reduceMotion: true, pongDifficulty: 'quick' as const },
     }
     expect(clearArcadeBests(initial)).toEqual({
       version: 1,
       bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null },
-      preferences: { reduceMotion: true },
+      preferences: { reduceMotion: true, pongDifficulty: 'quick' },
     })
     expect(initial.bests.snake).toBe(12)
   })
@@ -61,13 +61,13 @@ describe('browser-local Arcade data', () => {
     storage.value = JSON.stringify({
       version: 1,
       bests: { snake: 9, reaction: -40, pattern: 2.5, breakout: 1.2, pong: -1 },
-      preferences: { reduceMotion: true },
+      preferences: { reduceMotion: true, pongDifficulty: 'too-fast' },
     })
 
     expect(readArcadeData(storage)).toEqual({
       version: 1,
       bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null },
-      preferences: { reduceMotion: true },
+      preferences: { reduceMotion: true, pongDifficulty: 'steady' },
     })
   })
 

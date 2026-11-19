@@ -6,12 +6,15 @@ export const PONG_PADDLE_HEIGHT = 74
 export const PONG_LEFT_X = 26
 export const PONG_RIGHT_X = PONG_WIDTH - PONG_LEFT_X - PONG_PADDLE_WIDTH
 export const PONG_WIN_SCORE = 5
+export type PongDifficulty = 'calm' | 'steady' | 'quick'
+export const PONG_OPPONENT_SPEED: Record<PongDifficulty, number> = { calm: 1.8, steady: 3.2, quick: 5.2 }
 
 export type PongPhase = 'ready' | 'playing' | 'paused' | 'over'
 export type PongWinner = 'player' | 'opponent' | null
 
 export interface PongState {
   phase: PongPhase
+  difficulty: PongDifficulty
   ball: { x: number; y: number; vx: number; vy: number }
   paddleY: number
   opponentY: number
@@ -26,12 +29,14 @@ export type PongAction =
   | { type: 'pause' }
   | { type: 'resume' }
   | { type: 'movePaddle'; centerY: number }
+  | { type: 'setDifficulty'; difficulty: PongDifficulty }
   | { type: 'tick' }
   | { type: 'restart' }
 
-export function createPongState(): PongState {
+export function createPongState(difficulty: PongDifficulty = 'steady'): PongState {
   return {
     phase: 'ready',
+    difficulty,
     ball: startingBall(1),
     paddleY: (PONG_HEIGHT - PONG_PADDLE_HEIGHT) / 2,
     opponentY: (PONG_HEIGHT - PONG_PADDLE_HEIGHT) / 2,
@@ -60,12 +65,16 @@ export function pongReducer(state: PongState, action: PongAction): PongState {
       if (state.phase === 'paused' || state.phase === 'over') return state
       return { ...state, paddleY: clamp(action.centerY - PONG_PADDLE_HEIGHT / 2, 0, PONG_HEIGHT - PONG_PADDLE_HEIGHT) }
 
+    case 'setDifficulty':
+      if (state.phase !== 'ready' || state.score > 0 || state.opponentScore > 0) return state
+      return { ...state, difficulty: action.difficulty, message: `Computer pace set to ${action.difficulty}.` }
+
     case 'tick':
       if (state.phase !== 'playing') return state
       return advanceBall(state)
 
     case 'restart':
-      return createPongState()
+      return createPongState(state.difficulty)
   }
 }
 
@@ -83,7 +92,7 @@ function advanceBall(state: PongState): PongState {
   }
 
   const nextOpponentY = clamp(
-    state.opponentY + clamp(y - (state.opponentY + PONG_PADDLE_HEIGHT / 2), -3.2, 3.2),
+    state.opponentY + clamp(y - (state.opponentY + PONG_PADDLE_HEIGHT / 2), -PONG_OPPONENT_SPEED[state.difficulty], PONG_OPPONENT_SPEED[state.difficulty]),
     0,
     PONG_HEIGHT - PONG_PADDLE_HEIGHT,
   )
