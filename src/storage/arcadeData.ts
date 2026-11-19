@@ -5,6 +5,7 @@ import { validSpellingBeeProgress, type SpellingBeeProgress } from '../games/spe
 import { validStrandsProgress, type StrandsProgress } from '../games/strands'
 import { validSudokuProgress, type SudokuProgress } from '../games/sudoku'
 import { validMiniCrosswordProgress, type MiniCrosswordProgress } from '../games/miniCrossword'
+import { validLetterBoxedProgress, type LetterBoxedProgress } from '../games/letterBoxed'
 
 export const ARCADE_DATA_KEY = 'arcade.local-data.v1'
 
@@ -24,6 +25,7 @@ export interface ArcadeBests {
   strands: number | null
   sudoku: number | null
   miniCrossword: number | null
+  letterBoxed: number | null
 }
 
 export interface ArcadeData {
@@ -36,6 +38,7 @@ export interface ArcadeData {
   dailyStrandsGame: StrandsProgress | null
   dailySudokuGame: SudokuProgress | null
   dailyMiniCrosswordGame: MiniCrosswordProgress | null
+  dailyLetterBoxedGame: LetterBoxedProgress | null
   preferences: {
     reduceMotion: boolean
     soundEffects: boolean
@@ -44,9 +47,9 @@ export interface ArcadeData {
 }
 
 export function withImprovedBest(data: ArcadeData, game: keyof ArcadeBests, candidate: number): ArcadeData | null {
-  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && candidate === 0)) return null
+  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && game !== 'letterBoxed' && candidate === 0)) return null
   const previous = data.bests[game]
-  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword'
+  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword' || game === 'letterBoxed'
   const improved = previous === null || (lowerIsBetter ? candidate < previous : candidate > previous)
   if (!improved) return null
   return { ...data, bests: { ...data.bests, [game]: candidate } }
@@ -112,12 +115,17 @@ export function withDailyMiniCrosswordGame(data: ArcadeData, progress: MiniCross
   }
 }
 
+export function withDailyLetterBoxedGame(data: ArcadeData, progress: LetterBoxedProgress): ArcadeData | null {
+  if (!validLetterBoxedProgress(progress)) return null
+  return { ...data, dailyLetterBoxedGame: { date: progress.date, words: [...progress.words] } }
+}
+
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null },
     dailyPatternCompletedDate: null,
     dailyWordGame: null,
     dailyConnectionsGame: null,
@@ -125,12 +133,13 @@ export function emptyArcadeData(): ArcadeData {
     dailyStrandsGame: null,
     dailySudokuGame: null,
     dailyMiniCrosswordGame: null,
+    dailyLetterBoxedGame: null,
     preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady' },
   }
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -153,6 +162,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
       dailyStrandsGame: validStrandsProgress(parsed.dailyStrandsGame) ? parsed.dailyStrandsGame : null,
       dailySudokuGame: validSudokuProgress(parsed.dailySudokuGame) ? parsed.dailySudokuGame : null,
       dailyMiniCrosswordGame: validMiniCrosswordProgress(parsed.dailyMiniCrosswordGame) ? parsed.dailyMiniCrosswordGame : null,
+      dailyLetterBoxedGame: validLetterBoxedProgress(parsed.dailyLetterBoxedGame) ? parsed.dailyLetterBoxedGame : null,
       bests: {
         snake: validRecord(bests.snake),
         reaction: validRecord(bests.reaction),
@@ -169,6 +179,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         strands: validRecord(bests.strands),
         sudoku: validRecord(bests.sudoku),
         miniCrossword: validRecord(bests.miniCrossword),
+        letterBoxed: validRecord(bests.letterBoxed),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }

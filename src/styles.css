@@ -1449,3 +1449,79 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .mini-crossword-keyboard button { min-height: 29px; font-size: .61rem; }
   .mini-crossword-console-footer { font-size: .43rem; letter-spacing: .06em; }
 }
+
+.game-card-letterboxed:hover { border-color: #75d9e0; transform: translateY(-3px); box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.letterboxed-card-art { border-color: #395b61; background: radial-gradient(ellipse at 50% 54%, #253c48, #0e0b19 80%); }
+.letterboxed-card-sides { position: absolute; inset: 30px 52px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 6px; transform: rotate(-4deg); }
+.letterboxed-card-sides b { display: grid; place-items: center; border: 1px solid #649ca1; color: #dff5e7; background: linear-gradient(145deg, #253847, #192332); box-shadow: inset 0 0 10px rgb(117 217 224 / 8%); font: 800 .55rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .13em; }
+.letterboxed-card-sides b:nth-child(2), .letterboxed-card-sides b:nth-child(3) { color: #171c22; background: #84d7d6; }
+.letterboxed-layout { grid-template-columns: minmax(220px, .78fr) minmax(320px, 1.22fr); }
+.letterboxed-copy h1 { font-size: clamp(2rem, 3.2vw, 2.6rem); letter-spacing: -.075em; }
+.letterboxed-score { max-width: 350px; margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+.letterboxed-run-stat { display: flex; flex-direction: column; gap: 5px; }
+.letterboxed-run-stat .score-value { font-size: 2rem; }
+.letterboxed-run-stat .score-value small { color: #b6aecb; font-size: .8rem; letter-spacing: 0; }
+.letterboxed-score .local-best-readout { border-left: 1px solid #403458; padding-left: 15px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.letterboxed-score .local-best-readout .score-value { font-size: 1.45rem; }
+.letterboxed-local-note { max-width: 360px; margin: 13px 0 0; color: #afa5c3; font-size: .7rem; line-height: 1.55; }
+.letterboxed-play-column { max-width: 560px; }
+.letterboxed-console { padding: 14px; border: 3px solid #405c68; border-radius: 15px; background: linear-gradient(145deg, #263641 0%, #171425 80%); box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.letterboxed-console .frame-topline { height: 22px; padding: 0 1px 11px; }
+.letterboxed-board { width: min(100%, 410px); aspect-ratio: 1; margin: 0 auto; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-template-rows: repeat(5, minmax(0, 1fr)); grid-template-areas: ". top top top ." "left center center center right" "left center center center right" "left center center center right" ". bottom bottom bottom ."; overflow: hidden; border: 2px solid #75d9e0; border-radius: 8px; background: #10141a; box-shadow: inset 0 0 35px rgb(117 217 224 / 8%), 0 0 20px rgb(117 217 224 / 7%); }
+.letterboxed-side { min-width: 0; min-height: 0; display: flex; align-items: center; justify-content: center; gap: clamp(3px, 1vw, 8px); }
+.letterboxed-top { position: relative; grid-area: top; flex-direction: row; gap: clamp(3px, 1vw, 8px); padding-top: 12px; }
+.letterboxed-right { grid-area: right; flex-direction: column; gap: clamp(3px, 1vw, 8px); }
+.letterboxed-bottom { position: relative; grid-area: bottom; flex-direction: row; gap: clamp(3px, 1vw, 8px); padding-bottom: 12px; }
+.letterboxed-left { grid-area: left; flex-direction: column; gap: clamp(3px, 1vw, 8px); }
+.letterboxed-side-label { color: #93a9b2; font: 800 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .14em; }
+.letterboxed-top .letterboxed-side-label { position: absolute; top: 1px; }
+.letterboxed-bottom .letterboxed-side-label { position: absolute; bottom: 1px; }
+.letterboxed-letter { width: clamp(34px, 12vw, 54px); aspect-ratio: 1; min-width: 0; border: 1px solid #7198a0; border-radius: 5px; padding: 0; color: #f7f1df; background: linear-gradient(145deg, #384c59, #283342); box-shadow: 0 3px 0 #080a10; font: 900 clamp(1rem, 3vw, 1.35rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; cursor: pointer; touch-action: manipulation; }
+.letterboxed-letter:hover:not(:disabled) { border-color: #a8f2ec; color: #fff7cc; background: #42636b; transform: translateY(-1px); }
+.letterboxed-letter.letter-covered { color: #152027; border-color: #94e6dc; background: #79d0cd; }
+.letterboxed-letter.letter-in-draft { border-color: #ffe49b; color: #211d14; background: #e4be67; box-shadow: 0 3px 0 #473b23; }
+.letterboxed-letter:disabled { cursor: default; opacity: .8; }
+.letterboxed-letter:focus-visible { outline: 3px solid #fff0b2; outline-offset: 2px; z-index: 2; }
+.letterboxed-center { grid-area: center; min-width: 0; min-height: 0; margin: 8px; border: 1px solid #405362; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: radial-gradient(ellipse at 50% 40%, #283947, #161a24 80%); text-align: center; }
+.letterboxed-center > span { color: #82dfe0; font: 800 .46rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; }
+.letterboxed-center output { max-width: 100%; overflow: hidden; color: #fff0ba; font: 900 clamp(1.25rem, 4vw, 2rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .13em; text-overflow: ellipsis; }
+.letterboxed-center small { color: #acb9c5; font-size: .58rem; }
+.letterboxed-board:focus-visible { outline-offset: 5px; }
+.letterboxed-chain { max-width: 480px; margin: 10px auto 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; list-style: none; }
+.letterboxed-chain li { min-height: 28px; padding: 5px 8px; display: flex; align-items: center; gap: 6px; border: 1px solid #49626a; border-radius: 4px; color: #e4eee1; background: #171a24; font: 800 .63rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.letterboxed-chain li span { color: #80dfe0; font-size: .48rem; }
+.letterboxed-actions { max-width: 480px; margin: 10px auto 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.letterboxed-actions .button { min-height: 38px; padding: 7px 10px; font-size: .63rem; }
+.letterboxed-actions .button:disabled { cursor: not-allowed; opacity: .45; }
+.letterboxed-actions .letterboxed-undo { flex-basis: auto; }
+.letterboxed-complete { max-width: 480px; min-height: 60px; margin: 9px auto 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; border: 1px solid #4b7475; border-radius: 5px; color: #f7f0d8; background: #141b22; text-align: center; }
+.letterboxed-complete strong { font-size: .76rem; }
+.letterboxed-complete small { color: #aac1c5; font-size: .6rem; }
+.letterboxed-status { min-height: 25px; margin: 9px 2px 0; color: #c6d0d9; font-size: .69rem; line-height: 1.45; text-align: center; }
+.letterboxed-console-footer { height: 25px; padding: 8px 1px 0; display: flex; justify-content: space-between; align-items: center; color: #aabac5; font: 700 .47rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.letterboxed-keyboard-hint { margin: 10px 0 0; color: #aaa0bd; font-size: .63rem; text-align: center; }
+
+@media (max-width: 650px) {
+  .letterboxed-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .letterboxed-copy h1 { font-size: clamp(1.95rem, 9vw, 2.55rem); }
+  .letterboxed-play-column { width: 100%; max-width: 560px; justify-self: center; }
+  .letterboxed-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .letterboxed-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .letterboxed-board { width: min(100%, 380px); }
+  .letterboxed-actions { gap: 5px; }
+  .letterboxed-actions .button { min-height: 37px; padding: 6px 8px; font-size: .6rem; }
+}
+
+@media (max-width: 380px) {
+  .letterboxed-score { gap: 10px; }
+  .letterboxed-run-stat { gap: 5px; }
+  .letterboxed-run-stat .score-value { font-size: 1.7rem; }
+  .letterboxed-score .local-best-readout { padding-left: 10px; }
+  .letterboxed-board { width: min(100%, 300px); }
+  .letterboxed-side-label { font-size: .39rem; }
+  .letterboxed-letter { width: clamp(30px, 11.5vw, 42px); }
+  .letterboxed-center { gap: 5px; margin: 5px; }
+  .letterboxed-center > span { font-size: .39rem; }
+  .letterboxed-center small { font-size: .52rem; }
+  .letterboxed-console-footer { font-size: .42rem; letter-spacing: .06em; }
+}
