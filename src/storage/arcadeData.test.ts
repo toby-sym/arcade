@@ -17,7 +17,7 @@ describe('browser-local Arcade data', () => {
     const storage = new MemoryStorage()
     const saved = {
       version: 1 as const,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120 },
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3 },
       preferences: { reduceMotion: true },
     }
 
@@ -38,17 +38,18 @@ describe('browser-local Arcade data', () => {
     expect(withImprovedBest(reactionRecord!, 'pattern', 3)?.bests.pattern).toBe(3)
     expect(withImprovedBest(reactionRecord!, 'breakout', 120)?.bests.breakout).toBe(120)
     expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, breakout: 120 } }, 'breakout', 100)).toBeNull()
+    expect(withImprovedBest(reactionRecord!, 'pong', 3)?.bests.pong).toBe(3)
   })
 
   it('clears all records without changing the saved preferences or original data', () => {
     const initial = {
       version: 1 as const,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120 },
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3 },
       preferences: { reduceMotion: true },
     }
     expect(clearArcadeBests(initial)).toEqual({
       version: 1,
-      bests: { snake: null, reaction: null, pattern: null, breakout: null },
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null },
       preferences: { reduceMotion: true },
     })
     expect(initial.bests.snake).toBe(12)
@@ -59,13 +60,13 @@ describe('browser-local Arcade data', () => {
     storage.key = ARCADE_DATA_KEY
     storage.value = JSON.stringify({
       version: 1,
-      bests: { snake: 9, reaction: -40, pattern: 2.5, breakout: 1.2 },
+      bests: { snake: 9, reaction: -40, pattern: 2.5, breakout: 1.2, pong: -1 },
       preferences: { reduceMotion: true },
     })
 
     expect(readArcadeData(storage)).toEqual({
       version: 1,
-      bests: { snake: 9, reaction: null, pattern: null, breakout: null },
+      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null },
       preferences: { reduceMotion: true },
     })
   })
