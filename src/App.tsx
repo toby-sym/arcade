@@ -47,6 +47,34 @@ import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyCr
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
 
+type GameFloorCategory = 'arcade' | 'daily'
+type GameFloorFilter = GameFloorCategory | 'all'
+
+const GAME_FLOOR_ITEMS = [
+  { id: 'snake', title: 'Snake', categories: ['arcade'], terms: 'classic action' },
+  { id: 'reaction', title: 'Reaction', categories: ['arcade'], terms: 'reflex timing quick' },
+  { id: 'pattern', title: 'Pattern Memory', categories: ['arcade', 'daily'], terms: 'remember sequence' },
+  { id: 'breakout', title: 'Breakout', categories: ['arcade'], terms: 'brick paddle' },
+  { id: 'pong', title: 'Pong', categories: ['arcade'], terms: 'paddle table tennis' },
+  { id: 'invaders', title: 'Space Invaders', categories: ['arcade'], terms: 'shooter aliens' },
+  { id: 'asteroids', title: 'Asteroids', categories: ['arcade'], terms: 'shooter rocks vector' },
+  { id: 'missile', title: 'Missile Command', categories: ['arcade'], terms: 'defense aim' },
+  { id: 'blockdrop', title: 'Block Drop', categories: ['arcade'], terms: 'falling blocks rows' },
+  { id: 'wordgame', title: 'Word Guess', categories: ['daily'], terms: 'letters wordle' },
+  { id: 'connections', title: 'Connections', categories: ['daily'], terms: 'groups categories' },
+  { id: 'spellingbee', title: 'Spelling Bee', categories: ['daily'], terms: 'words letters hive' },
+  { id: 'strands', title: 'Strands', categories: ['daily'], terms: 'word search theme' },
+  { id: 'sudoku', title: 'Sudoku', categories: ['daily'], terms: 'numbers logic grid' },
+  { id: 'minicrossword', title: 'Mini Crossword', categories: ['daily'], terms: 'clues words' },
+  { id: 'letterboxed', title: 'Letter Boxed', categories: ['daily'], terms: 'word chain letters' },
+  { id: 'dominologic', title: 'Domino Logic', categories: ['daily'], terms: 'domino sums numbers' },
+  { id: 'glyphmatch', title: 'Glyph Match', categories: ['daily'], terms: 'memory pairs symbols' },
+  { id: 'vertex', title: 'Vertex', categories: ['daily'], terms: 'loop lines triangle' },
+  { id: 'tiles', title: 'Tiles', categories: ['daily'], terms: 'pattern match pairs' },
+  { id: 'pips', title: 'Pips', categories: ['daily'], terms: 'domino regions numbers' },
+  { id: 'dailycrossword', title: 'Daily Crossword', categories: ['daily'], terms: 'clues words grid' },
+] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
+
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>
@@ -749,6 +777,16 @@ function Home({
   onInstall: () => void
 }) {
   const [confirmClearRecords, setConfirmClearRecords] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [gameFilter, setGameFilter] = useState<GameFloorFilter>('all')
+  const normalizedQuery = searchQuery.trim().toLocaleLowerCase()
+  const visibleGames = GAME_FLOOR_ITEMS.filter((game) => {
+    const matchesCategory = gameFilter === 'all' || game.categories.includes(gameFilter)
+    const matchesQuery = !normalizedQuery || `${game.title} ${game.terms}`.toLocaleLowerCase().includes(normalizedQuery)
+    return matchesCategory && matchesQuery
+  })
+  const visibleGameIds = new Set(visibleGames.map((game) => game.id))
+  const hasActiveGameFilters = gameFilter !== 'all' || normalizedQuery.length > 0
 
   return (
     <>
@@ -772,10 +810,48 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">22 PLAYABLE</span>
+          <span className="section-count" aria-live="polite">
+            {hasActiveGameFilters ? `${visibleGames.length} ${visibleGames.length === 1 ? 'GAME' : 'GAMES'}` : '22 PLAYABLE'}
+          </span>
+        </div>
+        <div className="game-floor-tools">
+          <label className="game-search-label" htmlFor="game-search">Find a game</label>
+          <input
+            id="game-search"
+            className="game-search"
+            type="search"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.currentTarget.value)}
+            placeholder="Search titles and game types"
+            autoComplete="off"
+          />
+          <div className="game-filter-group" role="group" aria-label="Filter games by type">
+            {([
+              ['all', 'All games'],
+              ['arcade', 'Arcade'],
+              ['daily', 'Daily puzzles'],
+            ] as const).map(([filter, label]) => (
+              <button
+                className="game-filter-button"
+                type="button"
+                key={filter}
+                aria-pressed={gameFilter === filter}
+                onClick={() => setGameFilter(filter)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <p className="game-floor-status" role="status" aria-live="polite">
+            {visibleGames.length === 0
+              ? 'No games found. Try another search or filter.'
+              : hasActiveGameFilters
+                ? `Showing ${visibleGames.length} of 22 games.`
+                : 'Showing all 22 games.'}
+          </p>
         </div>
         <div className="game-list">
-          <article className="game-card game-card-snake">
+          <article className="game-card game-card-snake" hidden={!visibleGameIds.has('snake')}>
             <div className="card-art snake-card-art" aria-hidden="true">
               <div className="snake-art-path"><i /><i /><i /><i /><i /><b /></div>
               <span className="card-art-index">01</span>
@@ -790,7 +866,7 @@ function Home({
               </div>
             </div>
           </article>
-          <article className="game-card game-card-reaction">
+          <article className="game-card game-card-reaction" hidden={!visibleGameIds.has('reaction')}>
             <div className="card-art reaction-card-art" aria-hidden="true">
               <span className="reaction-ring ring-one" /><span className="reaction-ring ring-two" /><span className="reaction-ring ring-three" />
               <span className="reaction-dot" />
@@ -803,7 +879,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">MOUSE · TOUCH · SPACE</span><button className="play-card-button" type="button" onClick={onPlayReaction}>Play Reaction <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-pattern">
+          <article className="game-card game-card-pattern" hidden={!visibleGameIds.has('pattern')}>
             <div className="card-art memory-card-art" aria-hidden="true">
               <span className="memory-tile tile-a" /><span className="memory-tile tile-b" /><span className="memory-tile tile-c" /><span className="memory-tile tile-d" />
               <span className="card-art-index">03</span>
@@ -815,7 +891,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · KEY</span><button className="play-card-button" type="button" onClick={onPlayPattern}>Play Pattern <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-breakout">
+          <article className="game-card game-card-breakout" hidden={!visibleGameIds.has('breakout')}>
             <div className="card-art breakout-card-art" aria-hidden="true">
               <div className="breakout-card-bricks"><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /></div>
               <span className="breakout-card-ball" />
@@ -829,7 +905,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">ARROWS · WASD · DRAG</span><button className="play-card-button" type="button" onClick={onPlayBreakout}>Play Breakout <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-pong">
+          <article className="game-card game-card-pong" hidden={!visibleGameIds.has('pong')}>
             <div className="card-art pong-card-art" aria-hidden="true">
               <span className="pong-card-line" />
               <span className="pong-card-paddle pong-card-player" />
@@ -844,7 +920,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">ARROWS · W S · DRAG</span><button className="play-card-button" type="button" onClick={onPlayPong}>Play Pong <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-invaders">
+          <article className="game-card game-card-invaders" hidden={!visibleGameIds.has('invaders')}>
             <div className="card-art invaders-card-art" aria-hidden="true">
               <span className="invaders-card-alien alien-one" /><span className="invaders-card-alien alien-two" /><span className="invaders-card-alien alien-three" />
               <span className="invaders-card-shot" /><span className="invaders-card-ship" />
@@ -857,7 +933,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">ARROWS · A D · SPACE</span><button className="play-card-button" type="button" onClick={onPlayInvaders}>Play Invaders <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-asteroids">
+          <article className="game-card game-card-asteroids" hidden={!visibleGameIds.has('asteroids')}>
             <div className="card-art asteroids-card-art" aria-hidden="true">
               <span className="asteroids-card-rock rock-one" /><span className="asteroids-card-rock rock-two" /><span className="asteroids-card-rock rock-three" />
               <span className="asteroids-card-ship" /><span className="asteroids-card-shot" />
@@ -870,7 +946,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">ARROWS · A D · SPACE</span><button className="play-card-button" type="button" onClick={onPlayAsteroids}>Play Asteroids <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-missile">
+          <article className="game-card game-card-missile" hidden={!visibleGameIds.has('missile')}>
             <div className="card-art missile-card-art" aria-hidden="true">
               <span className="missile-card-trail trail-one" /><span className="missile-card-trail trail-two" />
               <span className="missile-card-blast" /><span className="missile-card-city city-one" /><span className="missile-card-city city-two" /><span className="missile-card-city city-three" />
@@ -883,7 +959,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">AIM · ARROWS · CLICK</span><button className="play-card-button" type="button" onClick={onPlayMissileCommand}>Play Missile Command <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-blockdrop">
+          <article className="game-card game-card-blockdrop" hidden={!visibleGameIds.has('blockdrop')}>
             <div className="card-art blockdrop-card-art" aria-hidden="true">
               <span className="blockdrop-card-piece piece-line"><i /><i /><i /><i /></span>
               <span className="blockdrop-card-piece piece-tee"><i /><i /><i /><i /></span>
@@ -897,7 +973,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">ARROWS · X · SPACE · C</span><button className="play-card-button" type="button" onClick={onPlayBlockDrop}>Play Block Drop <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-wordgame">
+          <article className="game-card game-card-wordgame" hidden={!visibleGameIds.has('wordgame')}>
             <div className="card-art wordgame-card-art" aria-hidden="true">
               <span className="wordgame-card-row"><i>W</i><i>O</i><i>R</i><i>D</i><i>S</i></span>
               <span className="wordgame-card-row card-row-two"><i>G</i><i>U</i><i>E</i><i>S</i><i>S</i></span>
@@ -910,7 +986,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">LETTER KEYS · ENTER</span><button className="play-card-button" type="button" onClick={onPlayWordGame}>Play Word Guess <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-connections">
+          <article className="game-card game-card-connections" hidden={!visibleGameIds.has('connections')}>
             <div className="card-art connections-card-art" aria-hidden="true">
               <span className="connections-card-grid"><i>LINK</i><i>WORD</i><i>SET</i><i>IDEA</i></span>
               <span className="card-art-index">11</span>
@@ -922,7 +998,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · KEYBOARD</span><button className="play-card-button" type="button" onClick={onPlayConnections}>Play Connections <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-spellingbee">
+          <article className="game-card game-card-spellingbee" hidden={!visibleGameIds.has('spellingbee')}>
             <div className="card-art spelling-bee-card-art" aria-hidden="true">
               <span className="bee-card-hive"><i className="bee-card-hex hex-one" /><i className="bee-card-hex hex-two" /><i className="bee-card-hex hex-three" /><i className="bee-card-hex hex-four" /><i className="bee-card-hex hex-five" /><i className="bee-card-hex hex-six" /></span>
               <span className="card-art-index">12</span>
@@ -934,7 +1010,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">LETTER KEYS · ENTER</span><button className="play-card-button" type="button" onClick={onPlaySpellingBee}>Play Spelling Bee <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-strands">
+          <article className="game-card game-card-strands" hidden={!visibleGameIds.has('strands')}>
             <div className="card-art strands-card-art" aria-hidden="true">
               <span className="strands-card-grid"><i>S</i><i>E</i><i>A</i><i>R</i><i>C</i><i>H</i><i>G</i><i>R</i><i>I</i><i>D</i><i>W</i><i>O</i><i>R</i><i>D</i><i>S</i><i>T</i></span>
               <span className="card-art-index">13</span>
@@ -946,7 +1022,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · KEYBOARD</span><button className="play-card-button" type="button" onClick={onPlayStrands}>Play Strands <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-sudoku">
+          <article className="game-card game-card-sudoku" hidden={!visibleGameIds.has('sudoku')}>
             <div className="card-art sudoku-card-art" aria-hidden="true">
               <span className="sudoku-card-grid"><i>4</i><i>·</i><i>8</i><i>·</i><i>2</i><i>·</i><i>·</i><i>7</i><i>1</i><i>·</i><i>6</i><i>·</i><i>3</i><i>·</i><i>5</i><i>·</i></span>
               <span className="card-art-index">14</span>
@@ -958,7 +1034,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">KEYBOARD · TOUCH PAD</span><button className="play-card-button" type="button" onClick={onPlaySudoku}>Play Sudoku <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-minicrossword">
+          <article className="game-card game-card-minicrossword" hidden={!visibleGameIds.has('minicrossword')}>
             <div className="card-art minicrossword-card-art" aria-hidden="true">
               <span className="minicrossword-card-grid"><i>A</i><i>C</i><i>T</i><b /><b /><i>R</i><i>A</i><i>I</i><i>S</i><i>E</i><i>E</i><i>M</i><i>B</i><i>E</i><i>D</i><i>A</i><i>P</i><i>I</i><i>N</i><i>G</i><b /><b /><i>A</i><i>T</i><i>E</i></span>
               <span className="card-art-index">15</span>
@@ -970,7 +1046,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">LETTER KEYS · TOUCH PAD</span><button className="play-card-button" type="button" onClick={onPlayMiniCrossword}>Play Mini Crossword <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-letterboxed">
+          <article className="game-card game-card-letterboxed" hidden={!visibleGameIds.has('letterboxed')}>
             <div className="card-art letterboxed-card-art" aria-hidden="true">
               <span className="letterboxed-card-sides"><b>R N L</b><b>A E B</b><b>O I T</b><b>C W S</b></span>
               <span className="card-art-index">16</span>
@@ -982,7 +1058,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">LETTER KEYS · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayLetterBoxed}>Play Letter Boxed <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-domino">
+          <article className="game-card game-card-domino" hidden={!visibleGameIds.has('dominologic')}>
             <div className="card-art domino-card-art" aria-hidden="true">
               <span className="domino-card-grid"><i>2</i><i>5</i><i>3</i><i>4</i><i>6</i><i>1</i><i>2</i><i>5</i><i>4</i><i>3</i><i>1</i><i>6</i></span>
               <span className="card-art-index">17</span>
@@ -994,7 +1070,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">TAP · ROTATE · FLIP</span><button className="play-card-button" type="button" onClick={onPlayDominoLogic}>Play Domino Logic <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-glyphmatch">
+          <article className="game-card game-card-glyphmatch" hidden={!visibleGameIds.has('glyphmatch')}>
             <div className="card-art glyphmatch-card-art" aria-hidden="true">
               <span className="glyphmatch-card-grid"><i>✦</i><i>☾</i><i>◆</i><i>▲</i><i>●</i><i>✿</i><i>⬟</i><i>⌁</i><i>⌁</i><i>⬟</i><i>✿</i><i>●</i><i>▲</i><i>◆</i><i>☾</i><i>✦</i></span>
               <span className="card-art-index">18</span>
@@ -1006,7 +1082,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · ARROWS</span><button className="play-card-button" type="button" onClick={onPlayGlyphMatch}>Play Glyph Match <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-vertex">
+          <article className="game-card game-card-vertex" hidden={!visibleGameIds.has('vertex')}>
             <div className="card-art vertex-card-art" aria-hidden="true">
               <span className="vertex-card-web"><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /></span>
               <span className="vertex-card-loop" />
@@ -1019,7 +1095,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">CLICK · TOUCH · KEYBOARD</span><button className="play-card-button" type="button" onClick={onPlayVertex}>Play Vertex <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-tiles">
+          <article className="game-card game-card-tiles" hidden={!visibleGameIds.has('tiles')}>
             <div className="card-art tiles-card-art" aria-hidden="true">
               <span className="tiles-card-patterns"><i>✦</i><i>☾</i><i>◆</i><i>▲</i><i>●</i><i>✿</i><i>⬟</i><i>⌁</i><i>■</i><i>✧</i></span>
               <span className="tiles-card-index card-art-index">20</span>
@@ -1031,7 +1107,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · KEYBOARD</span><button className="play-card-button" type="button" onClick={onPlayTiles}>Play Tiles <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-pips">
+          <article className="game-card game-card-pips" hidden={!visibleGameIds.has('pips')}>
             <div className="card-art pips-card-art" aria-hidden="true">
               <span className="pips-card-grid"><i>2</i><i>5</i><i>1</i><i>6</i><i>4</i><i>3</i><i>0</i><i>5</i><i>6</i><i>2</i><i>3</i><i>1</i></span>
               <span className="card-art-index">21</span>
@@ -1043,7 +1119,7 @@ function Home({
               <div className="card-bottom"><span className="controls-label">TOUCH · ROTATE · FLIP</span><button className="play-card-button" type="button" onClick={onPlayPips}>Play Pips <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
-          <article className="game-card game-card-daily-crossword">
+          <article className="game-card game-card-daily-crossword" hidden={!visibleGameIds.has('dailycrossword')}>
             <div className="card-art daily-crossword-card-art" aria-hidden="true">
               <span className="daily-crossword-card-grid">{Array.from({ length: 49 }, (_, index) => {
                 const blocked = Math.floor(index / 7) === 3 || index % 7 === 3
