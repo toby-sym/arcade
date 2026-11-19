@@ -1298,3 +1298,70 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .strands-run-stat .score-value { font-size: 1.7rem; }
   .strands-console-footer { font-size: .44rem; letter-spacing: .07em; }
 }
+
+.game-card-sudoku:hover { border-color: #5fb9c9; transform: translateY(-3px); box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.sudoku-card-art { border-color: #223d51; background: radial-gradient(ellipse at 50% 54%, #29465c, #0e0b19 80%); }
+.sudoku-card-grid { position: absolute; inset: 22px 36px; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); border: 1px solid #70c4ce; transform: rotate(-3deg); }
+.sudoku-card-grid i { display: grid; place-items: center; border-right: 1px solid #496375; border-bottom: 1px solid #496375; color: #f0eee5; background: #1b2a39; font: 800 .63rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-style: normal; }
+.sudoku-card-grid i:nth-child(4n) { border-right: 0; }
+.sudoku-card-grid i:nth-last-child(-n + 4) { border-bottom: 0; }
+.sudoku-card-grid i:nth-child(3n + 1) { color: #68dbe3; }
+.sudoku-layout { grid-template-columns: minmax(220px, .78fr) minmax(320px, 1.22fr); }
+.sudoku-copy h1 { font-size: clamp(2rem, 3.2vw, 2.6rem); letter-spacing: -.075em; }
+.sudoku-score { max-width: 340px; margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+.sudoku-run-stat { display: flex; align-items: baseline; gap: 9px; }
+.sudoku-run-stat .score-caption { align-self: center; }
+.sudoku-run-stat .score-value { font-size: 2rem; }
+.sudoku-run-stat .score-value small { color: #b6aecb; font-size: .72rem; letter-spacing: 0; }
+.sudoku-score .local-best-readout { grid-column: 1 / -1; border-top: 1px solid #403458; padding-top: 9px; display: flex; align-items: baseline; gap: 9px; }
+.sudoku-score .local-best-readout .score-value { font-size: 1.35rem; }
+.sudoku-local-note { max-width: 360px; margin: 13px 0 0; color: #afa5c3; font-size: .7rem; line-height: 1.55; }
+.sudoku-play-column { max-width: 550px; }
+.sudoku-console { padding: 14px; border: 3px solid #38566c; border-radius: 15px; background: linear-gradient(145deg, #233548 0%, #171425 80%); box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.sudoku-console .frame-topline { height: 22px; padding: 0 1px 11px; }
+.sudoku-grid { width: 100%; max-width: 460px; aspect-ratio: 1; margin: 0 auto; display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); grid-template-rows: repeat(9, minmax(0, 1fr)); overflow: hidden; border: 2px solid #83bdc4; border-radius: 4px; background: #0e111a; box-shadow: inset 0 0 25px rgb(69 231 255 / 5%); }
+.sudoku-cell { min-width: 0; min-height: 0; display: grid; place-items: center; border: 1px solid #3c485b; border-radius: 0; padding: 0; color: #f1eedf; background: #171725; font: 700 clamp(.78rem, 2.2vw, 1.12rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; cursor: pointer; touch-action: manipulation; }
+.sudoku-cell:nth-child(odd) { background-color: #1b1a2a; }
+.sudoku-cell.box-right { border-right: 2px solid #83bdc4; }
+.sudoku-cell.box-bottom { border-bottom: 2px solid #83bdc4; }
+.sudoku-cell.cell-given { color: #f6f0dc; font-weight: 900; }
+.sudoku-cell.cell-same:not(.cell-selected) { color: #a4e4e7; background: #243746; }
+.sudoku-cell.cell-selected { position: relative; z-index: 1; color: #121b1d; background: #9fcb58; box-shadow: inset 0 0 0 2px #e4f59a; }
+.sudoku-cell.cell-conflict { color: #fff0e8; background: #944457; }
+.sudoku-cell.cell-selected.cell-conflict { color: #fff; background: #bd5063; box-shadow: inset 0 0 0 2px #ffbd8e; }
+.sudoku-cell.cell-hinted { color: #231d11; font-weight: 900; background: #d4b854; }
+.sudoku-cell:focus-visible { outline: 3px solid #6fd9e0; outline-offset: -3px; z-index: 2; }
+.sudoku-number-pad { max-width: 460px; margin: 9px auto 0; display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 4px; }
+.sudoku-number { min-width: 0; min-height: 40px; border: 1px solid #527184; border-radius: 4px; color: #e8f0ed; background: linear-gradient(180deg, #37495b, #252a3a); box-shadow: 0 3px 0 #090811; font: 800 .9rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; cursor: pointer; touch-action: manipulation; }
+.sudoku-number:hover { border-color: #74d8e0; color: #8ee7e7; }
+.sudoku-number:focus-visible { outline: 3px solid #6fd9e0; outline-offset: 2px; }
+.sudoku-actions { max-width: 460px; margin: 10px auto 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
+.sudoku-actions .button { min-height: 39px; padding: 8px 12px; font-size: .68rem; }
+.sudoku-complete { max-width: 460px; min-height: 88px; margin: 10px auto 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; border: 1px solid #527184; border-radius: 5px; color: #f6f0dc; background: #101721; text-align: center; }
+.sudoku-complete span { color: #8ee7e7; font: 800 .63rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .13em; }
+.sudoku-complete strong { font-size: .8rem; }
+.sudoku-complete small { color: #b5aac9; font-size: .63rem; }
+.sudoku-status { min-height: 24px; margin: 9px 2px 0; color: #c5bbd8; font-size: .72rem; line-height: 1.5; text-align: center; }
+.sudoku-console-footer { height: 26px; padding: 9px 1px 0; display: flex; justify-content: space-between; align-items: center; color: #c1b5d5; font: 700 .49rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.sudoku-keyboard-hint { margin: 10px 0 0; color: #aaa0bd; font-size: .64rem; text-align: center; }
+
+@media (max-width: 650px) {
+  .sudoku-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .sudoku-copy h1 { font-size: clamp(1.95rem, 9vw, 2.55rem); }
+  .sudoku-play-column { width: 100%; max-width: 550px; justify-self: center; }
+  .sudoku-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .sudoku-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .sudoku-number-pad { gap: 3px; }
+  .sudoku-number { min-height: 37px; font-size: .8rem; }
+  .sudoku-actions { gap: 5px; }
+  .sudoku-actions .button { min-height: 38px; padding: 7px 10px; font-size: .64rem; }
+}
+
+@media (max-width: 380px) {
+  .sudoku-score { gap: 10px; }
+  .sudoku-run-stat { gap: 6px; }
+  .sudoku-run-stat .score-value { font-size: 1.7rem; }
+  .sudoku-number { min-height: 34px; font-size: .72rem; }
+  .sudoku-number-pad { gap: 2px; }
+  .sudoku-console-footer { font-size: .43rem; letter-spacing: .06em; }
+}
