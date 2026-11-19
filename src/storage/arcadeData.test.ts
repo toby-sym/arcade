@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyPatternCompletion, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
+import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyConnectionsGame, withDailyPatternCompletion, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
 
 class MemoryStorage {
   key: string | null = null
@@ -19,7 +19,8 @@ describe('browser-local Arcade data', () => {
       version: 1 as const,
       dailyPatternCompletedDate: '2026-11-19',
       dailyWordGame: { date: '2026-11-19', guesses: ['CRANE'], phase: 'playing' as const },
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4 },
+      dailyConnectionsGame: null,
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
 
@@ -54,14 +55,16 @@ describe('browser-local Arcade data', () => {
       version: 1 as const,
       dailyPatternCompletedDate: '2026-11-19',
       dailyWordGame: { date: '2026-11-19', guesses: ['CRANE'], phase: 'playing' as const },
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4 },
+      dailyConnectionsGame: { date: '2026-11-19', solvedGroupIds: ['bicycle'], selectedWords: ['PEDAL'], mistakes: 1, phase: 'playing' as const },
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2 },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
     expect(clearArcadeBests(initial)).toEqual({
       version: 1,
       dailyPatternCompletedDate: '2026-11-19',
       dailyWordGame: { date: '2026-11-19', guesses: ['CRANE'], phase: 'playing' },
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null },
+      dailyConnectionsGame: { date: '2026-11-19', solvedGroupIds: ['bicycle'], selectedWords: ['PEDAL'], mistakes: 1, phase: 'playing' },
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' },
     })
     expect(initial.bests.snake).toBe(12)
@@ -73,6 +76,8 @@ describe('browser-local Arcade data', () => {
     storage.value = JSON.stringify({
       version: 1,
       dailyPatternCompletedDate: 'not-a-date',
+      dailyWordGame: { date: 'not-a-date', guesses: [], phase: 'playing' },
+      dailyConnectionsGame: { date: '2026-11-19', solvedGroupIds: [], selectedWords: ['NOPE'], mistakes: 9, phase: 'playing' },
       bests: { snake: 9, reaction: -40, pattern: 2.5, breakout: 1.2, pong: -1, invaders: -5, asteroids: -10, missileCommand: -25, blockDrop: -40 },
       preferences: { reduceMotion: true, soundEffects: 'yes', pongDifficulty: 'too-fast' },
     })
@@ -81,7 +86,8 @@ describe('browser-local Arcade data', () => {
       version: 1,
       dailyPatternCompletedDate: null,
       dailyWordGame: null,
-      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null },
+      dailyConnectionsGame: null,
+      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
 
@@ -104,6 +110,19 @@ describe('browser-local Arcade data', () => {
     expect(withDailyWordGame(initial, { date: '2026-02-30', guesses: [], phase: 'playing' })).toBeNull()
     expect(withDailyWordGame(initial, { date: '2026-11-19', guesses: ['NOPE'], phase: 'playing' })).toBeNull()
     expect(initial.dailyWordGame).toBeNull()
+  })
+
+  it('saves daily Connections progress and keeps the best fewest mistakes', () => {
+    const initial = emptyArcadeData()
+    const progress = { date: '2026-11-19', solvedGroupIds: ['bicycle'], selectedWords: ['PEDAL'], mistakes: 1, phase: 'playing' as const }
+    const saved = withDailyConnectionsGame(initial, progress)
+    const firstBest = withImprovedBest(saved!, 'connections', 0)
+
+    expect(saved?.dailyConnectionsGame).toEqual(progress)
+    expect(firstBest?.bests.connections).toBe(0)
+    expect(withImprovedBest(firstBest!, 'connections', 1)).toBeNull()
+    expect(withDailyConnectionsGame(initial, { ...progress, date: '2026-02-30' })).toBeNull()
+    expect(withDailyConnectionsGame(initial, { ...progress, selectedWords: ['NOT-A-WORD'] })).toBeNull()
   })
 
   it('uses defaults for unknown versions, corrupt JSON, and unavailable storage', () => {
