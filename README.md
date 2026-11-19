@@ -52,12 +52,13 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Select **Start match** or press **Space** to serve. After either player scores, press **Serve** or **Space** to continue.
 - Move your paddle with the **up and down arrow keys** or **W and S** while the playfield is focused.
 - On touch screens, drag up or down across the field to move the paddle.
+- Choose **Calm**, **Steady**, or **Quick** computer pace before the match. The choice is saved in this browser and can be changed for the next match.
 - **Pause** in the game panel or press **Escape** while the playfield is focused. The match also pauses when the browser tab is hidden.
 - Reach five points before the computer to win. Your highest points in a match are saved as a local personal best.
 
 ## Local records and preferences
 
-Arcade saves Snake's highest score, Breakout's highest score, Pong's highest points in a match, the fastest Reaction time, and the most Pattern Memory practice rounds completed in browser storage. The **Reduce motion** preference is saved there too. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; the motion preference stays saved. The system reduced-motion setting is always respected.
+Arcade saves Snake's highest score, Breakout's highest score, Pong's highest points in a match, the fastest Reaction time, and the most Pattern Memory practice rounds completed in browser storage. The **Reduce motion** and Pong opponent pace preferences are saved there too. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; preferences stay saved. The system reduced-motion setting is always respected.
 
 ## Checks
 

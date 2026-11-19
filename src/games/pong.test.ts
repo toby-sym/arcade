@@ -5,6 +5,7 @@ import {
   PONG_LEFT_X,
   PONG_PADDLE_HEIGHT,
   PONG_PADDLE_WIDTH,
+  PONG_OPPONENT_SPEED,
   PONG_RIGHT_X,
   PONG_WIDTH,
   PONG_WIN_SCORE,
@@ -26,6 +27,16 @@ describe('Pong game rules', () => {
     const paused = pongReducer(playing, { type: 'pause' })
     expect(pongReducer(paused, { type: 'tick' })).toBe(paused)
     expect(pongReducer(paused, { type: 'resume' }).phase).toBe('playing')
+  })
+
+  it('sets the computer pace before a match and keeps it on restart', () => {
+    const ready = pongReducer(createPongState(), { type: 'setDifficulty', difficulty: 'quick' })
+    expect(ready.difficulty).toBe('quick')
+    const playing = pongReducer(ready, { type: 'start' })
+    expect(pongReducer(playing, { type: 'setDifficulty', difficulty: 'calm' })).toBe(playing)
+    expect(pongReducer(playing, { type: 'restart' }).difficulty).toBe('quick')
+    expect(PONG_OPPONENT_SPEED.calm).toBeLessThan(PONG_OPPONENT_SPEED.steady)
+    expect(PONG_OPPONENT_SPEED.steady).toBeLessThan(PONG_OPPONENT_SPEED.quick)
   })
 
   it('returns the ball from the player paddle at an angle', () => {
