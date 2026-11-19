@@ -91,13 +91,26 @@ const WORD_CLUES: Record<string, string> = {
   YET: 'Still, up to now',
 }
 
-const DAILY_PUZZLES: PuzzleDefinition[] = [
-  { blocks: [['SAT', 'ICE', 'PEN'], ['TOY', 'ARE', 'PET'], ['ATE', 'NOR', 'TEA'], ['CAB', 'AGE', 'POD']] },
-  { blocks: [['SAT', 'ICE', 'PEA'], ['TOY', 'ERA', 'NEW'], ['ATE', 'LOG', 'LEG'], ['CAB', 'AGE', 'POD']] },
-  { blocks: [['SAT', 'ORE', 'DEN'], ['WIT', 'ACE', 'SEA'], ['ATE', 'LOG', 'LEG'], ['CAB', 'AGE', 'POD']] },
-  { blocks: [['SAT', 'ORE', 'PEN'], ['WIT', 'ACE', 'SEA'], ['ATE', 'LOG', 'LEG'], ['CAB', 'AGE', 'POD']] },
-  { blocks: [['SAT', 'ORE', 'PEA'], ['ATE', 'LOG', 'LEG'], ['CAB', 'AGE', 'POD'], ['HID', 'ACE', 'MEN']] },
+const PUZZLE_BLOCKS: Block[] = [
+  ['SAT', 'ICE', 'PEN'],
+  ['TOY', 'ARE', 'PET'],
+  ['ATE', 'NOR', 'TEA'],
+  ['CAB', 'AGE', 'POD'],
+  ['SAT', 'ICE', 'PEA'],
+  ['TOY', 'ERA', 'NEW'],
+  ['ATE', 'LOG', 'LEG'],
+  ['SAT', 'ORE', 'DEN'],
+  ['WIT', 'ACE', 'SEA'],
+  ['SAT', 'ORE', 'PEN'],
+  ['SAT', 'ORE', 'PEA'],
+  ['HID', 'ACE', 'MEN'],
 ]
+
+const DAILY_PUZZLES: PuzzleDefinition[] = [
+  [0, 1, 2, 3], [4, 5, 6, 3], [7, 8, 6, 3], [9, 8, 6, 3], [10, 6, 3, 11],
+  [0, 1, 3, 6], [1, 2, 3, 11], [1, 3, 4, 6], [1, 3, 6, 8], [1, 3, 6, 11],
+  [2, 3, 9, 11], [3, 5, 6, 8], [3, 5, 6, 11], [3, 6, 9, 11],
+].map((indices) => ({ blocks: indices.map((index) => PUZZLE_BLOCKS[index]!) as [Block, Block, Block, Block] }))
 
 export const DAILY_CROSSWORD_COUNT = DAILY_PUZZLES.length
 const DAY_MS = 86_400_000
@@ -138,7 +151,7 @@ export function createDailyCrosswordPuzzle(date: string): DailyCrosswordPuzzle {
 
 export function createDailyCrosswordState(date: string, progress?: DailyCrosswordProgress | null): DailyCrosswordState {
   const puzzle = createDailyCrosswordPuzzle(date)
-  const board = puzzle.solution.map((cell) => cell === '#' ? '#' : '')
+  const board: string[] = puzzle.solution.map((cell) => cell === '#' ? '#' : '')
   if (progress?.date === date && validDailyCrosswordProgress(progress)) {
     progress.board.forEach((letter, index) => {
       if (letter !== '#') board[index] = letter
