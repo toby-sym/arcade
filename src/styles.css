@@ -414,6 +414,10 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
   .game-section { padding-bottom: 48px; }
   .section-heading { margin-bottom: 16px; }
   .section-count { font-size: .56rem; }
+  .game-floor-tools { grid-template-columns: 1fr; gap: 9px; }
+  .game-search-label, .game-floor-status { grid-column: auto; }
+  .game-filter-group { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .game-filter-button { min-height: 42px; padding: 7px 5px; font-size: .56rem; }
   .game-list { grid-template-columns: 1fr; gap: 12px; }
   .game-card-snake { grid-column: auto; display: flex; }
   .card-art { height: 130px; flex: 0 0 39%; }
@@ -585,6 +589,41 @@ body {
 
 .section-count { color: var(--cyan); }
 .game-list { gap: 20px; }
+.game-floor-tools {
+  margin: -3px 0 20px;
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) auto;
+  gap: 9px 14px;
+  align-items: center;
+}
+.game-search-label { grid-column: 1 / -1; color: #c4b9da; font: 800 .61rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .13em; text-transform: uppercase; }
+.game-search {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid #5b4c7b;
+  border-radius: 5px;
+  padding: 9px 12px;
+  color: var(--paper);
+  background: #171326;
+  font-size: .82rem;
+}
+.game-search::placeholder { color: #9186a7; }
+.game-search:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+.game-filter-group { display: flex; flex-wrap: wrap; gap: 7px; }
+.game-filter-button {
+  min-height: 40px;
+  border: 1px solid #5b4c7b;
+  border-radius: 4px;
+  padding: 8px 12px;
+  color: #d3c6f2;
+  background: #211b32;
+  font: 800 .61rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  cursor: pointer;
+}
+.game-filter-button[aria-pressed="true"] { border-color: var(--green); color: #171222; background: var(--green); }
+.game-filter-button:hover { border-color: var(--cyan); }
+.game-floor-status { grid-column: 1 / -1; min-height: 1em; margin: 0; color: #aaa0bd; font-size: .7rem; }
+.game-card[hidden] { display: none !important; }
 .game-card {
   padding: 6px;
   border: 2px solid #4a3e67;
