@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ARCADE_DATA_KEY, emptyArcadeData, readArcadeData, withImprovedBest, writeArcadeData } from './arcadeData'
+import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withImprovedBest, writeArcadeData } from './arcadeData'
 
 class MemoryStorage {
   key: string | null = null
@@ -38,6 +38,20 @@ describe('browser-local Arcade data', () => {
     expect(withImprovedBest(reactionRecord!, 'pattern', 3)?.bests.pattern).toBe(3)
     expect(withImprovedBest(reactionRecord!, 'breakout', 120)?.bests.breakout).toBe(120)
     expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, breakout: 120 } }, 'breakout', 100)).toBeNull()
+  })
+
+  it('clears all records without changing the saved preferences or original data', () => {
+    const initial = {
+      version: 1 as const,
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120 },
+      preferences: { reduceMotion: true },
+    }
+    expect(clearArcadeBests(initial)).toEqual({
+      version: 1,
+      bests: { snake: null, reaction: null, pattern: null, breakout: null },
+      preferences: { reduceMotion: true },
+    })
+    expect(initial.bests.snake).toBe(12)
   })
 
   it('reads back saved fields and discards malformed records', () => {
