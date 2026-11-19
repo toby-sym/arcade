@@ -60,6 +60,12 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 
 Arcade saves Snake's highest score, Breakout's highest score, Pong's highest points in a match, the fastest Reaction time, the most Pattern Memory practice rounds completed, and the latest daily Pattern Memory completion date in browser storage. The **Reduce motion** and Pong opponent pace preferences are saved there too. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily completion and preferences stay saved. The system reduced-motion setting is always respected.
 
+## Install and offline play
+
+On supported browsers, select **Install Arcade** under Preferences when the browser offers installation, or use its **Add to Home Screen** option. The first visit needs an internet connection. Arcade then caches its app shell and game assets on this device so the games can be opened offline; updates are applied automatically when a connection is available. The app does not send records, preferences, or game data to a server.
+
+The development server does not register a service worker. To check offline play locally, build the production app and serve it with `npm run preview`, or run the production container.
+
 ## Checks
 
 ```sh

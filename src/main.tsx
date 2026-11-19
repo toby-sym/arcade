@@ -3,6 +3,10 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import './styles.css'
 
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  void navigator.serviceWorker.register('/sw.js').catch(() => undefined)
+}
+
 const root = document.getElementById('root')
 
 if (!root) throw new Error('Root element #root was not found.')

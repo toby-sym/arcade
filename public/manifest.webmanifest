@@ -1,0 +1,26 @@
+{
+  "id": "/",
+  "name": "Arcade — Free Play",
+  "short_name": "Arcade",
+  "description": "A personal browser arcade with five quick games in a neon-lit cabinet.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#100d1e",
+  "theme_color": "#100d1e",
+  "categories": ["games"],
+  "icons": [
+    {
+      "src": "/arcade-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/arcade-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
