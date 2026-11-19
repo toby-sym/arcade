@@ -52,10 +52,12 @@ const SwitchyardGame = lazy(() => import('./games/SwitchyardGame').then(({ Switc
 const PrismDashGame = lazy(() => import('./games/PrismDashGame').then(({ PrismDashGame }) => ({ default: PrismDashGame })))
 const GravityLoomGame = lazy(() => import('./games/GravityLoomGame').then(({ GravityLoomGame }) => ({ default: GravityLoomGame })))
 import { createGravityLoomState, type GravityLoomProgress } from './games/gravityLoom'
+const TideglassGame = lazy(() => import('./games/TideglassGame').then(({ TideglassGame }) => ({ default: TideglassGame })))
+import { createTideglassState, type TideglassProgress } from './games/tideglass'
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyTideglassGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -95,6 +97,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'switchyard', title: 'Switchyard', categories: ['arcade'], terms: 'trains tracks depot routing timing reaction' },
   { id: 'prismdash', title: 'Prism Dash', categories: ['arcade'], terms: 'runner reflex lanes shards gates dodge daily' },
   { id: 'gravityloom', title: 'Gravity Loom', categories: ['daily'], terms: 'gravity tilt portals spark receiver daily puzzle physics' },
+  { id: 'tideglass', title: 'Tideglass', categories: ['daily'], terms: 'harbor route buoys currents sluices water daily puzzle' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -118,7 +121,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -407,6 +410,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyTideglassGame = (progress: TideglassProgress | null) => {
+    const withProgress = withDailyTideglassGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = progress?.phase === 'complete' ? createTideglassState(progress.date, progress) : null
+    const next = completed?.phase === 'complete'
+      ? withImprovedBest(withProgress, 'tideglass', completed.actionCount) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -504,6 +518,7 @@ function App() {
   const openSwitchyard = () => setScreen('switchyard')
   const openPrismDash = () => setScreen('prismdash')
   const openGravityLoom = () => setScreen('gravityloom')
+  const openTideglass = () => setScreen('tideglass')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -581,6 +596,7 @@ function App() {
             onPlaySwitchyard={openSwitchyard}
             onPlayPrismDash={openPrismDash}
             onPlayGravityLoom={openGravityLoom}
+            onPlayTideglass={openTideglass}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -801,6 +817,14 @@ function App() {
             onSaveProgress={saveDailyGravityLoomGame}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'tideglass' ? (
+          <TideglassGame
+            onBack={() => setScreen('home')}
+            bestMoves={arcadeData.bests.tideglass}
+            progress={arcadeData.dailyTideglassGame}
+            onSaveProgress={saveDailyTideglassGame}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -950,6 +974,7 @@ function Home({
   onPlaySwitchyard,
   onPlayPrismDash,
   onPlayGravityLoom,
+  onPlayTideglass,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -996,6 +1021,7 @@ function Home({
   onPlaySwitchyard: () => void
   onPlayPrismDash: () => void
   onPlayGravityLoom: () => void
+  onPlayTideglass: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1493,6 +1519,22 @@ function Home({
               <h3>Gravity Loom</h3>
               <p>Tilt the chamber, ride paired portals, and guide the spark into four receivers.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · W-A-S-D · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayGravityLoom}>Play Gravity Loom <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-tideglass" hidden={!visibleGameIds.has('tideglass')}>
+            <div className="card-art tideglass-card-art" aria-hidden="true">
+              <span className="tideglass-card-water" />
+              <span className="tideglass-card-channel" />
+              <span className="tideglass-card-buoy tideglass-card-buoy-one">●</span>
+              <span className="tideglass-card-buoy tideglass-card-buoy-two">◆</span>
+              <span className="tideglass-card-dock" />
+              <span className="card-art-index">32</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">32</span><span className="game-category">DAILY ROUTING</span></div>
+              <h3>Tideglass</h3>
+              <p>Switch the sluices and guide three colored buoys into their matching harbor berths.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · 1–3 · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayTideglass}>Play Tideglass <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>

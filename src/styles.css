@@ -2626,6 +2626,79 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
 .gravity-card-spark { position: absolute; top: 42%; left: 46%; color: #12252b; width: 19px; height: 19px; display: grid; place-items: center; border: 1px solid #efffff; border-radius: 50%; background: #5ad8e8; box-shadow: 0 0 14px rgb(90 216 232 / 78%); font-size: .7rem; }
 .gravity-card-portal { position: absolute; right: 35%; bottom: 31%; width: 14px; height: 14px; border: 2px solid #d7bdff; border-radius: 50%; background: #634697; box-shadow: 0 0 9px rgb(189 145 255 / 70%); }
 
+.tideglass-layout { grid-template-columns: minmax(280px, .86fr) minmax(390px, 1.14fr); gap: clamp(24px, 4vw, 58px); }
+.tideglass-copy h1 { font-size: clamp(2rem, 3.4vw, 2.8rem); }
+.tideglass-score { max-width: 390px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); }
+.tideglass-score .local-best-readout { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; }
+.tideglass-score .local-best-readout .score-caption { grid-column: 1 / -1; }
+.tideglass-score .local-best-readout .score-value { font-size: 1.25rem; }
+.tideglass-local-note { max-width: 390px; margin: 10px 0 0; color: #a79bb8; font-size: .68rem; line-height: 1.5; }
+.tideglass-play-column { max-width: 760px; }
+.tideglass-console { padding: 13px; border: 3px solid #466277; border-radius: 15px; background: linear-gradient(145deg, #1c2932 0%, #111820 80%); box-shadow: 0 9px 0 #090d12, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.tideglass-console .frame-topline { height: 23px; padding: 0 1px 10px; }
+.tideglass-target { min-height: 55px; margin: 0 0 10px; padding: 8px 11px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 3px 10px; border: 1px solid #354c58; border-left: 3px solid #5bd3d0; border-radius: 4px; background: #111a21; }
+.tideglass-target .score-caption { grid-column: 1 / -1; }
+.tideglass-target strong { color: #f0f1e9; font-size: .76rem; }
+.tideglass-target > span:last-child { color: #a7bdc2; font: 700 .54rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-align: right; }
+.tideglass-field { position: relative; width: min(100%, 500px); aspect-ratio: 1; margin: 0 auto; padding: 5%; overflow: hidden; border: 1px solid #354b58; background: radial-gradient(ellipse at 50% 46%, #173342 0%, #0c1820 72%); }
+.tideglass-board { width: 100%; height: 100%; display: grid; grid-template-rows: repeat(7, minmax(0, 1fr)); gap: clamp(3px, .7vw, 6px); outline: none; }
+.tideglass-board:focus-visible { border-radius: 3px; outline: 3px solid var(--cyan); outline-offset: 4px; }
+.tideglass-row { min-width: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: clamp(3px, .7vw, 6px); }
+.tideglass-cell { position: relative; min-width: 0; min-height: 0; padding: 0; display: grid; place-items: center; overflow: hidden; border: 1px solid #2b4854; border-radius: 2px; color: #92c2c7; background: repeating-linear-gradient(145deg, rgb(94 180 183 / 5%) 0 2px, transparent 2px 8px), linear-gradient(140deg, #173442, #10242e); cursor: default; touch-action: manipulation; transition: background-color .14s ease, border-color .14s ease, transform .14s ease; }
+.tideglass-cell:disabled { opacity: 1; }
+.tideglass-cell:not(:disabled) { cursor: pointer; }
+.tideglass-cell:not(:disabled):hover { border-color: #8ce0da; }
+.tideglass-cell:focus-visible { z-index: 2; outline: 3px solid #f6cf70; outline-offset: -2px; }
+.tideglass-cell.is-breakwater { border-color: #6a756f; color: #c4c6b2; background: linear-gradient(145deg, #69756e 0%, #404c4a 44%, #273a3e 100%); box-shadow: inset 0 2px rgb(255 255 255 / 12%), inset 0 -3px rgb(0 0 0 / 32%); }
+.tideglass-rock-glyph { font-size: clamp(.45rem, 1.3vw, .75rem); opacity: .52; }
+.tideglass-cell.is-sluice { border-width: 2px; }
+.tideglass-cell.is-sluice.is-closed { border-color: #e09a61; color: #ffe3b0; background: repeating-linear-gradient(0deg, rgb(238 169 107 / 18%) 0 3px, transparent 3px 7px), #51402e; box-shadow: inset 0 0 0 2px rgb(255 207 133 / 15%), 0 0 8px rgb(242 172 98 / 26%); }
+.tideglass-cell.is-sluice.is-open { border-color: #70d9d0; color: #c9fff1; background: linear-gradient(145deg, #23696b, #17434b); box-shadow: inset 0 0 0 2px rgb(138 240 220 / 16%), 0 0 8px rgb(84 217 205 / 25%); }
+.tideglass-gate-glyph { font-size: clamp(.65rem, 2vw, 1rem); font-weight: 900; }
+.tideglass-cell.has-berth { border-radius: 50%; border-color: #c5a95c; color: #f7df8f; background: radial-gradient(circle, #4c5039 0%, #283a3b 72%); box-shadow: inset 0 0 0 3px rgb(246 216 133 / 14%); }
+.tideglass-cell.has-berth.berth-0 { border-color: #ff947f; color: #ffd0c2; }
+.tideglass-cell.has-berth.berth-1 { border-color: #7adcc5; color: #c8fff0; }
+.tideglass-cell.has-berth.berth-2 { border-color: #f2d36f; color: #fff2b2; }
+.tideglass-berth-glyph { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(.55rem, 1.8vw, .9rem); opacity: .42; }
+.tideglass-cell.has-buoy { z-index: 1; border-radius: 50%; }
+.tideglass-cell.has-buoy.buoy-0 { border-color: #ff947f; color: #271820; background: radial-gradient(circle at 35% 30%, #ffc1a8, #f27670 70%); box-shadow: 0 0 12px rgb(255 123 112 / 48%), inset 0 1px rgb(255 255 255 / 72%); }
+.tideglass-cell.has-buoy.buoy-1 { border-color: #7adcc5; color: #152a2c; background: radial-gradient(circle at 35% 30%, #c9ffe7, #61cabb 70%); box-shadow: 0 0 12px rgb(99 220 196 / 45%), inset 0 1px rgb(255 255 255 / 72%); }
+.tideglass-cell.has-buoy.buoy-2 { border-color: #f2d36f; color: #30281a; background: radial-gradient(circle at 35% 30%, #fff4b5, #e9b951 70%); box-shadow: 0 0 12px rgb(242 211 111 / 45%), inset 0 1px rgb(255 255 255 / 72%); }
+.tideglass-cell.has-buoy.is-selected { outline: 3px solid #f6f1df; outline-offset: 1px; }
+.tideglass-cell.has-buoy.is-moored { box-shadow: 0 0 0 3px #f6f1df, 0 0 15px currentColor, inset 0 1px rgb(255 255 255 / 72%); }
+.tideglass-buoy-glyph { position: relative; z-index: 1; font-size: clamp(.65rem, 2vw, 1rem); line-height: 1; }
+.tideglass-overlay { position: absolute; z-index: 2; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 9px; padding: 20px; background: rgb(8 17 22 / 84%); text-align: center; }
+.tideglass-overlay strong { color: #a4f2da; font: 800 clamp(.85rem, 2.7vw, 1.3rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.tideglass-overlay > span { max-width: 300px; color: #d3e4df; font-size: .68rem; line-height: 1.5; }
+.tideglass-buoys { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 13px 0 0; }
+.tideglass-buoy-select { min-width: 0; min-height: 52px; padding: 6px 8px; display: grid; grid-template-columns: auto 1fr; align-items: center; justify-items: start; column-gap: 7px; border: 1px solid #48616a; border-radius: 5px; color: #e8eee7; background: linear-gradient(#24353a, #17262c); box-shadow: 0 3px 0 #090d12; cursor: pointer; touch-action: manipulation; }
+.tideglass-buoy-select > span { grid-row: span 2; font-size: 1.1rem; }
+.tideglass-buoy-select strong { overflow: hidden; font-size: .65rem; text-overflow: ellipsis; }
+.tideglass-buoy-select small { color: #a7bac0; font: 700 .48rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; }
+.tideglass-buoy-select.buoy-0 > span { color: #ff9782; }
+.tideglass-buoy-select.buoy-1 > span { color: #7ce0c8; }
+.tideglass-buoy-select.buoy-2 > span { color: #f0cf69; }
+.tideglass-buoy-select.is-active { border-color: #8ce0da; box-shadow: 0 0 0 2px rgb(117 228 214 / 22%), 0 3px 0 #090d12; }
+.tideglass-buoy-select.is-moored { opacity: .56; }
+.tideglass-buoy-select:focus-visible, .tideglass-current-button:focus-visible { outline: 3px solid #f6cf70; outline-offset: 2px; }
+.tideglass-buoy-select:disabled { cursor: default; }
+.tideglass-controls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 13px 0 0; }
+.tideglass-current-button { min-width: 0; min-height: 56px; padding: 7px; display: flex; justify-content: center; align-items: center; gap: 8px; border: 1px solid #466277; border-radius: 5px; color: #edf1e9; background: linear-gradient(#26363d, #182329); box-shadow: 0 3px 0 #090d12; cursor: pointer; touch-action: manipulation; }
+.tideglass-current-button > span { color: #7de0d2; font-size: 1.15rem; line-height: 1; }
+.tideglass-current-button strong { font-size: .62rem; }
+.tideglass-current-button:disabled { cursor: default; opacity: .5; }
+.tideglass-status { min-height: 34px; margin: 12px 2px 0; color: #bed3d2; font-size: .72rem; line-height: 1.5; text-align: center; }
+.tideglass-console-footer { display: flex; justify-content: space-between; gap: 8px; padding: 11px 1px 0; color: #aac0c3; font: .47rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; }
+.tideglass-keyboard-hint { margin: 12px 0; color: #a7bac0; font-size: .64rem; line-height: 1.5; text-align: center; }
+.tideglass-console.is-reduced-motion .tideglass-cell { transition: none; }
+.tideglass-card-art { background: radial-gradient(ellipse at 50% 50%, #20454c, #0d1820 78%); }
+.tideglass-card-water { position: absolute; inset: 15% 25%; border: 1px solid rgb(117 214 211 / 32%); border-radius: 50%; transform: rotate(-24deg); }
+.tideglass-card-channel { position: absolute; top: 22%; left: 49%; width: 2px; height: 58%; background: #82ded0; box-shadow: 0 0 8px rgb(130 222 208 / 70%); transform: rotate(24deg); }
+.tideglass-card-buoy { position: absolute; width: 20px; height: 20px; display: grid; place-items: center; border: 2px solid #fff1dd; border-radius: 50%; font-size: .6rem; box-shadow: 0 0 10px currentColor; }
+.tideglass-card-buoy-one { top: 32%; left: 34%; color: #ff9782; background: #d86365; }
+.tideglass-card-buoy-two { right: 34%; bottom: 27%; color: #baffeb; background: #4eb9b0; }
+.tideglass-card-dock { position: absolute; top: 24%; right: 32%; width: 18px; height: 18px; border: 2px dashed #f1cf6b; border-radius: 50%; }
+
 @media (max-width: 760px) {
   .gravity-loom-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   .gravity-loom-copy h1 { font-size: clamp(1.9rem, 8vw, 2.55rem); }
@@ -2637,6 +2710,16 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .gravity-tilt-button { min-height: 56px; flex-direction: column; gap: 3px; }
   .gravity-tilt-button strong { font-size: .58rem; }
   .gravity-loom-console-footer { font-size: .41rem; }
+  .tideglass-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .tideglass-copy h1 { font-size: clamp(1.9rem, 8vw, 2.55rem); }
+  .tideglass-play-column { width: 100%; max-width: 640px; justify-self: center; }
+  .tideglass-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .tideglass-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .tideglass-field { padding: 5%; }
+  .tideglass-buoys, .tideglass-controls { gap: 6px; }
+  .tideglass-current-button { min-height: 54px; flex-direction: column; gap: 3px; }
+  .tideglass-current-button strong { font-size: .56rem; }
+  .tideglass-console-footer { font-size: .4rem; }
 }
 
 @media (max-width: 380px) {
@@ -2648,8 +2731,24 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .gravity-tilt-button { min-height: 51px; }
   .gravity-tilt-button strong { font-size: .52rem; }
   .gravity-loom-console-footer { font-size: .35rem; letter-spacing: .05em; }
+  .tideglass-score { grid-template-columns: minmax(0, 1fr); }
+  .tideglass-target { padding: 7px; }
+  .tideglass-target strong { font-size: .65rem; }
+  .tideglass-target > span:last-child { font-size: .43rem; }
+  .tideglass-controls { gap: 4px; }
+  .tideglass-buoys { gap: 4px; }
+  .tideglass-buoy-select { padding: 5px; column-gap: 4px; }
+  .tideglass-buoy-select strong { font-size: .56rem; }
+  .tideglass-buoy-select small { font-size: .4rem; letter-spacing: .04em; }
+  .tideglass-current-button { min-height: 50px; }
+  .tideglass-current-button strong { font-size: .48rem; }
+  .tideglass-console-footer { font-size: .34rem; letter-spacing: .04em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .gravity-loom-spark, .gravity-loom-cell { transition: none !important; animation: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tideglass-cell, .tideglass-buoy-select, .tideglass-current-button { transition: none !important; animation: none !important; }
 }
