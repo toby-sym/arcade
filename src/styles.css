@@ -2300,3 +2300,86 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .orbit-courier-touch-controls { gap: 5px; }
   .orbit-control-button { min-width: 0; min-height: 48px; }
 }
+
+.color-conduit-card-art { background: radial-gradient(ellipse at 50% 45%, #253c4a, #10111d 76%); }
+.color-conduit-card-wire { position: absolute; inset: 0; display: grid; place-items: center; }
+.color-conduit-card-wire::before { content: ''; position: absolute; width: 48%; height: 49%; border: 4px solid #5ad8e8; border-right-color: #ffc85a; border-bottom-color: #ff718c; border-radius: 13px; filter: drop-shadow(0 0 8px rgb(90 216 232 / 40%)); }
+.color-conduit-card-wire i { position: absolute; width: 21px; height: 21px; border: 4px solid #ffc85a; border-radius: 50%; background: #141521; }
+.color-conduit-card-wire i:first-child { top: 24%; left: 27%; }
+.color-conduit-card-wire i:last-child { right: 25%; bottom: 24%; border-color: #ff718c; }
+.color-conduit-layout { grid-template-columns: minmax(280px, .86fr) minmax(390px, 1.14fr); gap: clamp(24px, 4vw, 58px); }
+.color-conduit-copy h1 { font-size: clamp(2rem, 3.4vw, 2.8rem); }
+.color-conduit-score { max-width: 390px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.color-conduit-run-stat { display: grid; gap: 3px; }
+.color-conduit-run-stat .score-value { font-size: 1.45rem; }
+.color-conduit-run-stat .score-value small { color: #a89bb8; font-size: .75rem; }
+.color-conduit-breakout-stats { grid-column: 1 / -1; }
+.color-conduit-score .local-best-readout { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; }
+.color-conduit-score .local-best-readout .score-caption { grid-column: 1 / -1; }
+.color-conduit-score .local-best-readout .score-value { font-size: 1.25rem; }
+.color-conduit-local-note { max-width: 390px; margin: 10px 0 0; color: #a79bb8; font-size: .68rem; line-height: 1.5; }
+.color-conduit-play-column { max-width: 720px; }
+.color-conduit-console { padding: 13px; border: 3px solid #58466c; border-radius: 15px; background: linear-gradient(145deg, #241d30 0%, #13111d 80%); box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.color-conduit-console .frame-topline { height: 23px; padding: 0 1px 10px; }
+.color-conduit-palette { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; margin: 0 0 10px; }
+.color-conduit-signal { min-width: 0; min-height: 46px; padding: 5px 7px; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 1px 6px; border: 1px solid #554766; border-radius: 5px; color: #eee5d4; background: #171521; text-align: left; cursor: pointer; }
+.color-conduit-glyph { grid-row: 1 / 3; font-size: 1rem; }
+.color-conduit-signal > span:nth-child(2) { overflow: hidden; font-size: .66rem; font-weight: 800; text-overflow: ellipsis; }
+.color-conduit-signal-state { color: #a99eb6; font: 700 .39rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; }
+.color-conduit-signal:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+.color-conduit-signal:disabled { cursor: default; opacity: .55; }
+.color-conduit-signal.is-active { border-color: var(--signal-color); box-shadow: inset 0 -3px var(--signal-color), 0 0 10px color-mix(in srgb, var(--signal-color), transparent 75%); }
+.color-conduit-signal.is-connected .color-conduit-signal-state { color: var(--signal-color); }
+.color-conduit-amber { --signal-color: #ffc85a; }
+.color-conduit-cyan { --signal-color: #5ad8e8; }
+.color-conduit-coral { --signal-color: #ff718c; }
+.color-conduit-violet { --signal-color: #bd91ff; }
+.color-conduit-board { position: relative; display: grid; gap: 3px; width: 100%; aspect-ratio: 1; padding: 7px; border: 1px solid #40364f; background-color: #0d1018; background-image: linear-gradient(rgb(255 255 255 / 2%) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 2%) 1px, transparent 1px); background-size: 14px 14px; outline: none; touch-action: none; }
+.color-conduit-board:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+.color-conduit-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3px; min-height: 0; }
+.color-conduit-cell { --cell-glow: #252331; min-width: 0; min-height: 0; padding: 0; display: grid; place-items: center; border: 1px solid #342e40; border-radius: 2px; color: #d9d2e2; background: linear-gradient(145deg, #191823, #11121b); font-size: clamp(.65rem, 2vw, 1.1rem); font-weight: 800; line-height: 1; cursor: crosshair; touch-action: none; user-select: none; }
+.color-conduit-cell span { pointer-events: none; }
+.color-conduit-cell.has-amber { --cell-glow: #ffc85a; color: #ffe3a0; border-color: rgb(255 200 90 / 45%); background: linear-gradient(145deg, rgb(255 200 90 / 25%), rgb(255 200 90 / 8%)); }
+.color-conduit-cell.has-cyan { --cell-glow: #5ad8e8; color: #b3f8ff; border-color: rgb(90 216 232 / 45%); background: linear-gradient(145deg, rgb(90 216 232 / 25%), rgb(90 216 232 / 8%)); }
+.color-conduit-cell.has-coral { --cell-glow: #ff718c; color: #ffd0d7; border-color: rgb(255 113 140 / 45%); background: linear-gradient(145deg, rgb(255 113 140 / 25%), rgb(255 113 140 / 8%)); }
+.color-conduit-cell.has-violet { --cell-glow: #bd91ff; color: #e7d5ff; border-color: rgb(189 145 255 / 45%); background: linear-gradient(145deg, rgb(189 145 255 / 25%), rgb(189 145 255 / 8%)); }
+.color-conduit-cell.is-terminal { border-width: 2px; box-shadow: inset 0 0 12px color-mix(in srgb, var(--cell-glow), transparent 65%); font-size: clamp(.9rem, 3vw, 1.6rem); }
+.color-conduit-cell.is-cursor { outline: 2px solid #fff3ce; outline-offset: -3px; z-index: 1; }
+.color-conduit-cell:disabled { cursor: default; }
+.color-conduit-overlay { position: absolute; z-index: 2; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; padding: 16px; background: rgb(10 10 17 / 84%); text-align: center; }
+.color-conduit-overlay strong { color: var(--green); font: 800 clamp(.85rem, 2.7vw, 1.3rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; }
+.color-conduit-overlay > span { color: #dfd6e6; font-size: .72rem; }
+.color-conduit-overlay.is-complete { pointer-events: none; background: rgb(10 10 17 / 62%); }
+.color-conduit-board-actions { display: flex; justify-content: center; gap: 8px; padding-top: 10px; }
+.color-conduit-board-actions .button { min-height: 38px; padding: 6px 11px; font-size: .6rem; }
+.color-conduit-status { min-height: 34px; margin: 12px 2px 0; color: #bfb5d1; font-size: .72rem; line-height: 1.5; text-align: center; }
+.color-conduit-console-footer { display: flex; justify-content: space-between; gap: 8px; padding: 11px 1px 0; color: #c1b5d5; font: .5rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.color-conduit-keyboard-hint { margin: 12px 0; color: #a79bb8; font-size: .64rem; line-height: 1.5; text-align: center; }
+
+@media (max-width: 760px) {
+  .color-conduit-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .color-conduit-copy h1 { font-size: clamp(1.9rem, 8vw, 2.55rem); }
+  .color-conduit-play-column { width: 100%; max-width: 640px; justify-self: center; }
+  .color-conduit-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .color-conduit-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .color-conduit-board { gap: 2px; padding: 5px; }
+  .color-conduit-row { gap: 2px; }
+  .color-conduit-palette { gap: 4px; }
+  .color-conduit-signal { min-height: 43px; padding: 4px; gap: 1px 4px; }
+  .color-conduit-signal > span:nth-child(2) { font-size: .59rem; }
+  .color-conduit-signal-state { font-size: .35rem; }
+  .color-conduit-console-footer { font-size: .44rem; }
+}
+
+@media (max-width: 380px) {
+  .color-conduit-palette { gap: 3px; }
+  .color-conduit-signal { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .color-conduit-glyph { grid-row: auto; font-size: .88rem; line-height: 1; }
+  .color-conduit-signal > span:nth-child(2) { font-size: .53rem; }
+  .color-conduit-signal-state { font-size: .31rem; }
+  .color-conduit-console-footer { font-size: .38rem; letter-spacing: .06em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .color-conduit-signal, .color-conduit-cell { transition: none !important; }
+}

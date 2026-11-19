@@ -46,10 +46,12 @@ const MinesweeperGame = lazy(() => import('./games/MinesweeperGame').then(({ Min
 const MazeDashGame = lazy(() => import('./games/MazeDashGame').then(({ MazeDashGame }) => ({ default: MazeDashGame })))
 const SkylineSkipGame = lazy(() => import('./games/SkylineSkipGame').then(({ SkylineSkipGame }) => ({ default: SkylineSkipGame })))
 const OrbitCourierGame = lazy(() => import('./games/OrbitCourierGame').then(({ OrbitCourierGame }) => ({ default: OrbitCourierGame })))
+const ColorConduitGame = lazy(() => import('./games/ColorConduitGame').then(({ ColorConduitGame }) => ({ default: ColorConduitGame })))
+import { createColorConduitState, type ColorConduitProgress } from './games/colorConduit'
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -85,6 +87,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'skylineskip', title: 'Skyline Skip', categories: ['arcade'], terms: 'platform runner rooftop jumps' },
   { id: 'ciphercircuit', title: 'Cipher Circuit', categories: ['daily'], terms: 'code breaker signals colors logic' },
   { id: 'orbitcourier', title: 'Orbit Courier', categories: ['arcade'], terms: 'space flight delivery thrust brake planets' },
+  { id: 'colorconduit', title: 'Color Conduit', categories: ['daily'], terms: 'color route pipes signals logic' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -108,7 +111,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -375,6 +378,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyColorConduitGame = (progress: ColorConduitProgress) => {
+    const withProgress = withDailyColorConduitGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = createColorConduitState(progress.date, progress)
+    const next = completed.phase === 'complete'
+      ? withImprovedBest(withProgress, 'colorConduit', completed.elapsedSeconds) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -468,6 +482,7 @@ function App() {
   const openSkylineSkip = () => setScreen('skylineskip')
   const openCipherCircuit = () => setScreen('ciphercircuit')
   const openOrbitCourier = () => setScreen('orbitcourier')
+  const openColorConduit = () => setScreen('colorconduit')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -541,6 +556,7 @@ function App() {
             onPlaySkylineSkip={openSkylineSkip}
             onPlayCipherCircuit={openCipherCircuit}
             onPlayOrbitCourier={openOrbitCourier}
+            onPlayColorConduit={openColorConduit}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -732,6 +748,13 @@ function App() {
             bestScore={arcadeData.bests.orbitCourier}
             onRecordScore={(score) => recordBest('orbitCourier', score)}
           />
+        ) : screen === 'colorconduit' ? (
+          <ColorConduitGame
+            onBack={() => setScreen('home')}
+            bestSeconds={arcadeData.bests.colorConduit}
+            progress={arcadeData.dailyColorConduitGame}
+            onSaveProgress={saveDailyColorConduitGame}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -877,6 +900,7 @@ function Home({
   onPlaySkylineSkip,
   onPlayCipherCircuit,
   onPlayOrbitCourier,
+  onPlayColorConduit,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -919,6 +943,7 @@ function Home({
   onPlaySkylineSkip: () => void
   onPlayCipherCircuit: () => void
   onPlayOrbitCourier: () => void
+  onPlayColorConduit: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1363,6 +1388,18 @@ function Home({
               <h3>Orbit Courier</h3>
               <p>Brake your drift, dodge moving debris, and deliver three packages across the field.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · WASD · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayOrbitCourier}>Play Orbit Courier <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-colorconduit" hidden={!visibleGameIds.has('colorconduit')}>
+            <div className="card-art color-conduit-card-art" aria-hidden="true">
+              <span className="color-conduit-card-wire"><i /><i /></span>
+              <span className="card-art-index">28</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">28</span><span className="game-category">DAILY ROUTING</span></div>
+              <h3>Color Conduit</h3>
+              <p>Connect four signals without crossings, then power every square on the board.</p>
+              <div className="card-bottom"><span className="controls-label">1–4 · ARROWS · DRAG</span><button className="play-card-button" type="button" onClick={onPlayColorConduit}>Play Color Conduit <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
