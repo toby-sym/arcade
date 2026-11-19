@@ -80,7 +80,7 @@ describe('Arcade navigation and game controls', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
     render(<App />)
 
-    expect(screen.getByText('07 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('08 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play reaction/i }))
     expect(screen.getByRole('heading', { name: 'Reaction' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /start a round/i })).toBeInTheDocument()
@@ -117,7 +117,7 @@ describe('Arcade navigation and game controls', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
     render(<App />)
 
-    expect(screen.getByText('07 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('08 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play pattern/i }))
     expect(screen.getByRole('heading', { name: 'Remember' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /start practice/i }))
@@ -197,7 +197,7 @@ describe('Arcade navigation and game controls', () => {
     vi.useFakeTimers()
     render(<App />)
 
-    expect(screen.getByText('07 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('08 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play breakout/i }))
     expect(screen.getByRole('heading', { name: 'Breakout' })).toBeInTheDocument()
     const board = screen.getByRole('group', { name: 'Breakout playfield' })
@@ -229,7 +229,7 @@ describe('Arcade navigation and game controls', () => {
     vi.useFakeTimers()
     render(<App />)
 
-    expect(screen.getByText('07 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('08 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play pong/i }))
     expect(screen.getByRole('heading', { name: 'Pong' })).toBeInTheDocument()
     const board = screen.getByRole('group', { name: 'Pong playfield' })
@@ -266,7 +266,7 @@ describe('Arcade navigation and game controls', () => {
     vi.useFakeTimers()
     render(<App />)
 
-    expect(screen.getByText('07 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('08 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play invaders/i }))
     expect(screen.getByRole('heading', { name: 'Space Invaders' })).toBeInTheDocument()
     const board = screen.getByRole('group', { name: 'Space Invaders playfield' })
@@ -301,7 +301,7 @@ describe('Arcade navigation and game controls', () => {
     vi.useFakeTimers()
     render(<App />)
 
-    expect(screen.getByText('07 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('08 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play asteroids/i }))
     expect(screen.getByRole('heading', { name: 'Asteroids' })).toBeInTheDocument()
     const board = screen.getByRole('group', { name: 'Asteroids playfield' })
@@ -336,6 +336,38 @@ describe('Arcade navigation and game controls', () => {
     expect(screen.getByRole('heading', { name: 'Choose your game' })).toBeInTheDocument()
   })
 
+  it('opens Missile Command and supports keyboard and touch aiming', () => {
+    vi.useFakeTimers()
+    render(<App />)
+
+    expect(screen.getByText('08 PLAYABLE')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /play missile command/i }))
+    expect(screen.getByRole('heading', { name: 'Missile Command' })).toBeInTheDocument()
+    const board = screen.getByRole('group', { name: 'Missile Command playfield' })
+    fireEvent.click(screen.getByRole('button', { name: 'Start game' }))
+    act(() => { vi.advanceTimersByTime(20) })
+    expect(board).toHaveFocus()
+
+    const aim = board.querySelector('.missile-aim')
+    fireEvent.keyDown(board, { key: 'ArrowRight' })
+    expect(Number(aim?.getAttribute('style')?.match(/left: ([\d.]+)%/)?.[1])).toBeCloseTo(54.333, 2)
+    fireEvent.keyDown(board, { key: ' ', code: 'Space' })
+    expect(board.querySelectorAll('.defense-missile')).toHaveLength(1)
+    fireEvent.click(screen.getByRole('button', { name: 'Aim up' }))
+    expect(Number(aim?.getAttribute('style')?.match(/top: ([\d.]+)%/)?.[1])).toBeCloseTo(36, 2)
+    expect(screen.getByRole('button', { name: /pause/i })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /pause/i }))
+    expect(screen.getByRole('button', { name: /resume/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /resume/i }))
+    fireEvent.click(screen.getByRole('button', { name: 'Fire at target' }))
+    expect(board.querySelectorAll('.defense-missile')).toHaveLength(2)
+    fireEvent.click(screen.getByRole('button', { name: /restart/i }))
+    expect(screen.getByRole('button', { name: 'Start game' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /all games/i }))
+    expect(screen.getByRole('heading', { name: 'Choose your game' })).toBeInTheDocument()
+  })
+
   it('saves motion and sound preferences and restores them on the next visit', () => {
     const firstVisit = render(<App />)
     const reduceMotion = screen.getByRole('checkbox', { name: /reduce motion/i })
@@ -358,7 +390,7 @@ describe('Arcade navigation and game controls', () => {
   it('confirms record clearing, preserves the motion preference, and keeps records local', () => {
     window.localStorage.setItem(ARCADE_DATA_KEY, JSON.stringify({
       version: 1,
-      bests: { snake: 8, reaction: 240, pattern: 3, breakout: 120, pong: 2, invaders: null, asteroids: null },
+      bests: { snake: 8, reaction: 240, pattern: 3, breakout: 120, pong: 2, invaders: null, asteroids: null, missileCommand: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     }))
     render(<App />)
@@ -373,7 +405,7 @@ describe('Arcade navigation and game controls', () => {
     expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}')).toEqual({
       version: 1,
       dailyPatternCompletedDate: null,
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null },
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
     expect(screen.getByText('No saved records.')).toBeInTheDocument()
