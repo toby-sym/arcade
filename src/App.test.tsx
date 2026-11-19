@@ -6,6 +6,7 @@ import { dailyPatternForDate, utcDateKey } from './games/dailyPattern'
 import { dailyWordForDate, isValidWordGuess } from './games/dailyWord'
 import { createConnectionsState } from './games/connections'
 import { createSpellingBeeState } from './games/spellingBee'
+import { createStrandsState } from './games/strands'
 
 afterEach(() => {
   vi.useRealTimers()
@@ -83,7 +84,7 @@ describe('Arcade navigation and game controls', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
     render(<App />)
 
-    expect(screen.getByText('12 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('13 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play reaction/i }))
     expect(screen.getByRole('heading', { name: 'Reaction' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /start a round/i })).toBeInTheDocument()
@@ -120,7 +121,7 @@ describe('Arcade navigation and game controls', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
     render(<App />)
 
-    expect(screen.getByText('12 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('13 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play pattern/i }))
     expect(screen.getByRole('heading', { name: 'Remember' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /start practice/i }))
@@ -200,7 +201,7 @@ describe('Arcade navigation and game controls', () => {
     vi.useFakeTimers()
     render(<App />)
 
-    expect(screen.getByText('12 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('13 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play breakout/i }))
     expect(screen.getByRole('heading', { name: 'Breakout' })).toBeInTheDocument()
     const board = screen.getByRole('group', { name: 'Breakout playfield' })
@@ -232,7 +233,7 @@ describe('Arcade navigation and game controls', () => {
     vi.useFakeTimers()
     render(<App />)
 
-    expect(screen.getByText('12 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('13 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play pong/i }))
     expect(screen.getByRole('heading', { name: 'Pong' })).toBeInTheDocument()
     const board = screen.getByRole('group', { name: 'Pong playfield' })
@@ -269,7 +270,7 @@ describe('Arcade navigation and game controls', () => {
     vi.useFakeTimers()
     render(<App />)
 
-    expect(screen.getByText('12 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('13 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play invaders/i }))
     expect(screen.getByRole('heading', { name: 'Space Invaders' })).toBeInTheDocument()
     const board = screen.getByRole('group', { name: 'Space Invaders playfield' })
@@ -304,7 +305,7 @@ describe('Arcade navigation and game controls', () => {
     vi.useFakeTimers()
     render(<App />)
 
-    expect(screen.getByText('12 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('13 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play asteroids/i }))
     expect(screen.getByRole('heading', { name: 'Asteroids' })).toBeInTheDocument()
     const board = screen.getByRole('group', { name: 'Asteroids playfield' })
@@ -343,7 +344,7 @@ describe('Arcade navigation and game controls', () => {
     vi.useFakeTimers()
     render(<App />)
 
-    expect(screen.getByText('12 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('13 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play missile command/i }))
     expect(screen.getByRole('heading', { name: 'Missile Command' })).toBeInTheDocument()
     const board = screen.getByRole('group', { name: 'Missile Command playfield' })
@@ -375,7 +376,7 @@ describe('Arcade navigation and game controls', () => {
     vi.useFakeTimers()
     render(<App />)
 
-    expect(screen.getByText('12 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('13 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play block drop/i }))
     expect(screen.getByRole('heading', { name: 'Block Drop' })).toBeInTheDocument()
     const board = screen.getByRole('group', { name: /block drop playfield/i })
@@ -406,7 +407,7 @@ describe('Arcade navigation and game controls', () => {
     const firstGuess = ['CRANE', 'BRICK', 'CLOUD', 'SWEET'].find((word) => word !== answer && isValidWordGuess(word))!
     render(<App />)
 
-    expect(screen.getByText('12 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('13 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play word guess/i }))
     expect(screen.getByRole('heading', { name: 'Word Guess' })).toBeInTheDocument()
 
@@ -433,7 +434,7 @@ describe('Arcade navigation and game controls', () => {
     const puzzle = createConnectionsState(today)
     render(<App />)
 
-    expect(screen.getByText('12 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('13 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play connections/i }))
     expect(screen.getByRole('heading', { name: 'Connections' })).toBeInTheDocument()
     expect(screen.getAllByRole('button', { pressed: false })).toHaveLength(16)
@@ -463,7 +464,7 @@ describe('Arcade navigation and game controls', () => {
     const firstWord = puzzle.words.find((word) => word.length === 4)!
     render(<App />)
 
-    expect(screen.getByText('12 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('13 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play spelling bee/i }))
     expect(screen.getByRole('heading', { name: 'Spelling Bee' })).toBeInTheDocument()
 
@@ -487,6 +488,39 @@ describe('Arcade navigation and game controls', () => {
     expect(screen.getByText('HIVE CLEARED')).toBeInTheDocument()
     expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').dailySpellingBeeGame.phase).toBe('complete')
     expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').bests.spellingBee).toBe(puzzle.maxScore)
+  })
+
+  it('plays and restores the daily Strands board and records a no-hint solve', () => {
+    const today = utcDateKey()
+    const puzzle = createStrandsState(today)
+    const firstWord = puzzle.words.find((word) => word !== puzzle.spangram)!
+    const selectWord = (word: string) => {
+      for (const index of puzzle.paths[word]!) {
+        const row = Math.floor(index / 8) + 1
+        const column = index % 8 + 1
+        const letter = puzzle.grid[index]!
+        fireEvent.click(screen.getByRole('button', { name: new RegExp(`^Row ${row}, column ${column}, ${letter}`) }))
+      }
+    }
+
+    render(<App />)
+    expect(screen.getByText('13 PLAYABLE')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /play strands/i }))
+    expect(screen.getByRole('heading', { name: 'Strands' })).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: /^Row \d, column \d, [A-Z]/ })).toHaveLength(48)
+
+    selectWord(firstWord)
+    expect(screen.getByText(firstWord, { selector: '.strands-found span' })).toBeInTheDocument()
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').dailyStrandsGame.foundWords).toEqual([firstWord])
+
+    fireEvent.click(screen.getByRole('button', { name: /all games/i }))
+    fireEvent.click(screen.getByRole('button', { name: /play strands/i }))
+    expect(screen.getByText(firstWord, { selector: '.strands-found span' })).toBeInTheDocument()
+
+    for (const word of puzzle.words.filter((candidate) => candidate !== firstWord)) selectWord(word)
+    expect(screen.getByText('BOARD SOLVED')).toBeInTheDocument()
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').dailyStrandsGame.foundWords).toHaveLength(6)
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').bests.strands).toBe(0)
   })
 
   it('saves motion and sound preferences and restores them on the next visit', () => {
@@ -529,7 +563,8 @@ describe('Arcade navigation and game controls', () => {
       dailyWordGame: null,
       dailyConnectionsGame: null,
       dailySpellingBeeGame: null,
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null },
+      dailyStrandsGame: null,
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
     expect(screen.getByText('No saved records.')).toBeInTheDocument()
