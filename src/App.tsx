@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useReducer, useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react'
 import {
   BOARD_SIZE,
   createSnakeState,
@@ -42,7 +42,7 @@ import { DailyCrosswordGame } from './games/DailyCrosswordGame'
 import { createDailyCrosswordState, type DailyCrosswordProgress } from './games/dailyCrossword'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -100,6 +100,7 @@ function App() {
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
+  const [pendingBackupRestore, setPendingBackupRestore] = useState<ArcadeData | null>(null)
   const [isOnline, setIsOnline] = useState(() => navigator.onLine)
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const boardRef = useRef<HTMLDivElement>(null)
@@ -136,6 +137,61 @@ function App() {
     const next = clearArcadeBests(arcadeData)
     setArcadeData(next)
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
+  const downloadBackup = () => {
+    try {
+      const blob = new Blob([JSON.stringify(arcadeData, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `arcade-backup-${new Date().toISOString().slice(0, 10)}.json`
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+      setStorageNotice('Backup downloaded to your device.')
+    } catch {
+      setStorageNotice('This browser could not create an Arcade backup file.')
+    }
+  }
+
+  const prepareBackupRestore = async (file: File) => {
+    if (file.size > ARCADE_BACKUP_MAX_BYTES) {
+      setPendingBackupRestore(null)
+      setStorageNotice('That backup file is too large. Your current data was left unchanged.')
+      return
+    }
+
+    try {
+      const backup = parseArcadeDataBackup(await file.text())
+      if (!backup) {
+        setPendingBackupRestore(null)
+        setStorageNotice('That file is not a valid Arcade backup. Your current data was left unchanged.')
+        return
+      }
+      setPendingBackupRestore(backup)
+      setStorageNotice('Backup checked. Confirm below to replace this browser’s saved Arcade data.')
+    } catch {
+      setPendingBackupRestore(null)
+      setStorageNotice('Arcade could not read that file. Your current data was left unchanged.')
+    }
+  }
+
+  const restoreBackup = () => {
+    if (!pendingBackupRestore) return
+    if (!writeArcadeData(pendingBackupRestore)) {
+      setStorageNotice('This browser could not restore Arcade data.')
+      return
+    }
+    setArcadeData(pendingBackupRestore)
+    setPendingBackupRestore(null)
+    setStorageNotice('Backup restored in this browser.')
+  }
+
+  const cancelBackupRestore = () => {
+    setPendingBackupRestore(null)
+    setStorageNotice('Restore canceled. Your saved data was not changed.')
   }
 
   const recordDailyCompletion = (date: string) => {
@@ -447,6 +503,11 @@ function App() {
             onSoundEffectsChange={setSoundEffects}
             hasRecords={Object.values(arcadeData.bests).some((record) => record !== null)}
             onClearRecords={clearRecords}
+            onDownloadBackup={downloadBackup}
+            onSelectBackupFile={prepareBackupRestore}
+            backupRestorePending={pendingBackupRestore !== null}
+            onRestoreBackup={restoreBackup}
+            onCancelBackupRestore={cancelBackupRestore}
             storageNotice={storageNotice}
             installAvailable={installPrompt !== null}
             onInstall={installArcade}
@@ -740,6 +801,11 @@ function Home({
   onSoundEffectsChange,
   hasRecords,
   onClearRecords,
+  onDownloadBackup,
+  onSelectBackupFile,
+  backupRestorePending,
+  onRestoreBackup,
+  onCancelBackupRestore,
   storageNotice,
   installAvailable,
   onInstall,
@@ -772,11 +838,17 @@ function Home({
   onSoundEffectsChange: (enabled: boolean) => void
   hasRecords: boolean
   onClearRecords: () => void
+  onDownloadBackup: () => void
+  onSelectBackupFile: (file: File) => void
+  backupRestorePending: boolean
+  onRestoreBackup: () => void
+  onCancelBackupRestore: () => void
   storageNotice: string
   installAvailable: boolean
   onInstall: () => void
 }) {
   const [confirmClearRecords, setConfirmClearRecords] = useState(false)
+  const backupFileInput = useRef<HTMLInputElement>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [gameFilter, setGameFilter] = useState<GameFloorFilter>('all')
   const normalizedQuery = searchQuery.trim().toLocaleLowerCase()
@@ -787,6 +859,11 @@ function Home({
   })
   const visibleGameIds = new Set(visibleGames.map((game) => game.id))
   const hasActiveGameFilters = gameFilter !== 'all' || normalizedQuery.length > 0
+  const handleBackupFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.currentTarget.files?.[0]
+    event.currentTarget.value = ''
+    if (file) onSelectBackupFile(file)
+  }
 
   return (
     <>
@@ -1184,7 +1261,40 @@ function Home({
             </div>
           )}
         </div>
-        <p className="local-data-note">No accounts or public leaderboards. Personal bests and these preferences stay in this browser and do not sync.</p>
+        <div className="backup-setting">
+          <div>
+            <strong>Local data backup</strong>
+            <small>Download your records, preferences, and daily puzzle progress as a JSON file. Restoring a backup replaces this browser’s saved Arcade data after confirmation.</small>
+          </div>
+          <div className="backup-actions">
+            <button className="backup-action-button" type="button" onClick={onDownloadBackup}>Download backup</button>
+            <button className="backup-action-button" type="button" onClick={() => backupFileInput.current?.click()}>Choose backup file</button>
+            <input
+              ref={backupFileInput}
+              type="file"
+              hidden
+              accept=".json,application/json"
+              aria-label="Choose Arcade backup file"
+              onChange={handleBackupFileChange}
+            />
+          </div>
+          {backupRestorePending && (
+            <div
+              id="backup-restore-confirmation"
+              className="backup-restore-confirmation"
+              role="group"
+              aria-labelledby="backup-restore-question"
+              onKeyDown={(event) => { if (event.key === 'Escape') onCancelBackupRestore() }}
+            >
+              <p id="backup-restore-question">Replace this browser’s saved records, daily progress, and preferences with the selected backup?</p>
+              <div>
+                <button className="button button-quiet" type="button" onClick={onCancelBackupRestore}>Cancel restore</button>
+                <button className="button button-primary" type="button" onClick={onRestoreBackup}>Restore backup</button>
+              </div>
+            </div>
+          )}
+        </div>
+        <p className="local-data-note">No accounts or public leaderboards. Scores, preferences, and daily progress stay in this browser and do not sync. You can download a backup file when you choose.</p>
         <p className="storage-notice" role="status" aria-live="polite">{storageNotice}</p>
       </section>
     </>
