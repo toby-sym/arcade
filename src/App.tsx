@@ -42,6 +42,7 @@ const DailyCrosswordGame = lazy(() => import('./games/DailyCrosswordGame').then(
 import { createDailyCrosswordState, type DailyCrosswordProgress } from './games/dailyCrossword'
 const MinesweeperGame = lazy(() => import('./games/MinesweeperGame').then(({ MinesweeperGame }) => ({ default: MinesweeperGame })))
 const MazeDashGame = lazy(() => import('./games/MazeDashGame').then(({ MazeDashGame }) => ({ default: MazeDashGame })))
+const SkylineSkipGame = lazy(() => import('./games/SkylineSkipGame').then(({ SkylineSkipGame }) => ({ default: SkylineSkipGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -78,6 +79,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'dailycrossword', title: 'Daily Crossword', categories: ['daily'], terms: 'clues words grid' },
   { id: 'minesweeper', title: 'Minesweeper', categories: ['daily'], terms: 'minesweeper mines flags numbers logic' },
   { id: 'mazedash', title: 'Maze Dash', categories: ['arcade'], terms: 'maze chase gems sentries' },
+  { id: 'skylineskip', title: 'Skyline Skip', categories: ['arcade'], terms: 'platform runner rooftop jumps' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -101,7 +103,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -447,6 +449,7 @@ function App() {
   const openCrossword = () => setScreen('crossword')
   const openMinesweeper = () => setScreen('minesweeper')
   const openMazeDash = () => setScreen('mazedash')
+  const openSkylineSkip = () => setScreen('skylineskip')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -517,6 +520,7 @@ function App() {
             onPlayCrossword={openCrossword}
             onPlayMinesweeper={openMinesweeper}
             onPlayMazeDash={openMazeDash}
+            onPlaySkylineSkip={openSkylineSkip}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -689,6 +693,12 @@ function App() {
             bestScore={arcadeData.bests.mazeDash}
             onRecordScore={(score) => recordBest('mazeDash', score)}
           />
+        ) : screen === 'skylineskip' ? (
+          <SkylineSkipGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.skylineSkip}
+            onRecordScore={(score) => recordBest('skylineSkip', score)}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -831,6 +841,7 @@ function Home({
   onPlayCrossword,
   onPlayMinesweeper,
   onPlayMazeDash,
+  onPlaySkylineSkip,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -870,6 +881,7 @@ function Home({
   onPlayCrossword: () => void
   onPlayMinesweeper: () => void
   onPlayMazeDash: () => void
+  onPlaySkylineSkip: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1272,6 +1284,20 @@ function Home({
               <h3>Maze Dash</h3>
               <p>Collect the gems, reach the exit, and stay ahead of the sentries.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · WASD · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayMazeDash}>Play Maze Dash <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-skylineskip" hidden={!visibleGameIds.has('skylineskip')}>
+            <div className="card-art skyline-skip-card-art" aria-hidden="true">
+              <span className="skyline-skip-card-roofs"><i /><i /><i /></span>
+              <span className="skyline-skip-card-runner" />
+              <span className="skyline-skip-card-shard" />
+              <span className="card-art-index">25</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">25</span><span className="game-category">ARCADE RUN</span></div>
+              <h3>Skyline Skip</h3>
+              <p>Leap the gaps, collect signal shards, and sprint between rooftop beacons.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · A-D · JUMP</span><button className="play-card-button" type="button" onClick={onPlaySkylineSkip}>Play Skyline Skip <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
