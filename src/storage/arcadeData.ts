@@ -5,6 +5,7 @@ export interface ArcadeBests {
   reaction: number | null
   pattern: number | null
   breakout: number | null
+  pong: number | null
 }
 
 export interface ArcadeData {
@@ -28,13 +29,13 @@ type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null },
     preferences: { reduceMotion: false },
   }
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -55,6 +56,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         reaction: validRecord(bests.reaction),
         pattern: validRecord(bests.pattern),
         breakout: validRecord(bests.breakout),
+        pong: validRecord(bests.pong),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true },
     }

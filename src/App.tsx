@@ -9,6 +9,7 @@ import {
 import { ReactionGame } from './games/ReactionGame'
 import { PatternGame } from './games/PatternGame'
 import { BreakoutGame } from './games/BreakoutGame'
+import { PongGame } from './games/PongGame'
 import { clearArcadeBests, readArcadeData, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
@@ -30,7 +31,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -87,6 +88,7 @@ function App() {
   const openReaction = () => setScreen('reaction')
   const openPattern = () => setScreen('pattern')
   const openBreakout = () => setScreen('breakout')
+  const openPong = () => setScreen('pong')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -133,6 +135,7 @@ function App() {
             onPlayReaction={openReaction}
             onPlayPattern={openPattern}
             onPlayBreakout={openBreakout}
+            onPlayPong={openPong}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             hasRecords={Object.values(arcadeData.bests).some((record) => record !== null)}
@@ -156,6 +159,12 @@ function App() {
             onBack={() => setScreen('home')}
             bestScore={arcadeData.bests.breakout}
             onRecordScore={(score) => recordBest('breakout', score)}
+          />
+        ) : screen === 'pong' ? (
+          <PongGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.pong}
+            onRecordScore={(score) => recordBest('pong', score)}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -277,6 +286,7 @@ function Home({
   onPlayReaction,
   onPlayPattern,
   onPlayBreakout,
+  onPlayPong,
   reduceMotion,
   onReduceMotionChange,
   hasRecords,
@@ -287,6 +297,7 @@ function Home({
   onPlayReaction: () => void
   onPlayPattern: () => void
   onPlayBreakout: () => void
+  onPlayPong: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   hasRecords: boolean
@@ -317,7 +328,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">04 PLAYABLE</span>
+          <span className="section-count">05 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -372,6 +383,21 @@ function Home({
               <h3>Breakout</h3>
               <p>Keep the ball in play and chip away at the wall.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · WASD · DRAG</span><button className="play-card-button" type="button" onClick={onPlayBreakout}>Play Breakout <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-pong">
+            <div className="card-art pong-card-art" aria-hidden="true">
+              <span className="pong-card-line" />
+              <span className="pong-card-paddle pong-card-player" />
+              <span className="pong-card-paddle pong-card-computer" />
+              <span className="pong-card-ball" />
+              <span className="card-art-index">05</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">05</span><span className="game-category">HEAD TO HEAD</span></div>
+              <h3>Pong</h3>
+              <p>Rally the computer. First to five takes the match.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · W S · DRAG</span><button className="play-card-button" type="button" onClick={onPlayPong}>Play Pong <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
