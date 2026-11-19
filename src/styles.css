@@ -1523,3 +1523,90 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .letterboxed-center small { font-size: .52rem; }
   .letterboxed-console-footer { font-size: .42rem; letter-spacing: .06em; }
 }
+
+.game-card-domino:hover { border-color: #e6ca72; transform: translateY(-3px); box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.domino-card-art { border-color: #655337; background: radial-gradient(ellipse at 50% 54%, #48402c, #0e0b19 80%); }
+.domino-card-grid { position: absolute; inset: 24px 28%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 3px; transform: rotate(-5deg); }
+.domino-card-grid i { display: grid; place-items: center; border: 1px solid #8c7540; color: #fff0b8; background: linear-gradient(145deg, #463a27, #292231); font: 800 .52rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-style: normal; }
+.domino-card-grid i:nth-child(3n + 1) { color: #211a18; background: #e6c65e; }
+.domino-layout { grid-template-columns: minmax(220px, .76fr) minmax(360px, 1.24fr); }
+.domino-copy h1 { font-size: clamp(2rem, 3.2vw, 2.65rem); letter-spacing: -.075em; }
+.domino-score { max-width: 360px; margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+.domino-run-stat { display: flex; flex-direction: column; gap: 5px; }
+.domino-run-stat .score-value { font-size: 2rem; }
+.domino-run-stat .score-value small { color: #b6aecb; font-size: .8rem; letter-spacing: 0; }
+.domino-score .local-best-readout { border-left: 1px solid #403458; padding-left: 15px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.domino-score .local-best-readout .score-value { font-size: 1.45rem; }
+.domino-local-note { max-width: 365px; margin: 13px 0 0; color: #afa5c3; font-size: .7rem; line-height: 1.55; }
+.domino-play-column { max-width: 600px; }
+.domino-console { padding: 14px; border: 3px solid #665638; border-radius: 15px; background: linear-gradient(145deg, #342d28 0%, #171425 78%); box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.domino-console:focus { outline: none; }
+.domino-console .frame-topline { height: 22px; padding: 0 1px 11px; }
+.domino-console .frame-light { color: #e8d084; }
+.domino-console .frame-light i { background: #e6c65e; }
+.domino-console .frame-light.phase-complete i { background: #9be0a7; box-shadow: 0 0 9px rgb(155 224 167 / 65%); }
+.domino-target-row { display: grid; grid-template-columns: 66px repeat(4, minmax(0, 1fr)); gap: 4px; }
+.domino-target-header { margin: 0 0 5px; }
+.domino-column-total, .domino-row-total { min-width: 0; min-height: 38px; padding: 5px 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 1px solid #62543b; border-radius: 4px; background: #1a1720; text-align: center; }
+.domino-row-total { height: 100%; }
+.domino-column-total > span, .domino-row-total > span { color: #d8bd6d; font: 800 .45rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; }
+.domino-column-total strong, .domino-row-total strong { color: #f6f0dc; font: 800 .75rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.domino-column-total small, .domino-row-total small { color: #a79bb4; font-size: .58rem; }
+.domino-board-row { display: grid; grid-template-columns: 66px minmax(0, 1fr); gap: 6px; }
+.domino-row-totals { display: grid; grid-template-rows: repeat(3, minmax(56px, 1fr)); gap: 4px; }
+.domino-grid { min-width: 0; padding: 4px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(56px, 1fr)); gap: 3px; border: 2px solid #8a7544; border-radius: 6px; background: #110f17; box-shadow: inset 0 0 22px rgb(230 198 94 / 6%); }
+.domino-cell { min-width: 0; min-height: 0; border: 1px solid #5d513b; border-radius: 3px; padding: 0; color: #c9bdab; background: #211e29; font: 900 clamp(1rem, 3vw, 1.45rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; cursor: pointer; touch-action: manipulation; transition: border-color .12s ease, transform .12s ease, background .12s ease; }
+.domino-cell:hover:not(:disabled) { border-color: #f6e49d; color: #fff1bd; background: #373127; }
+.domino-cell:focus-visible, .domino-tile:focus-visible { outline: 3px solid #75d9e0; outline-offset: 2px; z-index: 2; }
+.domino-cell.domino-filled { border-color: rgb(255 255 255 / 28%); color: #1b1720; box-shadow: inset 0 1px rgb(255 255 255 / 25%); cursor: default; }
+.domino-cell.domino-filled:hover { transform: none; }
+.domino-color-0 { background: #e6c65e; }
+.domino-color-1 { background: #74d1d6; }
+.domino-color-2 { background: #b398e6; }
+.domino-color-3 { background: #ff819d; }
+.domino-color-4 { background: #b2dc5a; }
+.domino-color-5 { background: #e49a69; }
+.domino-cell-horizontal-first { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.domino-cell-horizontal-second { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.domino-cell-vertical-first { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.domino-cell-vertical-second { border-top-left-radius: 0; border-top-right-radius: 0; }
+.domino-tray-label { margin: 12px 0 6px; color: #d8bd6d; font: 800 .52rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; }
+.domino-tray { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.domino-tile { min-width: 0; min-height: 43px; border: 1px solid #76623d; border-radius: 5px; padding: 3px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: #fff0b8; background: linear-gradient(145deg, #42392a, #272131); box-shadow: 0 3px 0 #100e14; cursor: pointer; touch-action: manipulation; }
+.domino-tile span { display: grid; place-items: center; font: 900 .9rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.domino-tile span + span { border-left: 1px solid #8c7540; }
+.domino-tile:hover:not(:disabled) { border-color: #ffe89a; color: #fff8dc; transform: translateY(-1px); }
+.domino-tile-selected { border-color: #ffe89a; color: #201c17; background: #e6c65e; box-shadow: 0 3px 0 #785f28, 0 0 13px rgb(230 198 94 / 22%); }
+.domino-tile-selected span + span { border-color: rgb(33 28 20 / 32%); }
+.domino-tile-used { opacity: .3; cursor: default; box-shadow: none; }
+.domino-actions { margin: 10px auto 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.domino-actions .button { min-height: 36px; padding: 6px 9px; font-size: .61rem; }
+.domino-actions .button:disabled { cursor: not-allowed; opacity: .45; }
+.domino-status { min-height: 32px; margin: 8px 2px 0; color: #dfd4c3; font-size: .7rem; line-height: 1.45; text-align: center; }
+.domino-console-footer { min-height: 23px; padding: 7px 1px 0; display: flex; justify-content: space-between; color: #b9a98d; font: 700 .47rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.domino-keyboard-hint { margin: 11px 0 0; color: #aaa0bd; font-size: .62rem; text-align: center; }
+
+@media (max-width: 650px) {
+  .domino-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .domino-copy h1 { font-size: clamp(1.95rem, 9vw, 2.55rem); }
+  .domino-play-column { width: 100%; max-width: 600px; justify-self: center; }
+  .domino-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .domino-target-row { grid-template-columns: 56px repeat(4, minmax(0, 1fr)); gap: 3px; }
+  .domino-board-row { grid-template-columns: 56px minmax(0, 1fr); gap: 4px; }
+  .domino-row-totals { grid-template-rows: repeat(3, minmax(48px, 1fr)); gap: 3px; }
+  .domino-grid { grid-template-rows: repeat(3, minmax(48px, 1fr)); gap: 2px; padding: 3px; }
+  .domino-column-total, .domino-row-total { min-height: 32px; padding: 3px 1px; }
+  .domino-column-total > span, .domino-row-total > span { font-size: .4rem; }
+  .domino-column-total strong, .domino-row-total strong { font-size: .67rem; }
+  .domino-tray { gap: 4px; }
+  .domino-tile { min-height: 39px; }
+  .domino-actions { gap: 4px; }
+  .domino-actions .button { min-height: 35px; padding: 6px 7px; font-size: .57rem; }
+}
+
+@media (max-width: 380px) {
+  .domino-score { gap: 10px; }
+  .domino-tray { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .domino-cell { font-size: 1.15rem; }
+  .domino-console-footer { font-size: .42rem; }
+}

@@ -28,9 +28,11 @@ import { MiniCrosswordGame } from './games/MiniCrosswordGame'
 import { createMiniCrosswordState, type MiniCrosswordProgress } from './games/miniCrossword'
 import { LetterBoxedGame } from './games/LetterBoxedGame'
 import { createLetterBoxedState, type LetterBoxedProgress } from './games/letterBoxed'
+import { DominoLogicGame } from './games/DominoLogicGame'
+import { createDominoLogicState, type DominoLogicProgress } from './games/dominoLogic'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -56,7 +58,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -180,6 +182,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyDominoLogicGame = (progress: DominoLogicProgress) => {
+    const withProgress = withDailyDominoLogicGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = createDominoLogicState(progress.date, progress)
+    const next = completed.phase === 'complete'
+      ? withImprovedBest(withProgress, 'dominoLogic', completed.undos) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -262,6 +275,7 @@ function App() {
   const openSudoku = () => setScreen('sudoku')
   const openMiniCrossword = () => setScreen('minicrossword')
   const openLetterBoxed = () => setScreen('letterboxed')
+  const openDominoLogic = () => setScreen('dominologic')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -323,6 +337,7 @@ function App() {
             onPlaySudoku={openSudoku}
             onPlayMiniCrossword={openMiniCrossword}
             onPlayLetterBoxed={openLetterBoxed}
+            onPlayDominoLogic={openDominoLogic}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -433,6 +448,13 @@ function App() {
             bestWords={arcadeData.bests.letterBoxed}
             progress={arcadeData.dailyLetterBoxedGame}
             onSaveProgress={saveDailyLetterBoxedGame}
+          />
+        ) : screen === 'dominologic' ? (
+          <DominoLogicGame
+            onBack={() => setScreen('home')}
+            bestUndos={arcadeData.bests.dominoLogic}
+            progress={arcadeData.dailyDominoLogicGame}
+            onSaveProgress={saveDailyDominoLogicGame}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -567,6 +589,7 @@ function Home({
   onPlaySudoku,
   onPlayMiniCrossword,
   onPlayLetterBoxed,
+  onPlayDominoLogic,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -593,6 +616,7 @@ function Home({
   onPlaySudoku: () => void
   onPlayMiniCrossword: () => void
   onPlayLetterBoxed: () => void
+  onPlayDominoLogic: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -627,7 +651,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">16 PLAYABLE</span>
+          <span className="section-count">17 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -835,6 +859,18 @@ function Home({
               <h3>Letter Boxed</h3>
               <p>Link words across four sides. Cover every letter to solve the box.</p>
               <div className="card-bottom"><span className="controls-label">LETTER KEYS · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayLetterBoxed}>Play Letter Boxed <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-domino">
+            <div className="card-art domino-card-art" aria-hidden="true">
+              <span className="domino-card-grid"><i>2</i><i>5</i><i>3</i><i>4</i><i>6</i><i>1</i><i>2</i><i>5</i><i>4</i><i>3</i><i>1</i><i>6</i></span>
+              <span className="card-art-index">17</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">17</span><span className="game-category">DAILY SUM GRID</span></div>
+              <h3>Domino Logic</h3>
+              <p>Fit six tiles so every row and column hits its daily target.</p>
+              <div className="card-bottom"><span className="controls-label">TAP · ROTATE · FLIP</span><button className="play-card-button" type="button" onClick={onPlayDominoLogic}>Play Domino Logic <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
