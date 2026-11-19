@@ -11,6 +11,7 @@ import { PatternGame } from './games/PatternGame'
 import { BreakoutGame } from './games/BreakoutGame'
 import { PongGame } from './games/PongGame'
 import { InvadersGame } from './games/InvadersGame'
+import { AsteroidsGame } from './games/AsteroidsGame'
 import type { PongDifficulty } from './games/pong'
 import { clearArcadeBests, readArcadeData, withDailyPatternCompletion, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
@@ -38,7 +39,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -142,6 +143,7 @@ function App() {
   const openBreakout = () => setScreen('breakout')
   const openPong = () => setScreen('pong')
   const openInvaders = () => setScreen('invaders')
+  const openAsteroids = () => setScreen('asteroids')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -192,6 +194,7 @@ function App() {
             onPlayBreakout={openBreakout}
             onPlayPong={openPong}
             onPlayInvaders={openInvaders}
+            onPlayAsteroids={openAsteroids}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             hasRecords={Object.values(arcadeData.bests).some((record) => record !== null)}
@@ -233,6 +236,12 @@ function App() {
             onBack={() => setScreen('home')}
             bestScore={arcadeData.bests.invaders}
             onRecordScore={(score) => recordBest('invaders', score)}
+          />
+        ) : screen === 'asteroids' ? (
+          <AsteroidsGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.asteroids}
+            onRecordScore={(score) => recordBest('asteroids', score)}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -356,6 +365,7 @@ function Home({
   onPlayBreakout,
   onPlayPong,
   onPlayInvaders,
+  onPlayAsteroids,
   reduceMotion,
   onReduceMotionChange,
   hasRecords,
@@ -370,6 +380,7 @@ function Home({
   onPlayBreakout: () => void
   onPlayPong: () => void
   onPlayInvaders: () => void
+  onPlayAsteroids: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   hasRecords: boolean
@@ -402,7 +413,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">06 PLAYABLE</span>
+          <span className="section-count">07 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -485,6 +496,19 @@ function Home({
               <h3>Space Invaders</h3>
               <p>Hold the line and clear the formation before it reaches your ship.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · A D · SPACE</span><button className="play-card-button" type="button" onClick={onPlayInvaders}>Play Invaders <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-asteroids">
+            <div className="card-art asteroids-card-art" aria-hidden="true">
+              <span className="asteroids-card-rock rock-one" /><span className="asteroids-card-rock rock-two" /><span className="asteroids-card-rock rock-three" />
+              <span className="asteroids-card-ship" /><span className="asteroids-card-shot" />
+              <span className="card-art-index">07</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">07</span><span className="game-category">VECTOR SHOOTER</span></div>
+              <h3>Asteroids</h3>
+              <p>Rotate, thrust, and break up the field before the rocks catch your ship.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · A D · SPACE</span><button className="play-card-button" type="button" onClick={onPlayAsteroids}>Play Asteroids <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
