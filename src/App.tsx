@@ -13,6 +13,7 @@ import { PongGame } from './games/PongGame'
 import { InvadersGame } from './games/InvadersGame'
 import { AsteroidsGame } from './games/AsteroidsGame'
 import { MissileCommandGame } from './games/MissileCommandGame'
+import { BlockDropGame } from './games/BlockDropGame'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
 import { clearArcadeBests, readArcadeData, withDailyPatternCompletion, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
@@ -41,7 +42,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -164,6 +165,7 @@ function App() {
   const openInvaders = () => setScreen('invaders')
   const openAsteroids = () => setScreen('asteroids')
   const openMissileCommand = () => setScreen('missile')
+  const openBlockDrop = () => setScreen('blockdrop')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -217,6 +219,7 @@ function App() {
             onPlayInvaders={openInvaders}
             onPlayAsteroids={openAsteroids}
             onPlayMissileCommand={openMissileCommand}
+            onPlayBlockDrop={openBlockDrop}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -272,6 +275,12 @@ function App() {
             onBack={() => setScreen('home')}
             bestScore={arcadeData.bests.missileCommand}
             onRecordScore={(score) => recordBest('missileCommand', score)}
+          />
+        ) : screen === 'blockdrop' ? (
+          <BlockDropGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.blockDrop}
+            onRecordScore={(score) => recordBest('blockDrop', score)}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -398,6 +407,7 @@ function Home({
   onPlayInvaders,
   onPlayAsteroids,
   onPlayMissileCommand,
+  onPlayBlockDrop,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -416,6 +426,7 @@ function Home({
   onPlayInvaders: () => void
   onPlayAsteroids: () => void
   onPlayMissileCommand: () => void
+  onPlayBlockDrop: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -450,7 +461,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">08 PLAYABLE</span>
+          <span className="section-count">09 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -559,6 +570,20 @@ function Home({
               <h3>Missile Command</h3>
               <p>Intercept incoming missiles and keep the cities standing.</p>
               <div className="card-bottom"><span className="controls-label">AIM · ARROWS · CLICK</span><button className="play-card-button" type="button" onClick={onPlayMissileCommand}>Play Missile Command <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-blockdrop">
+            <div className="card-art blockdrop-card-art" aria-hidden="true">
+              <span className="blockdrop-card-piece piece-line"><i /><i /><i /><i /></span>
+              <span className="blockdrop-card-piece piece-tee"><i /><i /><i /><i /></span>
+              <span className="blockdrop-card-piece piece-square"><i /><i /><i /><i /></span>
+              <span className="card-art-index">09</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">09</span><span className="game-category">PUZZLE CLASSIC</span></div>
+              <h3>Block Drop</h3>
+              <p>Fit the falling pieces, clear rows, and keep the stack from reaching the top.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · X · SPACE · C</span><button className="play-card-button" type="button" onClick={onPlayBlockDrop}>Play Block Drop <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
