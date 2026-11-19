@@ -914,3 +914,83 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .missile-fire-button { grid-column: 1 / -1; }
   .missile-console-footer { font-size: .48rem; letter-spacing: .07em; }
 }
+
+.game-card-blockdrop:hover { border-color: #bb96ff; transform: translateY(-3px); box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.blockdrop-card-art { border-color: #0d0b18; background: radial-gradient(ellipse at 50% 58%, #30284b, #0e0b19 80%); }
+.blockdrop-card-piece { position: absolute; display: grid; grid-auto-rows: 20px; gap: 3px; }
+.blockdrop-card-piece i { width: 20px; height: 20px; border: 1px solid rgb(255 255 255 / 20%); box-shadow: inset 0 -4px rgb(0 0 0 / 20%), inset 0 1px rgb(255 255 255 / 35%), 0 0 9px rgb(255 255 255 / 12%); }
+.blockdrop-card-art .piece-line { top: 32px; left: calc(50% - 43px); grid-template-columns: repeat(4, 20px); }
+.blockdrop-card-art .piece-line i { background: #55dfeb; }
+.blockdrop-card-art .piece-tee { top: 65px; left: calc(50% - 32px); grid-template-columns: repeat(3, 20px); }
+.blockdrop-card-art .piece-tee i:first-child { grid-column: 2; grid-row: 1; }
+.blockdrop-card-art .piece-tee i:nth-child(2) { grid-column: 1; grid-row: 2; }
+.blockdrop-card-art .piece-tee i:nth-child(3) { grid-column: 2; grid-row: 2; }
+.blockdrop-card-art .piece-tee i:nth-child(4) { grid-column: 3; grid-row: 2; }
+.blockdrop-card-art .piece-tee i { background: #bb96ff; }
+.blockdrop-card-art .piece-square { right: 27%; bottom: 18px; grid-template-columns: repeat(2, 20px); }
+.blockdrop-card-art .piece-square i { background: #caff40; }
+
+.blockdrop-layout { grid-template-columns: minmax(220px, .78fr) minmax(320px, 1.22fr); }
+.blockdrop-copy h1 { font-size: clamp(2rem, 3.2vw, 2.6rem); letter-spacing: -.075em; }
+.blockdrop-score { max-width: 290px; margin-top: 14px; }
+.blockdrop-stat { display: flex; align-items: baseline; gap: 12px; }
+.blockdrop-stat .score-value { font-size: 2.4rem; }
+.blockdrop-play-column { max-width: 460px; }
+.blockdrop-console { padding: 12px; border: 3px solid #574873; border-radius: 15px; background: linear-gradient(145deg, #29223b 0%, #171425 80%); box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.blockdrop-console .frame-topline { height: 22px; padding: 0 1px 11px; }
+.blockdrop-screen { display: grid; grid-template-columns: minmax(0, 1fr) 78px; align-items: start; gap: 8px; }
+.blockdrop-board { position: relative; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); grid-template-rows: repeat(20, minmax(0, 1fr)); width: 100%; aspect-ratio: 1 / 2; overflow: hidden; border: 2px solid #403458; border-radius: 5px; background: #0c0a16; box-shadow: inset 0 0 30px rgb(69 231 255 / 5%); outline: none; touch-action: none; user-select: none; }
+.blockdrop-board::after { content: ""; position: absolute; z-index: 4; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0 3px, rgb(5 4 12 / 16%) 3px 4px); pointer-events: none; }
+.blockdrop-board:focus-visible { outline: 3px solid var(--green); outline-offset: 4px; }
+.blockdrop-cell { min-width: 0; min-height: 0; border: 1px solid rgb(187 150 255 / 11%); background: linear-gradient(135deg, rgb(38 31 56 / 34%), rgb(15 12 25 / 42%)); }
+.blockdrop-cell.block-i, .blockdrop-preview-grid .block-i { background: linear-gradient(145deg, #80f3f4, #29aab8); }
+.blockdrop-cell.block-j, .blockdrop-preview-grid .block-j { background: linear-gradient(145deg, #92b3ff, #4d67ca); }
+.blockdrop-cell.block-l, .blockdrop-preview-grid .block-l { background: linear-gradient(145deg, #ffd086, #d8783f); }
+.blockdrop-cell.block-o, .blockdrop-preview-grid .block-o { background: linear-gradient(145deg, #f7f180, #c6ae39); }
+.blockdrop-cell.block-s, .blockdrop-preview-grid .block-s { background: linear-gradient(145deg, #d8f484, #83ad3a); }
+.blockdrop-cell.block-t, .blockdrop-preview-grid .block-t { background: linear-gradient(145deg, #d8a5ff, #8d58c0); }
+.blockdrop-cell.block-z, .blockdrop-preview-grid .block-z { background: linear-gradient(145deg, #ff9daf, #d6486c); }
+.blockdrop-cell[class*="block-"]:not(.cell-ghost) { border: 1px solid rgb(255 255 255 / 24%); box-shadow: inset 0 -3px rgb(0 0 0 / 22%), inset 0 1px rgb(255 255 255 / 45%); }
+.blockdrop-cell.cell-current { filter: brightness(1.13) saturate(1.1); }
+.blockdrop-cell.cell-ghost { background: transparent !important; border: 1px solid rgb(255 248 228 / 62%); box-shadow: inset 0 0 8px rgb(255 248 228 / 17%); }
+.blockdrop-overlay { position: absolute; z-index: 3; inset: 0; padding: 18px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: rgb(12 9 23 / 70%); }
+.blockdrop-overlay strong { color: var(--green); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: clamp(1rem, 3vw, 1.45rem); text-transform: uppercase; text-shadow: 0 0 14px rgb(202 255 64 / 18%); }
+.blockdrop-overlay span { max-width: 185px; margin-top: 8px; color: #e0d8e9; font-size: .7rem; line-height: 1.45; }
+.blockdrop-side-panel { min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.blockdrop-piece-preview { min-width: 0; padding: 6px; border: 1px solid #51466f; border-radius: 4px; background: rgb(12 10 21 / 66%); }
+.blockdrop-piece-preview > .score-caption, .blockdrop-next-list > .score-caption { display: block; color: #bdb2d1; font-size: .48rem; text-align: center; letter-spacing: .08em; }
+.blockdrop-preview-grid { width: 100%; aspect-ratio: 1; margin-top: 5px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0, 1fr)); gap: 1px; }
+.blockdrop-preview-grid i { min-width: 0; min-height: 0; border: 1px solid rgb(255 255 255 / 22%); box-shadow: inset 0 -2px rgb(0 0 0 / 19%), inset 0 1px rgb(255 255 255 / 30%); }
+.blockdrop-next-list { display: flex; flex-direction: column; gap: 7px; }
+.blockdrop-next-list .blockdrop-piece-preview { padding: 4px; }
+.blockdrop-next-list .blockdrop-piece-preview > .score-caption { display: none; }
+.blockdrop-side-stats { margin-top: auto; padding: 7px 5px; display: grid; gap: 8px; border: 1px solid #51466f; border-radius: 4px; color: #bdb2d1; font: 700 .46rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; text-align: center; }
+.blockdrop-side-stats span { display: flex; flex-direction: column; gap: 3px; }
+.blockdrop-side-stats strong { color: var(--green); font-size: .8rem; }
+.blockdrop-console-footer { height: 25px; padding: 9px 1px 0; display: flex; justify-content: space-between; align-items: center; color: #c1b5d5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .49rem; letter-spacing: .08em; }
+.blockdrop-touch-controls { width: 100%; max-width: 540px; margin: 12px 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)) minmax(80px, 1.4fr); align-items: center; gap: 7px; }
+.blockdrop-touch-controls button { min-width: 0; min-height: 45px; padding: 0 4px; font-size: .65rem; touch-action: manipulation; }
+.blockdrop-touch-controls .dpad-button { width: 100%; font-size: 1.12rem; }
+.blockdrop-touch-controls .blockdrop-action { border-color: #5e507d; color: #dcd1ea; background: linear-gradient(180deg, #302641, #211b32); }
+.blockdrop-touch-controls button:disabled { opacity: .42; cursor: default; }
+.blockdrop-drop-button { width: 100%; }
+.blockdrop-status { min-height: 24px; margin: 11px 2px 0; color: #bfb5d1; font-size: .74rem; line-height: 1.5; }
+
+@media (max-width: 650px) {
+  .blockdrop-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .blockdrop-copy h1 { font-size: clamp(1.95rem, 9vw, 2.55rem); }
+  .blockdrop-play-column { width: 100%; max-width: 460px; justify-self: center; }
+  .blockdrop-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .blockdrop-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .blockdrop-status { margin-top: 9px; }
+}
+
+@media (max-width: 430px) {
+  .blockdrop-screen { grid-template-columns: minmax(0, 1fr) 68px; gap: 6px; }
+  .blockdrop-side-panel { gap: 8px; }
+  .blockdrop-piece-preview { padding: 4px; }
+  .blockdrop-touch-controls { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+  .blockdrop-touch-controls button { min-height: 44px; }
+  .blockdrop-drop-button { grid-column: auto; }
+  .blockdrop-console-footer { font-size: .45rem; }
+}

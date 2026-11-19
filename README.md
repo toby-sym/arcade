@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, and Missile Command are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, and Block Drop are ready for free play.
 
 ## Local development
 
@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the eight games from the game floor.
+Vite prints the local URL after startup. Choose any of the nine games from the game floor.
 
 ## Snake controls
 
@@ -79,9 +79,17 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - **Pause** in the game panel or press **Escape** while the playfield is focused. A hidden browser tab pauses the game; **Restart** begins with six cities and full silos.
 - Your highest score is saved as a local personal best.
 
+## Block Drop controls
+
+- Select **Start game**. Use the **left and right arrow keys** to move a piece, **up** or **X** to rotate clockwise, and **Z** to rotate counterclockwise.
+- Hold **down** to soft drop, press **Space** to drop the piece immediately, and press **C** or **Shift** to hold a piece once before the next lock.
+- On touch screens, use the buttons under the board to move, rotate, hold, soft drop, and drop a piece.
+- Fill a row to clear it. The fall speeds up every ten rows. **Pause** in the game panel or press **Escape** while the board is focused; a hidden browser tab pauses the game. **Restart** begins with an empty board.
+- Your highest score is saved as a local personal best.
+
 ## Local records and preferences
 
-Arcade saves the highest scores for Snake, Asteroids, Space Invaders, Missile Command, and Breakout, Pong's highest points in a match, the fastest Reaction time, the most Pattern Memory practice rounds completed, and the latest daily Pattern Memory completion date in browser storage. The **Reduce motion**, **Arcade sounds**, and Pong opponent pace preferences are saved there too. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily completion and preferences stay saved. The system reduced-motion setting is always respected.
+Arcade saves the highest scores for Snake, Asteroids, Space Invaders, Missile Command, Block Drop, and Breakout, Pong's highest points in a match, the fastest Reaction time, the most Pattern Memory practice rounds completed, and the latest daily Pattern Memory completion date in browser storage. The **Reduce motion**, **Arcade sounds**, and Pong opponent pace preferences are saved there too. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily completion and preferences stay saved. The system reduced-motion setting is always respected.
 
 ## Install and offline play
 
