@@ -40,9 +40,11 @@ import { PipsGame } from './games/PipsGame'
 import { createPipsState, type PipsProgress } from './games/pips'
 import { DailyCrosswordGame } from './games/DailyCrosswordGame'
 import { createDailyCrosswordState, type DailyCrosswordProgress } from './games/dailyCrossword'
+import { MinesweeperGame } from './games/MinesweeperGame'
+import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -73,6 +75,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'tiles', title: 'Tiles', categories: ['daily'], terms: 'pattern match pairs' },
   { id: 'pips', title: 'Pips', categories: ['daily'], terms: 'domino regions numbers' },
   { id: 'dailycrossword', title: 'Daily Crossword', categories: ['daily'], terms: 'clues words grid' },
+  { id: 'minesweeper', title: 'Minesweeper', categories: ['daily'], terms: 'minesweeper mines flags numbers logic' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -96,7 +99,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -342,6 +345,16 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyMinesweeperGame = (progress: MinesweeperProgress) => {
+    const withProgress = withDailyMinesweeperGame(arcadeData, progress)
+    if (!withProgress) return
+    const next = progress.phase === 'won'
+      ? withImprovedBest(withProgress, 'minesweeper', progress.elapsedSeconds) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -430,6 +443,7 @@ function App() {
   const openTiles = () => setScreen('tiles')
   const openPips = () => setScreen('pips')
   const openCrossword = () => setScreen('crossword')
+  const openMinesweeper = () => setScreen('minesweeper')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -497,6 +511,7 @@ function App() {
             onPlayTiles={openTiles}
             onPlayPips={openPips}
             onPlayCrossword={openCrossword}
+            onPlayMinesweeper={openMinesweeper}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -656,6 +671,13 @@ function App() {
             progress={arcadeData.dailyCrosswordGame}
             onSaveProgress={saveDailyCrosswordGame}
           />
+        ) : screen === 'minesweeper' ? (
+          <MinesweeperGame
+            onBack={() => setScreen('home')}
+            bestSeconds={arcadeData.bests.minesweeper}
+            progress={arcadeData.dailyMinesweeperGame}
+            onSaveProgress={saveDailyMinesweeperGame}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -795,6 +817,7 @@ function Home({
   onPlayTiles,
   onPlayPips,
   onPlayCrossword,
+  onPlayMinesweeper,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -832,6 +855,7 @@ function Home({
   onPlayTiles: () => void
   onPlayPips: () => void
   onPlayCrossword: () => void
+  onPlayMinesweeper: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -888,7 +912,7 @@ function Home({
             <h2 id="games-title">Choose your game</h2>
           </div>
           <span className="section-count" aria-live="polite">
-            {hasActiveGameFilters ? `${visibleGames.length} ${visibleGames.length === 1 ? 'GAME' : 'GAMES'}` : '22 PLAYABLE'}
+            {hasActiveGameFilters ? `${visibleGames.length} ${visibleGames.length === 1 ? 'GAME' : 'GAMES'}` : `${GAME_FLOOR_ITEMS.length} PLAYABLE`}
           </span>
         </div>
         <div className="game-floor-tools">
@@ -923,8 +947,8 @@ function Home({
             {visibleGames.length === 0
               ? 'No games found. Try another search or filter.'
               : hasActiveGameFilters
-                ? `Showing ${visibleGames.length} of 22 games.`
-                : 'Showing all 22 games.'}
+              ? `Showing ${visibleGames.length} of ${GAME_FLOOR_ITEMS.length} games.`
+              : `Showing all ${GAME_FLOOR_ITEMS.length} games.`}
           </p>
         </div>
         <div className="game-list">
@@ -1209,6 +1233,18 @@ function Home({
               <h3>Daily Crossword</h3>
               <p>Take on a roomier seven-by-seven grid with twenty-four original crossing clues.</p>
               <div className="card-bottom"><span className="controls-label">LETTER KEYS · TOUCH PAD</span><button className="play-card-button" type="button" onClick={onPlayCrossword}>Play Daily Crossword <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-minesweeper" hidden={!visibleGameIds.has('minesweeper')}>
+            <div className="card-art minesweeper-card-art" aria-hidden="true">
+              <span className="minesweeper-card-grid"><i>1</i><i>2</i><i>1</i><i>·</i><i>3</i><i>⚑</i><i>1</i><i>●</i><i>1</i></span>
+              <span className="card-art-index">23</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">23</span><span className="game-category">DAILY CLASSIC</span></div>
+              <h3>Minesweeper</h3>
+              <p>Read the numbers, mark the mines, and clear today's shared field.</p>
+              <div className="card-bottom"><span className="controls-label">TOUCH · F · ARROWS</span><button className="play-card-button" type="button" onClick={onPlayMinesweeper}>Play Minesweeper <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>

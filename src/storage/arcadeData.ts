@@ -12,6 +12,7 @@ import { validVertexProgress, type VertexProgress } from '../games/vertex'
 import { validTilesProgress, type TilesProgress } from '../games/tiles'
 import { validPipsProgress, type PipsProgress } from '../games/pips'
 import { validDailyCrosswordProgress, type DailyCrosswordProgress } from '../games/dailyCrossword'
+import { isMinesweeperProgress, type MinesweeperProgress } from '../games/minesweeper'
 
 export const ARCADE_DATA_KEY = 'arcade.local-data.v1'
 export const ARCADE_BACKUP_MAX_BYTES = 1_000_000
@@ -39,6 +40,7 @@ export interface ArcadeBests {
   tiles: number | null
   pips: number | null
   crossword: number | null
+  minesweeper: number | null
 }
 
 export interface ArcadeData {
@@ -58,6 +60,7 @@ export interface ArcadeData {
   dailyTilesGame: TilesProgress | null
   dailyPipsGame: PipsProgress | null
   dailyCrosswordGame: DailyCrosswordProgress | null
+  dailyMinesweeperGame: MinesweeperProgress | null
   preferences: {
     reduceMotion: boolean
     soundEffects: boolean
@@ -66,9 +69,9 @@ export interface ArcadeData {
 }
 
 export function withImprovedBest(data: ArcadeData, game: keyof ArcadeBests, candidate: number): ArcadeData | null {
-  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && game !== 'letterBoxed' && game !== 'dominoLogic' && game !== 'glyphMatch' && game !== 'vertex' && game !== 'tiles' && game !== 'pips' && game !== 'crossword' && candidate === 0)) return null
+  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && game !== 'letterBoxed' && game !== 'dominoLogic' && game !== 'glyphMatch' && game !== 'vertex' && game !== 'tiles' && game !== 'pips' && game !== 'crossword' && game !== 'minesweeper' && candidate === 0)) return null
   const previous = data.bests[game]
-  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword' || game === 'letterBoxed' || game === 'dominoLogic' || game === 'glyphMatch' || game === 'vertex' || game === 'tiles' || game === 'pips' || game === 'crossword'
+  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword' || game === 'letterBoxed' || game === 'dominoLogic' || game === 'glyphMatch' || game === 'vertex' || game === 'tiles' || game === 'pips' || game === 'crossword' || game === 'minesweeper'
   const improved = previous === null || (lowerIsBetter ? candidate < previous : candidate > previous)
   if (!improved) return null
   return { ...data, bests: { ...data.bests, [game]: candidate } }
@@ -184,12 +187,17 @@ export function withDailyCrosswordGame(data: ArcadeData, progress: DailyCrosswor
   }
 }
 
+export function withDailyMinesweeperGame(data: ArcadeData, progress: MinesweeperProgress): ArcadeData | null {
+  if (!isMinesweeperProgress(progress)) return null
+  return { ...data, dailyMinesweeperGame: { ...progress, revealed: [...progress.revealed], flagged: [...progress.flagged] } }
+}
+
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null },
     dailyPatternCompletedDate: null,
     dailyWordGame: null,
     dailyConnectionsGame: null,
@@ -204,12 +212,13 @@ export function emptyArcadeData(): ArcadeData {
     dailyTilesGame: null,
     dailyPipsGame: null,
     dailyCrosswordGame: null,
+    dailyMinesweeperGame: null,
     preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady' },
   }
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -239,6 +248,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
       dailyTilesGame: validTilesProgress(parsed.dailyTilesGame) ? parsed.dailyTilesGame : null,
       dailyPipsGame: validPipsProgress(parsed.dailyPipsGame) ? parsed.dailyPipsGame : null,
       dailyCrosswordGame: validDailyCrosswordProgress(parsed.dailyCrosswordGame) ? parsed.dailyCrosswordGame : null,
+      dailyMinesweeperGame: isMinesweeperProgress(parsed.dailyMinesweeperGame) ? parsed.dailyMinesweeperGame : null,
       bests: {
         snake: validRecord(bests.snake),
         reaction: validRecord(bests.reaction),
@@ -262,6 +272,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         tiles: validRecord(bests.tiles),
         pips: validRecord(bests.pips),
         crossword: validRecord(bests.crossword),
+        minesweeper: validRecord(bests.minesweeper),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }
@@ -291,8 +302,8 @@ export function parseArcadeDataBackup(contents: string): ArcadeData | null {
     if (!isRecord(bests) || !isRecord(preferences)) return null
 
     const empty = emptyArcadeData()
-    if (!Object.keys(empty).every((key) => key in parsed)) return null
-    if (!Object.keys(empty.bests).every((key) => {
+    if (!Object.keys(empty).filter((key) => key !== 'dailyMinesweeperGame').every((key) => key in parsed)) return null
+    if (!Object.keys(empty.bests).filter((key) => key !== 'minesweeper').every((key) => {
       const record = bests[key]
       return record === null || (typeof record === 'number' && Number.isSafeInteger(record) && record >= 0)
     })) return null
@@ -315,6 +326,7 @@ export function parseArcadeDataBackup(contents: string): ArcadeData | null {
       && (parsed.dailyTilesGame === null || validTilesProgress(parsed.dailyTilesGame))
       && (parsed.dailyPipsGame === null || validPipsProgress(parsed.dailyPipsGame))
       && (parsed.dailyCrosswordGame === null || validDailyCrosswordProgress(parsed.dailyCrosswordGame))
+      && (parsed.dailyMinesweeperGame === undefined || parsed.dailyMinesweeperGame === null || isMinesweeperProgress(parsed.dailyMinesweeperGame))
     if (!dailyFieldsAreValid) return null
 
     return readArcadeData({ getItem: () => contents, setItem: () => {} })
