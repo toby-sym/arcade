@@ -1,6 +1,6 @@
 # Arcade
 
-A small browser arcade for a quick break. Snake, Reaction, Pattern Memory, Breakout, and Pong are playable.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, and Pong are ready for free play.
 
 ## Local development
 
