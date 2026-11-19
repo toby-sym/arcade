@@ -1,5 +1,6 @@
 import type { PongDifficulty } from '../games/pong'
 import type { DailyWordProgress } from '../games/dailyWord'
+import { validConnectionsProgress, type ConnectionsProgress } from '../games/connections'
 
 export const ARCADE_DATA_KEY = 'arcade.local-data.v1'
 
@@ -14,6 +15,7 @@ export interface ArcadeBests {
   missileCommand: number | null
   blockDrop: number | null
   wordPuzzle: number | null
+  connections: number | null
 }
 
 export interface ArcadeData {
@@ -21,6 +23,7 @@ export interface ArcadeData {
   bests: ArcadeBests
   dailyPatternCompletedDate: string | null
   dailyWordGame: DailyWordProgress | null
+  dailyConnectionsGame: ConnectionsProgress | null
   preferences: {
     reduceMotion: boolean
     soundEffects: boolean
@@ -29,9 +32,9 @@ export interface ArcadeData {
 }
 
 export function withImprovedBest(data: ArcadeData, game: keyof ArcadeBests, candidate: number): ArcadeData | null {
-  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && candidate === 0)) return null
+  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && candidate === 0)) return null
   const previous = data.bests[game]
-  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle'
+  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections'
   const improved = previous === null || (lowerIsBetter ? candidate < previous : candidate > previous)
   if (!improved) return null
   return { ...data, bests: { ...data.bests, [game]: candidate } }
@@ -47,20 +50,35 @@ export function withDailyWordGame(data: ArcadeData, progress: DailyWordProgress)
   return { ...data, dailyWordGame: { date: progress.date, guesses: [...progress.guesses], phase: progress.phase } }
 }
 
+export function withDailyConnectionsGame(data: ArcadeData, progress: ConnectionsProgress): ArcadeData | null {
+  if (!validConnectionsProgress(progress)) return null
+  return {
+    ...data,
+    dailyConnectionsGame: {
+      date: progress.date,
+      solvedGroupIds: [...progress.solvedGroupIds],
+      selectedWords: [...progress.selectedWords],
+      mistakes: progress.mistakes,
+      phase: progress.phase,
+    },
+  }
+}
+
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null },
     dailyPatternCompletedDate: null,
     dailyWordGame: null,
+    dailyConnectionsGame: null,
     preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady' },
   }
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -78,6 +96,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
       version: 1,
       dailyPatternCompletedDate: validUtcDateKey(parsed.dailyPatternCompletedDate) ? parsed.dailyPatternCompletedDate : null,
       dailyWordGame: validDailyWordProgress(parsed.dailyWordGame) ? parsed.dailyWordGame : null,
+      dailyConnectionsGame: validConnectionsProgress(parsed.dailyConnectionsGame) ? parsed.dailyConnectionsGame : null,
       bests: {
         snake: validRecord(bests.snake),
         reaction: validRecord(bests.reaction),
@@ -89,6 +108,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         missileCommand: validRecord(bests.missileCommand),
         blockDrop: validRecord(bests.blockDrop),
         wordPuzzle: validRecord(bests.wordPuzzle),
+        connections: validRecord(bests.connections),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }

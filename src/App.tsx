@@ -16,9 +16,11 @@ import { MissileCommandGame } from './games/MissileCommandGame'
 import { BlockDropGame } from './games/BlockDropGame'
 import { DailyWordGame } from './games/DailyWordGame'
 import type { DailyWordProgress } from './games/dailyWord'
+import { ConnectionsGame } from './games/ConnectionsGame'
+import type { ConnectionsProgress } from './games/connections'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { clearArcadeBests, readArcadeData, withDailyPatternCompletion, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyPatternCompletion, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -44,7 +46,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -98,6 +100,16 @@ function App() {
     if (!withProgress) return
     const next = progress.phase === 'won'
       ? withImprovedBest(withProgress, 'wordPuzzle', progress.guesses.length) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
+  const saveDailyConnectionsGame = (progress: ConnectionsProgress) => {
+    const withProgress = withDailyConnectionsGame(arcadeData, progress)
+    if (!withProgress) return
+    const next = progress.phase === 'won'
+      ? withImprovedBest(withProgress, 'connections', progress.mistakes) ?? withProgress
       : withProgress
     setArcadeData(next)
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
@@ -179,6 +191,7 @@ function App() {
   const openMissileCommand = () => setScreen('missile')
   const openBlockDrop = () => setScreen('blockdrop')
   const openWordGame = () => setScreen('wordgame')
+  const openConnections = () => setScreen('connections')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -234,6 +247,7 @@ function App() {
             onPlayMissileCommand={openMissileCommand}
             onPlayBlockDrop={openBlockDrop}
             onPlayWordGame={openWordGame}
+            onPlayConnections={openConnections}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -302,6 +316,13 @@ function App() {
             bestSolve={arcadeData.bests.wordPuzzle}
             progress={arcadeData.dailyWordGame}
             onSaveProgress={saveDailyWordGame}
+          />
+        ) : screen === 'connections' ? (
+          <ConnectionsGame
+            onBack={() => setScreen('home')}
+            bestMistakes={arcadeData.bests.connections}
+            progress={arcadeData.dailyConnectionsGame}
+            onSaveProgress={saveDailyConnectionsGame}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -430,6 +451,7 @@ function Home({
   onPlayMissileCommand,
   onPlayBlockDrop,
   onPlayWordGame,
+  onPlayConnections,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -450,6 +472,7 @@ function Home({
   onPlayMissileCommand: () => void
   onPlayBlockDrop: () => void
   onPlayWordGame: () => void
+  onPlayConnections: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -484,7 +507,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">10 PLAYABLE</span>
+          <span className="section-count">11 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -620,6 +643,18 @@ function Home({
               <h3>Word Guess</h3>
               <p>Find a five-letter word in six guesses. A new shared puzzle arrives daily.</p>
               <div className="card-bottom"><span className="controls-label">LETTER KEYS · ENTER</span><button className="play-card-button" type="button" onClick={onPlayWordGame}>Play Word Guess <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-connections">
+            <div className="card-art connections-card-art" aria-hidden="true">
+              <span className="connections-card-grid"><i>LINK</i><i>WORD</i><i>SET</i><i>IDEA</i></span>
+              <span className="card-art-index">11</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">11</span><span className="game-category">DAILY GROUPING</span></div>
+              <h3>Connections</h3>
+              <p>Sort sixteen words into four hidden groups. A new shared board arrives daily.</p>
+              <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · KEYBOARD</span><button className="play-card-button" type="button" onClick={onPlayConnections}>Play Connections <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
