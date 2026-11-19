@@ -24,9 +24,11 @@ import { StrandsGame } from './games/StrandsGame'
 import { createStrandsState, type StrandsProgress } from './games/strands'
 import { SudokuGame } from './games/SudokuGame'
 import { createSudokuState, type SudokuProgress } from './games/sudoku'
+import { MiniCrosswordGame } from './games/MiniCrosswordGame'
+import { createMiniCrosswordState, type MiniCrosswordProgress } from './games/miniCrossword'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyMiniCrosswordGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -52,7 +54,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -154,6 +156,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyMiniCrosswordGame = (progress: MiniCrosswordProgress) => {
+    const withProgress = withDailyMiniCrosswordGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = createMiniCrosswordState(progress.date, progress)
+    const next = completed.phase === 'complete'
+      ? withImprovedBest(withProgress, 'miniCrossword', completed.hintsUsed) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -234,6 +247,7 @@ function App() {
   const openSpellingBee = () => setScreen('spellingbee')
   const openStrands = () => setScreen('strands')
   const openSudoku = () => setScreen('sudoku')
+  const openMiniCrossword = () => setScreen('minicrossword')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -293,6 +307,7 @@ function App() {
             onPlaySpellingBee={openSpellingBee}
             onPlayStrands={openStrands}
             onPlaySudoku={openSudoku}
+            onPlayMiniCrossword={openMiniCrossword}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -389,6 +404,13 @@ function App() {
             bestHints={arcadeData.bests.sudoku}
             progress={arcadeData.dailySudokuGame}
             onSaveProgress={saveDailySudokuGame}
+          />
+        ) : screen === 'minicrossword' ? (
+          <MiniCrosswordGame
+            onBack={() => setScreen('home')}
+            bestHints={arcadeData.bests.miniCrossword}
+            progress={arcadeData.dailyMiniCrosswordGame}
+            onSaveProgress={saveDailyMiniCrosswordGame}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -521,6 +543,7 @@ function Home({
   onPlaySpellingBee,
   onPlayStrands,
   onPlaySudoku,
+  onPlayMiniCrossword,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -545,6 +568,7 @@ function Home({
   onPlaySpellingBee: () => void
   onPlayStrands: () => void
   onPlaySudoku: () => void
+  onPlayMiniCrossword: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -579,7 +603,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">14 PLAYABLE</span>
+          <span className="section-count">15 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -763,6 +787,18 @@ function Home({
               <h3>Sudoku</h3>
               <p>Fill the nine-by-nine grid. Keep each number unique in its row, column, and box.</p>
               <div className="card-bottom"><span className="controls-label">KEYBOARD · TOUCH PAD</span><button className="play-card-button" type="button" onClick={onPlaySudoku}>Play Sudoku <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-minicrossword">
+            <div className="card-art minicrossword-card-art" aria-hidden="true">
+              <span className="minicrossword-card-grid"><i>A</i><i>C</i><i>T</i><i>E</i><i>D</i><i>C</i><i>H</i><i>I</i><i>L</i><i>I</i><i>T</i><i>I</i><i>G</i><i>E</i><i>R</i><i>E</i><i>L</i><i>E</i><i>C</i><i>T</i><i>D</i><i>I</i><i>R</i><i>T</i><i>Y</i></span>
+              <span className="card-art-index">15</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">15</span><span className="game-category">DAILY WORD GRID</span></div>
+              <h3>Mini Crossword</h3>
+              <p>Five short clues across and down. Every crossing counts.</p>
+              <div className="card-bottom"><span className="controls-label">LETTER KEYS · TOUCH PAD</span><button className="play-card-button" type="button" onClick={onPlayMiniCrossword}>Play Mini Crossword <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
