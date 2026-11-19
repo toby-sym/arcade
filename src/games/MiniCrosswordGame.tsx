@@ -4,6 +4,7 @@ import { utcDateKey } from './dailyPattern'
 import {
   MINI_CROSSWORD_SIDE,
   createMiniCrosswordState,
+  isMiniCrosswordEntrySolved,
   miniCrosswordEntry,
   miniCrosswordProgress,
   miniCrosswordReducer,
@@ -31,8 +32,14 @@ export function MiniCrosswordGame({ onBack, bestHints, progress, onSaveProgress 
     ({ date, progress: saved }) => createMiniCrosswordState(date, saved),
   )
   const activeClue = miniCrosswordEntry(state)
-  const acrossSolved = (number: number) => state.board.slice((number - 1) * MINI_CROSSWORD_SIDE, number * MINI_CROSSWORD_SIDE).join('') === state.across[number - 1]!.answer
-  const downSolved = (number: number) => Array.from({ length: MINI_CROSSWORD_SIDE }, (_, row) => state.board[row * MINI_CROSSWORD_SIDE + number - 1]).join('') === state.down[number - 1]!.answer
+  const acrossSolved = (number: number) => {
+    const entry = state.across.find((candidate) => candidate.number === number)
+    return entry ? isMiniCrosswordEntrySolved(state, entry) : false
+  }
+  const downSolved = (number: number) => {
+    const entry = state.down.find((candidate) => candidate.number === number)
+    return entry ? isMiniCrosswordEntrySolved(state, entry) : false
+  }
 
   useEffect(() => {
     selectedCellRef.current?.focus()
@@ -47,7 +54,9 @@ export function MiniCrosswordGame({ onBack, bestHints, progress, onSaveProgress 
   }
 
   const chooseClue = (direction: CrosswordDirection, number: number) => {
-    const index = direction === 'across' ? (number - 1) * MINI_CROSSWORD_SIDE : number - 1
+    const entry = (direction === 'across' ? state.across : state.down).find((candidate) => candidate.number === number)
+    if (!entry) return
+    const index = entry.cells[0]!
     if (state.direction !== direction) dispatch({ type: 'toggleDirection' })
     dispatch({ type: 'select', index })
   }
@@ -57,10 +66,19 @@ export function MiniCrosswordGame({ onBack, bestHints, progress, onSaveProgress 
     if (event.key.startsWith('Arrow')) {
       const row = Math.floor(state.selectedCell / MINI_CROSSWORD_SIDE)
       const column = state.selectedCell % MINI_CROSSWORD_SIDE
-      const nextRow = event.key === 'ArrowUp' ? Math.max(0, row - 1) : event.key === 'ArrowDown' ? Math.min(4, row + 1) : row
-      const nextColumn = event.key === 'ArrowLeft' ? Math.max(0, column - 1) : event.key === 'ArrowRight' ? Math.min(4, column + 1) : column
+      const rowStep = event.key === 'ArrowUp' ? -1 : event.key === 'ArrowDown' ? 1 : 0
+      const columnStep = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0
       event.preventDefault()
-      sendAction({ type: 'select', index: nextRow * MINI_CROSSWORD_SIDE + nextColumn })
+      for (let distance = 1; distance < MINI_CROSSWORD_SIDE; distance += 1) {
+        const nextRow = row + rowStep * distance
+        const nextColumn = column + columnStep * distance
+        if (nextRow < 0 || nextRow >= MINI_CROSSWORD_SIDE || nextColumn < 0 || nextColumn >= MINI_CROSSWORD_SIDE) break
+        const index = nextRow * MINI_CROSSWORD_SIDE + nextColumn
+        if (state.board[index] !== '#') {
+          sendAction({ type: 'select', index })
+          break
+        }
+      }
       return
     }
     if (event.key === 'Enter') {
@@ -94,7 +112,7 @@ export function MiniCrosswordGame({ onBack, bestHints, progress, onSaveProgress 
           <div className="score-card mini-crossword-score" aria-label={`${state.hintsUsed} hints used. ${bestHints === null ? 'No personal best yet.' : `Best: ${bestHints} hints.`}`}>
             <div className="crossword-run-stat">
               <span className="score-caption">TODAY · {state.date}</span>
-              <strong className="score-value">{state.board.filter(Boolean).length}<small> / 25</small></strong>
+              <strong className="score-value">{state.board.filter((cell) => cell !== '' && cell !== '#').length}<small> / 21</small></strong>
               <span className="score-unit">squares filled</span>
             </div>
             <div className="crossword-run-stat">
@@ -127,14 +145,16 @@ export function MiniCrosswordGame({ onBack, bestHints, progress, onSaveProgress 
             </div>
 
             {state.phase === 'playing' ? (
-              <div className="mini-crossword-grid" role="group" aria-label="Five by five crossword board" aria-describedby="mini-crossword-status">
+              <div className="mini-crossword-grid" role="group" aria-label="Five by five crossword board with black squares" aria-describedby="mini-crossword-status">
                 {state.board.map((letter, index) => {
                   const row = Math.floor(index / MINI_CROSSWORD_SIDE)
                   const column = index % MINI_CROSSWORD_SIDE
+                  if (letter === '#') return <div key={index} className="mini-crossword-block" aria-hidden="true" />
                   const selected = index === state.selectedCell
                   const hinted = state.hintedCells.includes(index)
-                  const completedAcross = acrossSolved(row + 1)
-                  const completedDown = downSolved(column + 1)
+                  const completedAcross = state.across.some((entry) => entry.cells.includes(index) && acrossSolved(entry.number))
+                  const completedDown = state.down.some((entry) => entry.cells.includes(index) && downSolved(entry.number))
+                  const cellNumber = [...state.across, ...state.down].find((entry) => entry.cells[0] === index)?.number
                   const classes = [
                     'mini-crossword-cell',
                     selected ? 'cell-selected' : '',
@@ -152,6 +172,7 @@ export function MiniCrosswordGame({ onBack, bestHints, progress, onSaveProgress 
                       tabIndex={selected ? 0 : -1}
                       onClick={() => sendAction(selected ? { type: 'toggleDirection' } : { type: 'select', index })}
                     >
+                      {cellNumber && <span className="mini-crossword-cell-number" aria-hidden="true">{cellNumber}</span>}
                       {letter}
                     </button>
                   )

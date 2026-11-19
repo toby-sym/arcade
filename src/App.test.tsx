@@ -560,8 +560,9 @@ describe('Arcade navigation and game controls', () => {
     expect(screen.getByText('15 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play mini crossword/i }))
     expect(screen.getByRole('heading', { name: 'Mini Crossword' })).toBeInTheDocument()
-    const board = screen.getByRole('group', { name: 'Five by five crossword board' })
-    expect(board.querySelectorAll('button')).toHaveLength(25)
+    const board = screen.getByRole('group', { name: 'Five by five crossword board with black squares' })
+    expect(board.querySelectorAll('button')).toHaveLength(21)
+    expect(board.querySelectorAll('.mini-crossword-block')).toHaveLength(4)
     fireEvent.keyDown(board.querySelector('button[tabindex="0"]')!, { key: puzzle.solution[0] })
     expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').dailyMiniCrosswordGame.board[0]).toBe(puzzle.solution[0])
     fireEvent.keyDown(board.querySelector('button[tabindex="0"]')!, { key: 'Enter' })
@@ -572,7 +573,7 @@ describe('Arcade navigation and game controls', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /all games/i }))
     fireEvent.click(screen.getByRole('button', { name: /play mini crossword/i }))
-    expect(screen.getByRole('group', { name: 'Five by five crossword board' }).querySelectorAll('button')[0]).toHaveTextContent(puzzle.solution[0]!)
+    expect(screen.getByRole('group', { name: 'Five by five crossword board with black squares' }).querySelectorAll('button')[0]).toHaveTextContent(puzzle.solution[0]!)
     expect(screen.getAllByRole('button', { name: /revealed by hint/ })).toHaveLength(1)
   })
 
