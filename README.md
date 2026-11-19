@@ -76,7 +76,7 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 ## Missile Command controls
 
 - Select **Start game**, or click or tap the playfield to start firing at that spot. Later taps launch interceptors at their target.
-- Hold an **arrow key** or **WASD** direction to move the target smoothly, then press **Space** to fire. Touch users can tap the field or move the aim with the direction buttons and select **Fire at target**.
+- Hold an **arrow key** or **WASD** direction to move the target smoothly, then press **Space** to fire. Touch users can tap the field or hold a direction button to move the aim, then select **Fire at target**.
 - Each silo has limited ammunition. Interceptors create a growing blast that can clear a group of missiles. Reloads arrive between waves.
 - **Pause** in the game panel or press **Escape** while the playfield is focused. A hidden browser tab pauses the game; **Restart** begins with six cities and full silos.
 - Your highest score is saved as a local personal best.
