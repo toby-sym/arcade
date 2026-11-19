@@ -38,9 +38,11 @@ import { TilesGame } from './games/TilesGame'
 import { createTilesState, type TilesProgress } from './games/tiles'
 import { PipsGame } from './games/PipsGame'
 import { createPipsState, type PipsProgress } from './games/pips'
+import { DailyCrosswordGame } from './games/DailyCrosswordGame'
+import { createDailyCrosswordState, type DailyCrosswordProgress } from './games/dailyCrossword'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { clearArcadeBests, readArcadeData, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -66,7 +68,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -245,6 +247,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyCrosswordGame = (progress: DailyCrosswordProgress) => {
+    const withProgress = withDailyCrosswordGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = createDailyCrosswordState(progress.date, progress)
+    const next = completed.phase === 'complete'
+      ? withImprovedBest(withProgress, 'crossword', completed.hintsUsed) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -332,6 +345,7 @@ function App() {
   const openVertex = () => setScreen('vertex')
   const openTiles = () => setScreen('tiles')
   const openPips = () => setScreen('pips')
+  const openCrossword = () => setScreen('crossword')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -398,6 +412,7 @@ function App() {
             onPlayVertex={openVertex}
             onPlayTiles={openTiles}
             onPlayPips={openPips}
+            onPlayCrossword={openCrossword}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -545,6 +560,13 @@ function App() {
             progress={arcadeData.dailyPipsGame}
             onSaveProgress={saveDailyPipsGame}
           />
+        ) : screen === 'crossword' ? (
+          <DailyCrosswordGame
+            onBack={() => setScreen('home')}
+            bestHints={arcadeData.bests.crossword}
+            progress={arcadeData.dailyCrosswordGame}
+            onSaveProgress={saveDailyCrosswordGame}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -683,6 +705,7 @@ function Home({
   onPlayVertex,
   onPlayTiles,
   onPlayPips,
+  onPlayCrossword,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -714,6 +737,7 @@ function Home({
   onPlayVertex: () => void
   onPlayTiles: () => void
   onPlayPips: () => void
+  onPlayCrossword: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -748,7 +772,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">21 PLAYABLE</span>
+          <span className="section-count">22 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -1017,6 +1041,21 @@ function Home({
               <h3>Pips</h3>
               <p>Place six dominoes to satisfy the different rules in each colored region.</p>
               <div className="card-bottom"><span className="controls-label">TOUCH · ROTATE · FLIP</span><button className="play-card-button" type="button" onClick={onPlayPips}>Play Pips <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-daily-crossword">
+            <div className="card-art daily-crossword-card-art" aria-hidden="true">
+              <span className="daily-crossword-card-grid">{Array.from({ length: 49 }, (_, index) => {
+                const blocked = Math.floor(index / 7) === 3 || index % 7 === 3
+                return <i className={blocked ? 'daily-crossword-card-block' : ''} key={index}>{blocked ? '' : ['A', 'R', 'E', 'T', 'O', 'Y', 'S', 'I', 'P'][index % 9]}</i>
+              })}</span>
+              <span className="card-art-index">22</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">22</span><span className="game-category">DAILY CROSSWORD</span></div>
+              <h3>Daily Crossword</h3>
+              <p>Take on a roomier seven-by-seven grid with twenty-four original crossing clues.</p>
+              <div className="card-bottom"><span className="controls-label">LETTER KEYS · TOUCH PAD</span><button className="play-card-button" type="button" onClick={onPlayCrossword}>Play Daily Crossword <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>

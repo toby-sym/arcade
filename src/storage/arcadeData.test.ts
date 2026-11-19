@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyConnectionsGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
+import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
 import { createGlyphMatchPuzzle } from '../games/glyphMatch'
 import { createVertexPuzzle } from '../games/vertex'
 import { createTilesPuzzle } from '../games/tiles'
 import { createPipsPuzzle } from '../games/pips'
+import { createDailyCrosswordPuzzle } from '../games/dailyCrossword'
 
 const emptyCrosswordBoard = () => Array.from({ length: 25 }, (_, index) => [3, 4, 20, 21].includes(index) ? '#' : '')
 const todayGlyphs = createGlyphMatchPuzzle('2026-11-19').glyphs
@@ -38,7 +39,8 @@ describe('browser-local Arcade data', () => {
       dailyVertexGame: null,
       dailyTilesGame: null,
       dailyPipsGame: null,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null },
+      dailyCrosswordGame: null,
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
 
@@ -84,7 +86,8 @@ describe('browser-local Arcade data', () => {
       dailyVertexGame: { date: '2026-11-19', selectedEdges: [], moves: 0 },
       dailyTilesGame: { date: '2026-11-19', clearedIndices: [], moves: 0, mistakes: 0 },
       dailyPipsGame: null,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null },
+      dailyCrosswordGame: null,
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
     expect(clearArcadeBests(initial)).toEqual({
@@ -102,7 +105,8 @@ describe('browser-local Arcade data', () => {
       dailyVertexGame: { date: '2026-11-19', selectedEdges: [], moves: 0 },
       dailyTilesGame: { date: '2026-11-19', clearedIndices: [], moves: 0, mistakes: 0 },
       dailyPipsGame: null,
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null },
+      dailyCrosswordGame: null,
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' },
     })
     expect(initial.bests.snake).toBe(12)
@@ -136,7 +140,8 @@ describe('browser-local Arcade data', () => {
       dailyVertexGame: null,
       dailyTilesGame: null,
       dailyPipsGame: null,
-      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null },
+      dailyCrosswordGame: null,
+      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
 
@@ -314,6 +319,22 @@ describe('browser-local Arcade data', () => {
     expect(withImprovedBest(firstBest!, 'pips', 0)?.bests.pips).toBe(0)
     expect(withDailyPipsGame(initial, { ...progress, date: '2026-02-30' })).toBeNull()
     expect(withDailyPipsGame(initial, { ...progress, placements: [progress.placements[0]!, progress.placements[0]!] })).toBeNull()
+  })
+
+  it('saves daily Crossword entries and keeps the fewest hints', () => {
+    const initial = emptyArcadeData()
+    const puzzle = createDailyCrosswordPuzzle('2026-11-19')
+    const board = puzzle.solution.map((letter) => letter === '#' ? '#' : '')
+    const progress = { date: puzzle.date, board, hintsUsed: 0, hintedCells: [] as number[] }
+    const saved = withDailyCrosswordGame(initial, progress)
+    const firstBest = withImprovedBest(saved!, 'crossword', 2)
+
+    expect(saved?.dailyCrosswordGame).toEqual(progress)
+    expect(firstBest?.bests.crossword).toBe(2)
+    expect(withImprovedBest(firstBest!, 'crossword', 3)).toBeNull()
+    expect(withImprovedBest(firstBest!, 'crossword', 0)?.bests.crossword).toBe(0)
+    expect(withDailyCrosswordGame(initial, { ...progress, date: '2026-02-30' })).toBeNull()
+    expect(withDailyCrosswordGame(initial, { ...progress, board: ['bad'] })).toBeNull()
   })
 
   it('uses defaults for unknown versions, corrupt JSON, and unavailable storage', () => {
