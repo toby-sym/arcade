@@ -83,7 +83,7 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .section-count { padding-bottom: 5px; color: var(--muted); font-size: .66rem; letter-spacing: .14em; font-weight: 750; }
 .game-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .game-card { min-width: 0; border: 1px solid var(--line); background: rgb(255 255 255 / 22%); transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
-.game-card-snake:hover, .game-card-reaction:hover, .game-card-pattern:hover, .game-card-breakout:hover, .game-card-pong:hover { transform: translateY(-3px); border-color: #a5ae91; box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.game-card-snake:hover, .game-card-reaction:hover, .game-card-pattern:hover, .game-card-breakout:hover, .game-card-pong:hover, .game-card-invaders:hover { transform: translateY(-3px); border-color: #a5ae91; box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
 .game-card-breakout { grid-column: auto; }
 .card-art { height: 146px; position: relative; overflow: hidden; }
 .card-art-index { position: absolute; right: 14px; bottom: 12px; z-index: 2; color: rgb(245 240 232 / 62%); font-size: .63rem; letter-spacing: .1em; }
@@ -593,7 +593,7 @@ body {
   box-shadow: 0 7px 0 #090811, 0 10px 20px rgb(0 0 0 / 26%), inset 0 1px rgb(255 255 255 / 7%);
 }
 
-.game-card-snake:hover, .game-card-reaction:hover, .game-card-pattern:hover, .game-card-breakout:hover, .game-card-pong:hover {
+.game-card-snake:hover, .game-card-reaction:hover, .game-card-pattern:hover, .game-card-breakout:hover, .game-card-pong:hover, .game-card-invaders:hover {
   border-color: #9b82cf;
   box-shadow: 0 9px 0 #090811, 0 14px 26px rgb(0 0 0 / 34%), 0 0 20px rgb(187 150 255 / 15%);
 }
@@ -750,4 +750,51 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .card-info { border-radius: 2px 2px 5px 5px; }
   .play-frame, .reaction-console, .pattern-console, .breakout-console, .pong-console { border-radius: 10px; border-width: 2px; }
   .button { box-shadow: 0 3px 0 #08070e, inset 0 1px rgb(255 255 255 / 13%); }
+}
+
+.game-card-invaders:hover { border-color: #9b82cf; }
+.invaders-card-art { border-color: #0d0b18; background: radial-gradient(ellipse at 50% 38%, #252044, #0e0b19 78%); }
+.invaders-card-alien, .invader {
+  clip-path: polygon(20% 0, 80% 0, 80% 20%, 100% 20%, 100% 60%, 80% 60%, 80% 80%, 65% 80%, 65% 100%, 55% 100%, 55% 80%, 45% 80%, 45% 100%, 35% 100%, 35% 80%, 20% 80%, 20% 60%, 0 60%, 0 20%, 20% 20%);
+}
+.invaders-card-alien { position: absolute; width: 24px; height: 19px; background: var(--cyan); }
+.invaders-card-art .alien-one { top: 34%; left: 23%; }
+.invaders-card-art .alien-two { top: 34%; left: calc(50% - 12px); background: var(--violet); }
+.invaders-card-art .alien-three { top: 34%; right: 23%; background: var(--coral); }
+.invaders-card-shot { position: absolute; top: 58%; left: 50%; width: 4px; height: 24px; background: #fff8e4; box-shadow: 0 0 8px rgb(255 248 228 / 70%); }
+.invaders-card-ship { position: absolute; bottom: 14%; left: calc(50% - 19px); width: 38px; height: 16px; background: var(--green); clip-path: polygon(0 100%, 15% 60%, 15% 35%, 38% 35%, 50% 0, 62% 35%, 85% 35%, 85% 60%, 100% 100%); }
+
+.invaders-layout { grid-template-columns: minmax(220px, .78fr) minmax(320px, 1.22fr); }
+.invaders-copy h1 { font-size: clamp(2rem, 3.2vw, 2.6rem); letter-spacing: -.075em; }
+.invaders-score { max-width: 240px; margin-top: 14px; }
+.invaders-console { padding: 14px; border: 3px solid #574873; border-radius: 15px; background: linear-gradient(145deg, #29223b 0%, #171425 80%); box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.invaders-console .frame-topline { height: 22px; padding: 0 1px 11px; }
+.invaders-field { position: relative; aspect-ratio: 1.08; overflow: hidden; border: 2px solid #403458; border-radius: 8px; background-color: #0e0b19; background-image: radial-gradient(circle, rgb(187 150 255 / 55%) 0 1px, transparent 1.5px), radial-gradient(circle, rgb(69 231 255 / 46%) 0 1px, transparent 1.5px); background-position: 26px 18px, 77px 51px; background-size: 91px 83px, 137px 109px; box-shadow: inset 0 0 36px rgb(69 231 255 / 5%); outline: none; }
+.invaders-field::after { content: ""; position: absolute; z-index: 3; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0 3px, rgb(5 4 12 / 17%) 3px 4px); pointer-events: none; }
+.invader { position: absolute; z-index: 1; width: 4.6%; height: 3.6%; transform: translate(-50%, -50%); background: var(--cyan); }
+.invader-row-1 { background: var(--violet); }
+.invader-row-2 { background: var(--coral); }
+.invader-row-3 { background: var(--green); }
+.invader-player { position: absolute; z-index: 1; bottom: 5.5%; width: 7%; height: 4.5%; transform: translateX(-50%); background: var(--green); clip-path: polygon(0 100%, 15% 60%, 15% 35%, 38% 35%, 50% 0, 62% 35%, 85% 35%, 85% 60%, 100% 100%); filter: drop-shadow(0 0 6px rgb(202 255 64 / 55%)); }
+.invader-shot { position: absolute; z-index: 1; width: 1.1%; height: 3.5%; transform: translate(-50%, -50%); border-radius: 2px; }
+.invader-player-shot { background: #fff8e4; box-shadow: 0 0 9px rgb(255 248 228 / 80%); }
+.invader-enemy-shot { width: 1.5%; height: 2.7%; background: var(--coral); box-shadow: 0 0 8px rgb(255 95 131 / 65%); }
+.invaders-overlay { position: absolute; z-index: 2; inset: 0; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: rgb(12 9 23 / 67%); }
+.invaders-overlay strong { color: var(--green); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: clamp(1.1rem, 3vw, 1.7rem); text-transform: uppercase; text-shadow: 0 0 14px rgb(202 255 64 / 18%); }
+.invaders-overlay span { max-width: 260px; margin-top: 8px; color: #e0d8e9; font-size: .76rem; line-height: 1.5; }
+.invaders-console-footer { height: 26px; padding: 9px 1px 0; display: flex; justify-content: space-between; align-items: center; color: #c1b5d5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .53rem; letter-spacing: .15em; }
+.invaders-touch-controls { width: 100%; max-width: 540px; margin: 12px 0 0; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+.invaders-touch-controls .dpad-button { width: 52px; height: 44px; font-size: 1.2rem; }
+.invaders-touch-controls .dpad-button:first-child { justify-self: end; }
+.invaders-touch-controls .dpad-button:last-child { justify-self: start; }
+.invaders-fire-button { min-width: 120px; }
+.invaders-status { min-height: 24px; margin: 12px 2px 0; color: #bfb5d1; font-size: .74rem; line-height: 1.5; }
+.invaders-field:focus-visible { outline: 3px solid var(--green); outline-offset: 4px; }
+
+@media (max-width: 650px) {
+  .invaders-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .invaders-copy h1 { font-size: clamp(1.95rem, 9vw, 2.55rem); }
+  .invaders-play-column { width: 100%; max-width: 540px; justify-self: center; }
+  .invaders-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .invaders-field { aspect-ratio: 1.08; }
 }

@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the five games from the game floor.
+Vite prints the local URL after startup. Choose any of the six games from the game floor.
 
 ## Snake controls
 
@@ -56,9 +56,16 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - **Pause** in the game panel or press **Escape** while the playfield is focused. The match also pauses when the browser tab is hidden.
 - Reach five points before the computer to win. Your highest points in a match are saved as a local personal best.
 
+## Space Invaders controls
+
+- Select **Start game**, then move with the **left and right arrow keys** or **A and D** while the playfield is focused. Hold a direction to keep moving.
+- Press **Space** to fire. On touch screens, tap the direction buttons and **Fire** below the field.
+- **Pause** in the game panel or press **Escape** while the playfield is focused. The game pauses when the browser tab is hidden; **Restart** begins with three ships and a fresh formation.
+- Clear the formation before it reaches your ship. Your highest score is saved as a local personal best.
+
 ## Local records and preferences
 
-Arcade saves Snake's highest score, Breakout's highest score, Pong's highest points in a match, the fastest Reaction time, the most Pattern Memory practice rounds completed, and the latest daily Pattern Memory completion date in browser storage. The **Reduce motion** and Pong opponent pace preferences are saved there too. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily completion and preferences stay saved. The system reduced-motion setting is always respected.
+Arcade saves the highest scores for Snake, Space Invaders, and Breakout, Pong's highest points in a match, the fastest Reaction time, the most Pattern Memory practice rounds completed, and the latest daily Pattern Memory completion date in browser storage. The **Reduce motion** and Pong opponent pace preferences are saved there too. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily completion and preferences stay saved. The system reduced-motion setting is always respected.
 
 ## Install and offline play
 
