@@ -3,7 +3,11 @@ import { createPatternState, patternReducer } from './pattern'
 
 const tileNames = ['Top left', 'Top right', 'Bottom left', 'Bottom right']
 
-export function PatternGame({ onBack }: { onBack: () => void }) {
+export function PatternGame({ onBack, bestRounds, onRecordRounds }: {
+  onBack: () => void
+  bestRounds: number | null
+  onRecordRounds: (rounds: number) => void
+}) {
   const [game, dispatch] = useReducer(patternReducer, undefined, createPatternState)
   const active = game.phase === 'showing' || game.phase === 'input'
 
@@ -21,6 +25,10 @@ export function PatternGame({ onBack }: { onBack: () => void }) {
     document.addEventListener('visibilitychange', pauseWhenHidden)
     return () => document.removeEventListener('visibilitychange', pauseWhenHidden)
   }, [])
+
+  useEffect(() => {
+    if (game.completedRounds > (bestRounds ?? 0)) onRecordRounds(game.completedRounds)
+  }, [game.completedRounds, bestRounds, onRecordRounds])
 
   const start = () => dispatch({ type: 'start', tile: randomTile() })
   const choose = (tile: number) => {
@@ -40,6 +48,7 @@ export function PatternGame({ onBack }: { onBack: () => void }) {
     : game.sequence.length > 0
       ? `PATTERN ${game.sequence.length} ${game.sequence.length === 1 ? 'TILE' : 'TILES'}`
       : 'PATTERN —'
+  const bestReadout = bestRounds === null ? 'none yet' : String(bestRounds)
 
   return (
     <section className="snake-view pattern-view" aria-labelledby="pattern-title">
@@ -55,10 +64,15 @@ export function PatternGame({ onBack }: { onBack: () => void }) {
             <h2>How to play</h2>
             <p>Start with one tile. Watch the lights, then repeat the pattern in order. Each round adds a tile. A mistake ends the run.</p>
           </div>
-          <div className="score-card" aria-label={`${game.completedRounds} rounds cleared this run`}>
+          <div className="score-card" aria-label={`Rounds cleared this run: ${game.completedRounds}. Local best: ${bestReadout}.`}>
             <span className="score-caption">ROUNDS CLEARED</span>
             <strong className="score-value">{String(game.completedRounds).padStart(2, '0')}</strong>
             <span className="score-unit">in this run</span>
+            <div className="local-best-readout">
+              <span className="score-caption">BEST IN THIS BROWSER</span>
+              <strong className="score-value">{bestRounds === null ? '—' : String(bestRounds).padStart(2, '0')}</strong>
+              <span className="score-unit">rounds</span>
+            </div>
           </div>
           <div className="game-actions">
             {game.phase === 'ready' ? (
