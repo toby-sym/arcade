@@ -14,6 +14,7 @@ import { validPipsProgress, type PipsProgress } from '../games/pips'
 import { validDailyCrosswordProgress, type DailyCrosswordProgress } from '../games/dailyCrossword'
 import { isMinesweeperProgress, type MinesweeperProgress } from '../games/minesweeper'
 import { validCipherCircuitProgress, type CipherCircuitProgress } from '../games/cipherCircuit'
+import { validColorConduitProgress, type ColorConduitProgress } from '../games/colorConduit'
 
 export const ARCADE_DATA_KEY = 'arcade.local-data.v1'
 export const ARCADE_BACKUP_MAX_BYTES = 1_000_000
@@ -46,6 +47,7 @@ export interface ArcadeBests {
   skylineSkip: number | null
   cipherCircuit: number | null
   orbitCourier: number | null
+  colorConduit: number | null
 }
 
 export interface ArcadeData {
@@ -67,6 +69,7 @@ export interface ArcadeData {
   dailyCrosswordGame: DailyCrosswordProgress | null
   dailyMinesweeperGame: MinesweeperProgress | null
   dailyCipherCircuitGame: CipherCircuitProgress | null
+  dailyColorConduitGame: ColorConduitProgress | null
   preferences: {
     reduceMotion: boolean
     soundEffects: boolean
@@ -75,9 +78,9 @@ export interface ArcadeData {
 }
 
 export function withImprovedBest(data: ArcadeData, game: keyof ArcadeBests, candidate: number): ArcadeData | null {
-  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && game !== 'letterBoxed' && game !== 'dominoLogic' && game !== 'glyphMatch' && game !== 'vertex' && game !== 'tiles' && game !== 'pips' && game !== 'crossword' && game !== 'minesweeper' && game !== 'cipherCircuit' && candidate === 0)) return null
+  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && game !== 'letterBoxed' && game !== 'dominoLogic' && game !== 'glyphMatch' && game !== 'vertex' && game !== 'tiles' && game !== 'pips' && game !== 'crossword' && game !== 'minesweeper' && game !== 'cipherCircuit' && game !== 'colorConduit' && candidate === 0)) return null
   const previous = data.bests[game]
-  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword' || game === 'letterBoxed' || game === 'dominoLogic' || game === 'glyphMatch' || game === 'vertex' || game === 'tiles' || game === 'pips' || game === 'crossword' || game === 'minesweeper' || game === 'cipherCircuit'
+  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword' || game === 'letterBoxed' || game === 'dominoLogic' || game === 'glyphMatch' || game === 'vertex' || game === 'tiles' || game === 'pips' || game === 'crossword' || game === 'minesweeper' || game === 'cipherCircuit' || game === 'colorConduit'
   const improved = previous === null || (lowerIsBetter ? candidate < previous : candidate > previous)
   if (!improved) return null
   return { ...data, bests: { ...data.bests, [game]: candidate } }
@@ -211,12 +214,27 @@ export function withDailyCipherCircuitGame(data: ArcadeData, progress: CipherCir
   }
 }
 
+export function withDailyColorConduitGame(data: ArcadeData, progress: ColorConduitProgress): ArcadeData | null {
+  if (!validColorConduitProgress(progress)) return null
+  return {
+    ...data,
+    dailyColorConduitGame: {
+      date: progress.date,
+      paths: progress.paths.map((path) => [...path]),
+      activeSignal: progress.activeSignal,
+      moves: progress.moves,
+      mistakes: progress.mistakes,
+      elapsedSeconds: progress.elapsedSeconds,
+    },
+  }
+}
+
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null },
     dailyPatternCompletedDate: null,
     dailyWordGame: null,
     dailyConnectionsGame: null,
@@ -233,12 +251,13 @@ export function emptyArcadeData(): ArcadeData {
     dailyCrosswordGame: null,
     dailyMinesweeperGame: null,
     dailyCipherCircuitGame: null,
+    dailyColorConduitGame: null,
     preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady' },
   }
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -270,6 +289,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
       dailyCrosswordGame: validDailyCrosswordProgress(parsed.dailyCrosswordGame) ? parsed.dailyCrosswordGame : null,
       dailyMinesweeperGame: isMinesweeperProgress(parsed.dailyMinesweeperGame) ? parsed.dailyMinesweeperGame : null,
       dailyCipherCircuitGame: validCipherCircuitProgress(parsed.dailyCipherCircuitGame) ? parsed.dailyCipherCircuitGame : null,
+      dailyColorConduitGame: validColorConduitProgress(parsed.dailyColorConduitGame) ? parsed.dailyColorConduitGame : null,
       bests: {
         snake: validRecord(bests.snake),
         reaction: validRecord(bests.reaction),
@@ -298,6 +318,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         skylineSkip: validRecord(bests.skylineSkip),
         cipherCircuit: validRecord(bests.cipherCircuit),
         orbitCourier: validRecord(bests.orbitCourier),
+        colorConduit: validRecord(bests.colorConduit),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }
@@ -327,8 +348,8 @@ export function parseArcadeDataBackup(contents: string): ArcadeData | null {
     if (!isRecord(bests) || !isRecord(preferences)) return null
 
     const empty = emptyArcadeData()
-    if (!Object.keys(empty).filter((key) => key !== 'dailyMinesweeperGame' && key !== 'dailyCipherCircuitGame').every((key) => key in parsed)) return null
-    if (!Object.keys(empty.bests).filter((key) => key !== 'minesweeper' && key !== 'mazeDash' && key !== 'skylineSkip' && key !== 'cipherCircuit' && key !== 'orbitCourier').every((key) => {
+    if (!Object.keys(empty).filter((key) => key !== 'dailyMinesweeperGame' && key !== 'dailyCipherCircuitGame' && key !== 'dailyColorConduitGame').every((key) => key in parsed)) return null
+    if (!Object.keys(empty.bests).filter((key) => key !== 'minesweeper' && key !== 'mazeDash' && key !== 'skylineSkip' && key !== 'cipherCircuit' && key !== 'orbitCourier' && key !== 'colorConduit').every((key) => {
       const record = bests[key]
       return record === null || (typeof record === 'number' && Number.isSafeInteger(record) && record >= 0)
     })) return null
@@ -353,6 +374,7 @@ export function parseArcadeDataBackup(contents: string): ArcadeData | null {
       && (parsed.dailyCrosswordGame === null || validDailyCrosswordProgress(parsed.dailyCrosswordGame))
       && (parsed.dailyMinesweeperGame === undefined || parsed.dailyMinesweeperGame === null || isMinesweeperProgress(parsed.dailyMinesweeperGame))
       && (parsed.dailyCipherCircuitGame === undefined || parsed.dailyCipherCircuitGame === null || validCipherCircuitProgress(parsed.dailyCipherCircuitGame))
+      && (parsed.dailyColorConduitGame === undefined || parsed.dailyColorConduitGame === null || validColorConduitProgress(parsed.dailyColorConduitGame))
     if (!dailyFieldsAreValid) return null
 
     return readArcadeData({ getItem: () => contents, setItem: () => {} })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ARCADE_BACKUP_MAX_BYTES, ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
 import { cipherCircuitProgress, cipherCircuitReducer, createCipherCircuitState } from '../games/cipherCircuit'
 import { createGlyphMatchPuzzle } from '../games/glyphMatch'
 import { createVertexPuzzle } from '../games/vertex'
@@ -7,6 +7,7 @@ import { createTilesPuzzle } from '../games/tiles'
 import { createPipsPuzzle } from '../games/pips'
 import { createDailyCrosswordPuzzle } from '../games/dailyCrossword'
 import { createMinesweeperState, toMinesweeperProgress } from '../games/minesweeper'
+import { colorConduitProgress, colorConduitReducer, createColorConduitState } from '../games/colorConduit'
 
 const emptyCrosswordBoard = () => Array.from({ length: 25 }, (_, index) => [3, 4, 20, 21].includes(index) ? '#' : '')
 const todayGlyphs = createGlyphMatchPuzzle('2026-11-19').glyphs
@@ -43,11 +44,13 @@ describe('browser-local Arcade data', () => {
     const previousVersionBackup = { ...backup, bests: { ...backup.bests } } as Record<string, unknown>
     delete previousVersionBackup.dailyMinesweeperGame
     delete previousVersionBackup.dailyCipherCircuitGame
+    delete previousVersionBackup.dailyColorConduitGame
     delete (previousVersionBackup.bests as Record<string, unknown>).minesweeper
     delete (previousVersionBackup.bests as Record<string, unknown>).mazeDash
     delete (previousVersionBackup.bests as Record<string, unknown>).skylineSkip
     delete (previousVersionBackup.bests as Record<string, unknown>).cipherCircuit
     delete (previousVersionBackup.bests as Record<string, unknown>).orbitCourier
+    delete (previousVersionBackup.bests as Record<string, unknown>).colorConduit
     const parsedPreviousVersion = parseArcadeDataBackup(JSON.stringify(previousVersionBackup))
     expect(parsedPreviousVersion?.dailyMinesweeperGame).toBeNull()
     expect(parsedPreviousVersion?.bests.minesweeper).toBeNull()
@@ -56,6 +59,8 @@ describe('browser-local Arcade data', () => {
     expect(parsedPreviousVersion?.dailyCipherCircuitGame).toBeNull()
     expect(parsedPreviousVersion?.bests.cipherCircuit).toBeNull()
     expect(parsedPreviousVersion?.bests.orbitCourier).toBeNull()
+    expect(parsedPreviousVersion?.dailyColorConduitGame).toBeNull()
+    expect(parsedPreviousVersion?.bests.colorConduit).toBeNull()
     expect(parseArcadeDataBackup(' '.repeat(ARCADE_BACKUP_MAX_BYTES + 1))).toBeNull()
   })
 
@@ -79,7 +84,8 @@ describe('browser-local Arcade data', () => {
       dailyCrosswordGame: null,
       dailyMinesweeperGame: toMinesweeperProgress(createMinesweeperState('2026-11-19')),
       dailyCipherCircuitGame: null,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null },
+      dailyColorConduitGame: null,
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
 
@@ -134,6 +140,25 @@ describe('browser-local Arcade data', () => {
     expect(readArcadeData(storage).dailyCipherCircuitGame).toEqual(progress)
   })
 
+  it('saves Color Conduit routes locally and keeps the fastest completion time', () => {
+    let state = createColorConduitState('2026-11-19')
+    state = colorConduitReducer(state, { type: 'start' })
+    const route = state.puzzle.routes[0]!
+    state = colorConduitReducer(state, { type: 'select', signal: route.signal })
+    state = colorConduitReducer(state, { type: 'cell', index: route.start })
+    const progress = colorConduitProgress(state)
+    const saved = withDailyColorConduitGame(emptyArcadeData(), progress)
+    const firstBest = withImprovedBest(saved!, 'colorConduit', 82)
+    const storage = new MemoryStorage()
+
+    expect(saved?.dailyColorConduitGame).toEqual(progress)
+    expect(withImprovedBest(firstBest!, 'colorConduit', 75)?.bests.colorConduit).toBe(75)
+    expect(withImprovedBest(firstBest!, 'colorConduit', 90)).toBeNull()
+    expect(withDailyColorConduitGame(emptyArcadeData(), { ...progress, date: '2026-02-30' })).toBeNull()
+    expect(writeArcadeData(saved!, storage)).toBe(true)
+    expect(readArcadeData(storage).dailyColorConduitGame).toEqual(progress)
+  })
+
   it('clears all records without changing the saved preferences or original data', () => {
     const initial = {
       version: 1 as const,
@@ -153,7 +178,8 @@ describe('browser-local Arcade data', () => {
       dailyCrosswordGame: null,
       dailyMinesweeperGame: toMinesweeperProgress(createMinesweeperState('2026-11-19')),
       dailyCipherCircuitGame: null,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: 61, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null },
+      dailyColorConduitGame: null,
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: 61, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
     expect(clearArcadeBests(initial)).toEqual({
@@ -174,7 +200,8 @@ describe('browser-local Arcade data', () => {
       dailyCrosswordGame: null,
       dailyMinesweeperGame: toMinesweeperProgress(createMinesweeperState('2026-11-19')),
       dailyCipherCircuitGame: null,
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null },
+      dailyColorConduitGame: null,
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' },
     })
     expect(initial.bests.snake).toBe(12)
@@ -211,7 +238,8 @@ describe('browser-local Arcade data', () => {
       dailyCrosswordGame: null,
       dailyMinesweeperGame: null,
       dailyCipherCircuitGame: null,
-      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null },
+      dailyColorConduitGame: null,
+      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
 
