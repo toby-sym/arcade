@@ -1,6 +1,7 @@
 import type { PongDifficulty } from '../games/pong'
 import type { DailyWordProgress } from '../games/dailyWord'
 import { validConnectionsProgress, type ConnectionsProgress } from '../games/connections'
+import { validSpellingBeeProgress, type SpellingBeeProgress } from '../games/spellingBee'
 
 export const ARCADE_DATA_KEY = 'arcade.local-data.v1'
 
@@ -16,6 +17,7 @@ export interface ArcadeBests {
   blockDrop: number | null
   wordPuzzle: number | null
   connections: number | null
+  spellingBee: number | null
 }
 
 export interface ArcadeData {
@@ -24,6 +26,7 @@ export interface ArcadeData {
   dailyPatternCompletedDate: string | null
   dailyWordGame: DailyWordProgress | null
   dailyConnectionsGame: ConnectionsProgress | null
+  dailySpellingBeeGame: SpellingBeeProgress | null
   preferences: {
     reduceMotion: boolean
     soundEffects: boolean
@@ -64,21 +67,27 @@ export function withDailyConnectionsGame(data: ArcadeData, progress: Connections
   }
 }
 
+export function withDailySpellingBeeGame(data: ArcadeData, progress: SpellingBeeProgress): ArcadeData | null {
+  if (!validSpellingBeeProgress(progress)) return null
+  return { ...data, dailySpellingBeeGame: { date: progress.date, foundWords: [...progress.foundWords], phase: progress.phase } }
+}
+
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null },
     dailyPatternCompletedDate: null,
     dailyWordGame: null,
     dailyConnectionsGame: null,
+    dailySpellingBeeGame: null,
     preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady' },
   }
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -97,6 +106,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
       dailyPatternCompletedDate: validUtcDateKey(parsed.dailyPatternCompletedDate) ? parsed.dailyPatternCompletedDate : null,
       dailyWordGame: validDailyWordProgress(parsed.dailyWordGame) ? parsed.dailyWordGame : null,
       dailyConnectionsGame: validConnectionsProgress(parsed.dailyConnectionsGame) ? parsed.dailyConnectionsGame : null,
+      dailySpellingBeeGame: validSpellingBeeProgress(parsed.dailySpellingBeeGame) ? parsed.dailySpellingBeeGame : null,
       bests: {
         snake: validRecord(bests.snake),
         reaction: validRecord(bests.reaction),
@@ -109,6 +119,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         blockDrop: validRecord(bests.blockDrop),
         wordPuzzle: validRecord(bests.wordPuzzle),
         connections: validRecord(bests.connections),
+        spellingBee: validRecord(bests.spellingBee),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }
