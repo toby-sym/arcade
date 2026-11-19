@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Letter Boxed, and Domino Logic are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Letter Boxed, Domino Logic, and Glyph Match are ready for free play.
 
 ## Local development
 
@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the seventeen games from the game floor.
+Vite prints the local URL after startup. Choose any of the eighteen games from the game floor.
 
 ## Snake controls
 
@@ -139,9 +139,15 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Place all six dominoes so every row and column reaches its target. **Undo** or **Backspace** removes the last tile; **Restart** clears the grid while keeping the same daily puzzle.
 - The same puzzle is shared for a UTC date. Your placements and fewest undos stay in this browser and do not sync.
 
+## Glyph Match controls
+
+- Open **Glyph Match** for the daily sixteen-tile board. Select two tiles by touch, click, or keyboard to turn them over; matched pairs stay face up. Use arrow keys to move between tiles and **Enter** or **Space** to select.
+- A mismatch turns back after a short pause. **Restart board** resets the current daily puzzle without changing its glyph layout.
+- Your matched pairs, turn count, and fewest-turn solve stay in this browser and do not sync. The board changes each UTC day.
+
 ## Local records and preferences
 
-Arcade saves the highest scores for Snake, Asteroids, Space Invaders, Missile Command, Block Drop, Breakout, and a completed Spelling Bee hive; Pong's highest points in a match; the fewest guesses for a Word Guess solve; the fewest mistakes for a completed Connections board; the fewest hints for completed Strands, Sudoku, and Mini Crossword grids; the fewest words for a completed Letter Boxed chain; the fewest undos for a completed Domino Logic grid; the fastest Reaction time; the most Pattern Memory practice rounds completed; and the latest daily Pattern Memory completion date in browser storage. Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Letter Boxed, and Domino Logic save their current daily progress there too. The **Reduce motion**, **Arcade sounds**, and Pong opponent pace preferences are saved there as well. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily progress and preferences stay saved. The system reduced-motion setting is always respected.
+Arcade saves the highest scores for Snake, Asteroids, Space Invaders, Missile Command, Block Drop, Breakout, and a completed Spelling Bee hive; Pong's highest points in a match; the fewest guesses for a Word Guess solve; the fewest mistakes for a completed Connections board; the fewest hints for completed Strands, Sudoku, and Mini Crossword grids; the fewest words for a completed Letter Boxed chain; the fewest undos for a completed Domino Logic grid; the fewest turns for a completed Glyph Match board; the fastest Reaction time; the most Pattern Memory practice rounds completed; and the latest daily Pattern Memory completion date in browser storage. Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Letter Boxed, Domino Logic, and Glyph Match save their current daily progress there too. The **Reduce motion**, **Arcade sounds**, and Pong opponent pace preferences are saved there as well. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. These records and preferences stay on this browser and do not sync or leave the app. Use **Clear records** under Preferences to remove all personal bests from this browser; daily progress and preferences stay saved. The system reduced-motion setting is always respected.
 
 ## Install and offline play
 
