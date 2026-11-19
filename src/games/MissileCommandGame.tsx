@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, type KeyboardEvent, type PointerEvent } from 'react'
+import { useEffect, useReducer, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react'
 import { useHeldKeys } from '../hooks/useHeldKeys'
 import { useArcadeSound } from '../audio/arcadeAudio'
 import { missileCommandReducer, createMissileCommandState, MISSILE_CITY_X, MISSILE_CITY_Y, MISSILE_COMMAND_HEIGHT, MISSILE_COMMAND_WIDTH, MISSILE_SILO_X, MISSILE_SILO_Y } from './missileCommand'
@@ -10,14 +10,56 @@ interface MissileCommandGameProps {
 }
 
 const AIM_SPEED = 960
+const AIM_TAP_STEP = 34
+const MAX_AIM_FRAME_MS = 50
+type AimDirection = 'left' | 'right' | 'up' | 'down'
+const AIM_DIRECTIONS: Record<AimDirection, { dx: number; dy: number; label: string; glyph: string }> = {
+  left: { dx: -1, dy: 0, label: 'Aim left', glyph: '←' },
+  right: { dx: 1, dy: 0, label: 'Aim right', glyph: '→' },
+  up: { dx: 0, dy: -1, label: 'Aim up', glyph: '↑' },
+  down: { dx: 0, dy: 1, label: 'Aim down', glyph: '↓' },
+}
 
 export function MissileCommandGame({ onBack, bestScore, onRecordScore }: MissileCommandGameProps) {
   const [state, dispatch] = useReducer(missileCommandReducer, undefined, createMissileCommandState)
   const boardRef = useRef<HTMLDivElement>(null)
+  const touchAimPointerStart = useRef<number | null>(null)
+  const touchAimMovement = useRef({ dx: 0, dy: 0 })
+  const touchAimDirectionRef = useRef<AimDirection | null>(null)
+  const [touchAimDirection, setTouchAimDirection] = useState<AimDirection | null>(null)
   const playSound = useArcadeSound()
   const previousAudioState = useRef({ score: state.score, wave: state.wave, phase: state.phase })
   const isFresh = state.score === 0 && state.wave === 1 && state.cities.every(Boolean)
   const statusLabel = state.phase === 'playing' ? 'LIVE' : state.phase.toUpperCase()
+  const clearTouchAim = () => {
+    touchAimDirectionRef.current = null
+    touchAimPointerStart.current = null
+    setTouchAimDirection(null)
+  }
+
+  useEffect(() => {
+    if (state.phase !== 'playing' || touchAimDirection === null) return
+    let frame = 0
+    let previousTime = window.performance.now()
+    const tick = (time: number) => {
+      if (touchAimDirectionRef.current !== touchAimDirection) return
+      const deltaMs = Math.min(Math.max(time - previousTime, 0), MAX_AIM_FRAME_MS)
+      previousTime = time
+      const vector = AIM_DIRECTIONS[touchAimDirection]
+      const dx = vector.dx * AIM_SPEED * deltaMs / 1000
+      const dy = vector.dy * AIM_SPEED * deltaMs / 1000
+      touchAimMovement.current.dx += dx
+      touchAimMovement.current.dy += dy
+      dispatch({ type: 'moveAim', dx, dy })
+      frame = window.requestAnimationFrame(tick)
+    }
+    frame = window.requestAnimationFrame(tick)
+    return () => window.cancelAnimationFrame(frame)
+  }, [state.phase, touchAimDirection])
+
+  useEffect(() => {
+    if (state.phase !== 'playing') clearTouchAim()
+  }, [state.phase])
 
   const handleHeldKey = useHeldKeys({
     ArrowLeft: (deltaMs) => dispatch({ type: 'moveAim', dx: -AIM_SPEED * deltaMs / 1000, dy: 0 }),
@@ -43,10 +85,18 @@ export function MissileCommandGame({ onBack, bestScore, onRecordScore }: Missile
 
   useEffect(() => {
     const pauseWhenHidden = () => {
-      if (document.hidden) dispatch({ type: 'pause' })
+      if (document.hidden) {
+        clearTouchAim()
+        dispatch({ type: 'pause' })
+      }
     }
+    const clearWhenBlurred = () => clearTouchAim()
     document.addEventListener('visibilitychange', pauseWhenHidden)
-    return () => document.removeEventListener('visibilitychange', pauseWhenHidden)
+    window.addEventListener('blur', clearWhenBlurred)
+    return () => {
+      document.removeEventListener('visibilitychange', pauseWhenHidden)
+      window.removeEventListener('blur', clearWhenBlurred)
+    }
   }, [])
 
   useEffect(() => {
@@ -93,6 +143,7 @@ export function MissileCommandGame({ onBack, bestScore, onRecordScore }: Missile
       if (!event.repeat) fire()
     } else if (event.key === 'Escape' && state.phase === 'playing') {
       event.preventDefault()
+      clearTouchAim()
       dispatch({ type: 'pause' })
     } else if (event.key === 'Escape' && state.phase === 'paused') {
       event.preventDefault()
@@ -101,6 +152,35 @@ export function MissileCommandGame({ onBack, bestScore, onRecordScore }: Missile
       event.preventDefault()
       restart()
     }
+  }
+
+  const holdTouchAim = (direction: AimDirection) => (event: PointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    touchAimPointerStart.current = window.performance.now()
+    touchAimMovement.current = { dx: 0, dy: 0 }
+    touchAimDirectionRef.current = direction
+    setTouchAimDirection(direction)
+    if (typeof event.currentTarget.setPointerCapture === 'function') {
+      try { event.currentTarget.setPointerCapture(event.pointerId) } catch { /* Pointer capture is optional. */ }
+    }
+  }
+  const releaseTouchAim = () => {
+    touchAimDirectionRef.current = null
+    setTouchAimDirection(null)
+  }
+  const cancelTouchAim = () => clearTouchAim()
+  const moveOneAimStep = (direction: AimDirection) => (event: MouseEvent<HTMLButtonElement>) => {
+    if (event.detail !== 0) {
+      const startedAt = touchAimPointerStart.current
+      touchAimPointerStart.current = null
+      if (startedAt === null || window.performance.now() - startedAt >= 80) return
+      const movement = touchAimMovement.current
+      if (movement.dx !== 0 || movement.dy !== 0) {
+        dispatch({ type: 'moveAim', dx: -movement.dx, dy: -movement.dy })
+      }
+    }
+    const vector = AIM_DIRECTIONS[direction]
+    dispatch({ type: 'moveAim', dx: vector.dx * AIM_TAP_STEP, dy: vector.dy * AIM_TAP_STEP })
   }
 
   const pointerPosition = (event: PointerEvent<HTMLDivElement>) => {
@@ -146,7 +226,7 @@ export function MissileCommandGame({ onBack, bestScore, onRecordScore }: Missile
           <p className="snake-lede">Keep the skyline lit. Put an interceptor where the enemy missiles will be.</p>
           <div className="how-to-play">
             <h2>How to play</h2>
-            <p>Click or tap a spot above the cities to launch. Use the arrow keys or WASD to aim, then press Space. Each silo has limited ammo; one blast can clear a cluster.</p>
+            <p>Click or tap a spot above the cities to launch. Hold the arrow keys or WASD to aim smoothly, or hold a direction button on touch screens. Press Space or Fire at target to launch an interceptor.</p>
           </div>
           <div className="score-card missile-score" aria-label={`Score: ${state.score}. ${state.cities.filter(Boolean).length} cities remain. Wave ${state.wave}. ${bestScore === null ? 'No personal best yet.' : `Local best: ${bestScore} points.`}`}>
             <div className="breakout-score-main">
@@ -164,7 +244,7 @@ export function MissileCommandGame({ onBack, bestScore, onRecordScore }: Missile
           </div>
           <div className="game-actions">
             {state.phase === 'playing' ? (
-              <button className="button button-secondary" type="button" onClick={() => dispatch({ type: 'pause' })}>Pause <span className="pause-mark" aria-hidden="true"><i /><i /></span></button>
+              <button className="button button-secondary" type="button" onClick={() => { clearTouchAim(); dispatch({ type: 'pause' }) }}>Pause <span className="pause-mark" aria-hidden="true"><i /><i /></span></button>
             ) : state.phase === 'paused' ? (
               <button className="button button-primary" type="button" onClick={start}>Resume <span aria-hidden="true">→</span></button>
             ) : state.phase === 'ready' ? (
@@ -212,10 +292,24 @@ export function MissileCommandGame({ onBack, bestScore, onRecordScore }: Missile
             <div className="missile-console-footer"><span>AIM · SPACE / TAP TO FIRE</span><span>{state.cities.filter(Boolean).length} CITIES · WAVE {state.wave}</span></div>
           </div>
           <div className="missile-touch-controls" role="group" aria-label="Aim controls">
-            <button className="dpad-button" type="button" aria-label="Aim left" disabled={state.phase !== 'playing'} onClick={() => dispatch({ type: 'moveAim', dx: -34, dy: 0 })}>←</button>
-            <button className="dpad-button" type="button" aria-label="Aim up" disabled={state.phase !== 'playing'} onClick={() => dispatch({ type: 'moveAim', dx: 0, dy: -34 })}>↑</button>
-            <button className="dpad-button" type="button" aria-label="Aim down" disabled={state.phase !== 'playing'} onClick={() => dispatch({ type: 'moveAim', dx: 0, dy: 34 })}>↓</button>
-            <button className="dpad-button" type="button" aria-label="Aim right" disabled={state.phase !== 'playing'} onClick={() => dispatch({ type: 'moveAim', dx: 34, dy: 0 })}>→</button>
+            {(['left', 'up', 'down', 'right'] as const).map((direction) => {
+              const control = AIM_DIRECTIONS[direction]
+              return (
+                <button
+                  className="dpad-button"
+                  type="button"
+                  key={direction}
+                  aria-label={control.label}
+                  aria-pressed={touchAimDirection === direction}
+                  disabled={state.phase !== 'playing'}
+                  onPointerDown={holdTouchAim(direction)}
+                  onPointerUp={releaseTouchAim}
+                  onPointerCancel={cancelTouchAim}
+                  onLostPointerCapture={releaseTouchAim}
+                  onClick={moveOneAimStep(direction)}
+                >{control.glyph}</button>
+              )
+            })}
             <button className="button button-primary missile-fire-button" type="button" disabled={state.phase !== 'playing' && state.phase !== 'ready'} onClick={fire}>Fire at target</button>
           </div>
           <p id="missile-instructions" className="missile-status" role="status" aria-live="polite">{state.message}</p>
