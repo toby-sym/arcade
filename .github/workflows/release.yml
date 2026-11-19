@@ -45,6 +45,9 @@ jobs:
       - name: Build production container
         run: docker build --build-arg APP_VERSION=Development --tag arcade:${GITHUB_SHA} .
 
+      - name: Smoke test production container
+        run: bash scripts/test-container.sh "arcade:${GITHUB_SHA}"
+
   promote:
     name: Promote main to production release
     if: >-

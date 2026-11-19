@@ -49,6 +49,7 @@ export interface ArcadeBests {
   orbitCourier: number | null
   colorConduit: number | null
   switchyard: number | null
+  prismDash: number | null
 }
 
 export interface ArcadeData {
@@ -235,7 +236,7 @@ type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null },
     dailyPatternCompletedDate: null,
     dailyWordGame: null,
     dailyConnectionsGame: null,
@@ -258,7 +259,7 @@ export function emptyArcadeData(): ArcadeData {
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -321,6 +322,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         orbitCourier: validRecord(bests.orbitCourier),
         colorConduit: validRecord(bests.colorConduit),
         switchyard: validRecord(bests.switchyard),
+        prismDash: validRecord(bests.prismDash),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }
@@ -351,7 +353,7 @@ export function parseArcadeDataBackup(contents: string): ArcadeData | null {
 
     const empty = emptyArcadeData()
     if (!Object.keys(empty).filter((key) => key !== 'dailyMinesweeperGame' && key !== 'dailyCipherCircuitGame' && key !== 'dailyColorConduitGame').every((key) => key in parsed)) return null
-    if (!Object.keys(empty.bests).filter((key) => key !== 'minesweeper' && key !== 'mazeDash' && key !== 'skylineSkip' && key !== 'cipherCircuit' && key !== 'orbitCourier' && key !== 'colorConduit' && key !== 'switchyard').every((key) => {
+    if (!Object.keys(empty.bests).filter((key) => key !== 'minesweeper' && key !== 'mazeDash' && key !== 'skylineSkip' && key !== 'cipherCircuit' && key !== 'orbitCourier' && key !== 'colorConduit' && key !== 'switchyard' && key !== 'prismDash').every((key) => {
       const record = bests[key]
       return record === null || (typeof record === 'number' && Number.isSafeInteger(record) && record >= 0)
     })) return null
