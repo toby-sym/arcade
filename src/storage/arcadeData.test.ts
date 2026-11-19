@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyConnectionsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
+import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyConnectionsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
 
 class MemoryStorage {
   key: string | null = null
@@ -21,7 +21,8 @@ describe('browser-local Arcade data', () => {
       dailyWordGame: { date: '2026-11-19', guesses: ['CRANE'], phase: 'playing' as const },
       dailyConnectionsGame: null,
       dailySpellingBeeGame: null,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null },
+      dailyStrandsGame: null,
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
 
@@ -58,7 +59,8 @@ describe('browser-local Arcade data', () => {
       dailyWordGame: { date: '2026-11-19', guesses: ['CRANE'], phase: 'playing' as const },
       dailyConnectionsGame: { date: '2026-11-19', solvedGroupIds: ['bicycle'], selectedWords: ['PEDAL'], mistakes: 1, phase: 'playing' as const },
       dailySpellingBeeGame: { date: '2026-11-19', foundWords: ['ANGER'], phase: 'playing' as const },
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100 },
+      dailyStrandsGame: { date: '2026-11-19', foundWords: ['TRACE'], hintsUsed: 1, hintedCells: [1] },
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2 },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
     }
     expect(clearArcadeBests(initial)).toEqual({
@@ -67,7 +69,8 @@ describe('browser-local Arcade data', () => {
       dailyWordGame: { date: '2026-11-19', guesses: ['CRANE'], phase: 'playing' },
       dailyConnectionsGame: { date: '2026-11-19', solvedGroupIds: ['bicycle'], selectedWords: ['PEDAL'], mistakes: 1, phase: 'playing' },
       dailySpellingBeeGame: { date: '2026-11-19', foundWords: ['ANGER'], phase: 'playing' },
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null },
+      dailyStrandsGame: { date: '2026-11-19', foundWords: ['TRACE'], hintsUsed: 1, hintedCells: [1] },
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' },
     })
     expect(initial.bests.snake).toBe(12)
@@ -92,7 +95,8 @@ describe('browser-local Arcade data', () => {
       dailyWordGame: null,
       dailyConnectionsGame: null,
       dailySpellingBeeGame: null,
-      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null },
+      dailyStrandsGame: null,
+      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
     })
 
@@ -141,6 +145,20 @@ describe('browser-local Arcade data', () => {
     expect(withImprovedBest(firstBest!, 'spellingBee', 14)).toBeNull()
     expect(withDailySpellingBeeGame(initial, { date: '2026-02-30', foundWords: [], phase: 'playing' })).toBeNull()
     expect(withDailySpellingBeeGame(initial, { date: '2026-11-19', foundWords: ['NOT-A-WORD'], phase: 'playing' })).toBeNull()
+  })
+
+  it('saves daily Strands progress and keeps the fewest hints', () => {
+    const initial = emptyArcadeData()
+    const progress = { date: '2026-11-19', foundWords: ['TRACE'], hintsUsed: 1, hintedCells: [7] }
+    const saved = withDailyStrandsGame(initial, progress)
+    const firstBest = withImprovedBest(saved!, 'strands', 0)
+
+    expect(saved?.dailyStrandsGame).toEqual(progress)
+    expect(firstBest?.bests.strands).toBe(0)
+    expect(withImprovedBest(firstBest!, 'strands', 1)).toBeNull()
+    expect(withDailyStrandsGame(initial, { ...progress, date: '2026-02-30' })).toBeNull()
+    expect(withDailyStrandsGame(initial, { ...progress, foundWords: ['NOT-A-WORD'] })).toBeNull()
+    expect(withDailyStrandsGame(initial, { ...progress, hintedCells: [48] })).toBeNull()
   })
 
   it('uses defaults for unknown versions, corrupt JSON, and unavailable storage', () => {
