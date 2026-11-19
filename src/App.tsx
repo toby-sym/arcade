@@ -14,9 +14,11 @@ import { InvadersGame } from './games/InvadersGame'
 import { AsteroidsGame } from './games/AsteroidsGame'
 import { MissileCommandGame } from './games/MissileCommandGame'
 import { BlockDropGame } from './games/BlockDropGame'
+import { DailyWordGame } from './games/DailyWordGame'
+import type { DailyWordProgress } from './games/dailyWord'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { clearArcadeBests, readArcadeData, withDailyPatternCompletion, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
+import { clearArcadeBests, readArcadeData, withDailyPatternCompletion, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -42,7 +44,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -87,6 +89,16 @@ function App() {
   const recordDailyCompletion = (date: string) => {
     const next = withDailyPatternCompletion(arcadeData, date)
     if (!next) return
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
+  const saveDailyWordGame = (progress: DailyWordProgress) => {
+    const withProgress = withDailyWordGame(arcadeData, progress)
+    if (!withProgress) return
+    const next = progress.phase === 'won'
+      ? withImprovedBest(withProgress, 'wordPuzzle', progress.guesses.length) ?? withProgress
+      : withProgress
     setArcadeData(next)
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
@@ -166,6 +178,7 @@ function App() {
   const openAsteroids = () => setScreen('asteroids')
   const openMissileCommand = () => setScreen('missile')
   const openBlockDrop = () => setScreen('blockdrop')
+  const openWordGame = () => setScreen('wordgame')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -220,6 +233,7 @@ function App() {
             onPlayAsteroids={openAsteroids}
             onPlayMissileCommand={openMissileCommand}
             onPlayBlockDrop={openBlockDrop}
+            onPlayWordGame={openWordGame}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -281,6 +295,13 @@ function App() {
             onBack={() => setScreen('home')}
             bestScore={arcadeData.bests.blockDrop}
             onRecordScore={(score) => recordBest('blockDrop', score)}
+          />
+        ) : screen === 'wordgame' ? (
+          <DailyWordGame
+            onBack={() => setScreen('home')}
+            bestSolve={arcadeData.bests.wordPuzzle}
+            progress={arcadeData.dailyWordGame}
+            onSaveProgress={saveDailyWordGame}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -408,6 +429,7 @@ function Home({
   onPlayAsteroids,
   onPlayMissileCommand,
   onPlayBlockDrop,
+  onPlayWordGame,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -427,6 +449,7 @@ function Home({
   onPlayAsteroids: () => void
   onPlayMissileCommand: () => void
   onPlayBlockDrop: () => void
+  onPlayWordGame: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -461,7 +484,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">09 PLAYABLE</span>
+          <span className="section-count">10 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -584,6 +607,19 @@ function Home({
               <h3>Block Drop</h3>
               <p>Fit the falling pieces, clear rows, and keep the stack from reaching the top.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · X · SPACE · C</span><button className="play-card-button" type="button" onClick={onPlayBlockDrop}>Play Block Drop <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-wordgame">
+            <div className="card-art wordgame-card-art" aria-hidden="true">
+              <span className="wordgame-card-row"><i>W</i><i>O</i><i>R</i><i>D</i><i>S</i></span>
+              <span className="wordgame-card-row card-row-two"><i>G</i><i>U</i><i>E</i><i>S</i><i>S</i></span>
+              <span className="card-art-index">10</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">10</span><span className="game-category">DAILY WORD</span></div>
+              <h3>Word Guess</h3>
+              <p>Find a five-letter word in six guesses. A new shared puzzle arrives daily.</p>
+              <div className="card-bottom"><span className="controls-label">LETTER KEYS · ENTER</span><button className="play-card-button" type="button" onClick={onPlayWordGame}>Play Word Guess <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>

@@ -994,3 +994,75 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .blockdrop-drop-button { grid-column: auto; }
   .blockdrop-console-footer { font-size: .45rem; }
 }
+
+.game-card-wordgame:hover { border-color: #caff40; transform: translateY(-3px); box-shadow: 0 12px 24px rgb(32 37 33 / 7%); }
+.game-card-wordgame { grid-column: 2; }
+.wordgame-card-art { border-color: #0d0b18; background: radial-gradient(ellipse at 50% 54%, #302548, #0e0b19 80%); }
+.wordgame-card-row { position: absolute; top: 33px; left: 50%; display: flex; gap: 4px; transform: translateX(-50%) rotate(-3deg); }
+.wordgame-card-row i { width: 33px; height: 33px; border: 1px solid #a399b5; display: grid; place-items: center; color: #f6f0dc; background: #252038; box-shadow: inset 0 -3px rgb(0 0 0 / 20%), 0 0 8px rgb(255 255 255 / 8%); font: 800 .75rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-style: normal; }
+.wordgame-card-row i:nth-child(2) { border-color: #e6c652; background: #a68734; }
+.wordgame-card-row i:nth-child(4) { border-color: #caff40; background: #668e2c; }
+.wordgame-card-art .card-row-two { top: 76px; left: 54%; transform: translateX(-50%) rotate(2deg); }
+.wordgame-card-art .card-row-two i { border-color: #51466f; color: #bbb0ce; background: #191526; }
+.wordgame-card-art .card-row-two i:nth-child(3) { border-color: #caff40; color: #171222; background: #88b42c; }
+.wordgame-layout { grid-template-columns: minmax(220px, .78fr) minmax(320px, 1.22fr); }
+.wordgame-copy h1 { font-size: clamp(2rem, 3.2vw, 2.6rem); letter-spacing: -.075em; }
+.wordgame-score { max-width: 300px; margin-top: 14px; }
+.wordgame-run-stat { display: flex; align-items: baseline; gap: 10px; }
+.wordgame-run-stat .score-caption { align-self: center; }
+.wordgame-run-stat .score-value { font-size: 2.3rem; }
+.wordgame-run-stat .score-value small { color: #b6aecb; font-size: .95rem; letter-spacing: 0; }
+.wordgame-play-column { max-width: 520px; }
+.wordgame-console { padding: 14px; border: 3px solid #574873; border-radius: 15px; background: linear-gradient(145deg, #29223b 0%, #171425 80%); box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); }
+.wordgame-console .frame-topline { height: 22px; padding: 0 1px 11px; }
+.wordgame-board { position: relative; width: min(100%, 410px); aspect-ratio: 5 / 6; margin: 0 auto; padding: 8px; display: grid; grid-template-rows: repeat(6, minmax(0, 1fr)); gap: 7px; overflow: hidden; border: 2px solid #403458; border-radius: 7px; background: #0e0b19; box-shadow: inset 0 0 30px rgb(69 231 255 / 5%); outline: none; }
+.wordgame-board::after { content: ""; position: absolute; z-index: 2; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0 3px, rgb(5 4 12 / 12%) 3px 4px); pointer-events: none; }
+.wordgame-board:focus-visible { outline: 3px solid var(--green); outline-offset: 4px; }
+.wordgame-row { min-height: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; }
+.wordgame-tile { min-width: 0; min-height: 0; display: grid; place-items: center; border: 2px solid #554970; color: var(--paper); background: #171425; font: 900 clamp(1.1rem, 4vw, 1.65rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; }
+.wordgame-tile.tile-filled { border-color: #a89bbd; background: #211a32; }
+.wordgame-tile.tile-correct { border-color: #caff40; color: #171222; background: #8cb52e; box-shadow: inset 0 -3px rgb(0 0 0 / 15%); }
+.wordgame-tile.tile-present { border-color: #f2d15b; color: #171222; background: #b09137; box-shadow: inset 0 -3px rgb(0 0 0 / 15%); }
+.wordgame-tile.tile-absent { border-color: #403750; color: #e3ddea; background: #393148; }
+.wordgame-result { position: absolute; z-index: 3; inset: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 9px; border: 1px solid #7a6998; border-radius: 5px; color: #f6f0dc; background: rgb(15 12 25 / 92%); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-align: center; }
+.wordgame-result span { color: var(--cyan); font-size: .7rem; font-weight: 800; letter-spacing: .14em; }
+.wordgame-result strong { color: var(--green); font-size: clamp(2rem, 8vw, 3rem); letter-spacing: .1em; text-shadow: 0 0 16px rgb(202 255 64 / 20%); }
+.wordgame-console-footer { height: 26px; padding: 9px 1px 0; display: flex; justify-content: space-between; align-items: center; color: #c1b5d5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .52rem; letter-spacing: .12em; }
+.wordgame-keyboard { max-width: 470px; margin: 12px auto 0; display: flex; flex-direction: column; gap: 6px; }
+.wordgame-key-row { display: flex; justify-content: center; gap: 5px; }
+.wordgame-key { min-width: 0; height: 43px; flex: 1 1 0; border: 1px solid #665782; border-radius: 4px; padding: 0 4px; color: #f6f0dc; background: linear-gradient(180deg, #39304d, #282137); box-shadow: 0 3px 0 #090811, inset 0 1px rgb(255 255 255 / 9%); font: 800 .78rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; cursor: pointer; touch-action: manipulation; }
+.wordgame-key:hover:not(:disabled) { border-color: var(--cyan); color: var(--cyan); }
+.wordgame-key:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #090811; }
+.wordgame-key.key-correct { border-color: #caff40; color: #171222; background: linear-gradient(180deg, #b6e84b, #769c27); }
+.wordgame-key.key-present { border-color: #f2d15b; color: #171222; background: linear-gradient(180deg, #d5b64b, #96752e); }
+.wordgame-key.key-absent { border-color: #494055; color: #a9a0b8; background: #211b2c; }
+.wordgame-key-wide { max-width: 66px; flex: 1.45 1 0; font-size: .59rem; }
+.wordgame-key:disabled { cursor: default; opacity: .55; }
+.wordgame-status { min-height: 24px; margin: 11px 2px 0; color: #c5bbd8; font-size: .74rem; line-height: 1.5; text-align: center; }
+.wordgame-local-note { max-width: 360px; margin: 13px 0 0; color: #afa5c3; font-size: .7rem; line-height: 1.55; }
+.wordgame-play-column:focus-within .wordgame-status { color: #e4f7b0; }
+
+@media (max-width: 900px) {
+  .game-card-wordgame { grid-column: auto; }
+}
+
+@media (max-width: 650px) {
+  .wordgame-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .wordgame-copy h1 { font-size: clamp(1.95rem, 9vw, 2.55rem); }
+  .wordgame-play-column { width: 100%; max-width: 520px; justify-self: center; }
+  .wordgame-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .wordgame-console .frame-topline { height: 20px; padding-bottom: 8px; }
+  .wordgame-board { width: min(100%, 410px); padding: 6px; gap: 5px; }
+  .wordgame-row { gap: 5px; }
+  .wordgame-key-row { gap: 4px; }
+  .wordgame-key { height: 42px; padding: 0 2px; font-size: .7rem; }
+  .wordgame-key-wide { max-width: 54px; font-size: .52rem; }
+  .wordgame-status { margin-top: 9px; }
+}
+
+@media (max-width: 380px) {
+  .wordgame-key-row { gap: 3px; }
+  .wordgame-key { height: 39px; font-size: .62rem; }
+  .wordgame-key-wide { max-width: 48px; font-size: .47rem; }
+  .wordgame-console-footer { font-size: .46rem; letter-spacing: .08em; }
+}
