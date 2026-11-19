@@ -12,6 +12,7 @@ import { BreakoutGame } from './games/BreakoutGame'
 import { PongGame } from './games/PongGame'
 import { InvadersGame } from './games/InvadersGame'
 import { AsteroidsGame } from './games/AsteroidsGame'
+import { MissileCommandGame } from './games/MissileCommandGame'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
 import { clearArcadeBests, readArcadeData, withDailyPatternCompletion, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
@@ -40,7 +41,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -162,6 +163,7 @@ function App() {
   const openPong = () => setScreen('pong')
   const openInvaders = () => setScreen('invaders')
   const openAsteroids = () => setScreen('asteroids')
+  const openMissileCommand = () => setScreen('missile')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -214,6 +216,7 @@ function App() {
             onPlayPong={openPong}
             onPlayInvaders={openInvaders}
             onPlayAsteroids={openAsteroids}
+            onPlayMissileCommand={openMissileCommand}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -263,6 +266,12 @@ function App() {
             onBack={() => setScreen('home')}
             bestScore={arcadeData.bests.asteroids}
             onRecordScore={(score) => recordBest('asteroids', score)}
+          />
+        ) : screen === 'missile' ? (
+          <MissileCommandGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.missileCommand}
+            onRecordScore={(score) => recordBest('missileCommand', score)}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -388,6 +397,7 @@ function Home({
   onPlayPong,
   onPlayInvaders,
   onPlayAsteroids,
+  onPlayMissileCommand,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -405,6 +415,7 @@ function Home({
   onPlayPong: () => void
   onPlayInvaders: () => void
   onPlayAsteroids: () => void
+  onPlayMissileCommand: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -439,7 +450,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">07 PLAYABLE</span>
+          <span className="section-count">08 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -535,6 +546,19 @@ function Home({
               <h3>Asteroids</h3>
               <p>Rotate, thrust, and break up the field before the rocks catch your ship.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · A D · SPACE</span><button className="play-card-button" type="button" onClick={onPlayAsteroids}>Play Asteroids <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-missile">
+            <div className="card-art missile-card-art" aria-hidden="true">
+              <span className="missile-card-trail trail-one" /><span className="missile-card-trail trail-two" />
+              <span className="missile-card-blast" /><span className="missile-card-city city-one" /><span className="missile-card-city city-two" /><span className="missile-card-city city-three" />
+              <span className="card-art-index">08</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">08</span><span className="game-category">DEFENSE COMMAND</span></div>
+              <h3>Missile Command</h3>
+              <p>Intercept incoming missiles and keep the cities standing.</p>
+              <div className="card-bottom"><span className="controls-label">AIM · ARROWS · CLICK</span><button className="play-card-button" type="button" onClick={onPlayMissileCommand}>Play Missile Command <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
