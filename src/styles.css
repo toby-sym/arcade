@@ -2058,3 +2058,71 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .maze-dash-score { gap: 6px; }
   .maze-dash-score .score-caption { font-size: .46rem; }
 }
+
+.skyline-skip-card-art { overflow: hidden; background: linear-gradient(165deg, #29213f 0%, #11101b 76%); }
+.skyline-skip-card-roofs { position: absolute; inset: auto 0 24% 0; height: 50px; display: flex; align-items: end; justify-content: space-around; }
+.skyline-skip-card-roofs i { width: 28%; height: 31px; border-top: 3px solid #54d9e7; background: linear-gradient(180deg, #40334e, #211c31); }
+.skyline-skip-card-roofs i:nth-child(2) { height: 44px; border-color: #fa718c; }
+.skyline-skip-card-runner { position: absolute; left: 42%; bottom: 48%; width: 15px; height: 25px; border-radius: 7px 7px 3px 3px; background: #c7f34f; box-shadow: 0 0 14px rgb(199 243 79 / 55%); transform: rotate(13deg); }
+.skyline-skip-card-runner::before { content: ""; position: absolute; top: -8px; left: 4px; width: 8px; height: 8px; border-radius: 50%; background: #f7f0df; }
+.skyline-skip-card-shard { position: absolute; left: 65%; bottom: 58%; width: 9px; height: 9px; background: #54d9e7; transform: rotate(45deg); box-shadow: 0 0 11px #54d9e7; }
+.skyline-skip-layout { grid-template-columns: minmax(250px, .78fr) minmax(340px, 1.22fr); gap: clamp(24px, 4vw, 64px); }
+.skyline-skip-copy h1 { font-size: clamp(2rem, 3.5vw, 2.8rem); }
+.skyline-skip-score { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+.skyline-skip-score .local-best-readout { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; }
+.skyline-skip-score .local-best-readout .score-caption { grid-column: 1 / -1; }
+.skyline-skip-score .local-best-readout .score-value { font-size: 1.25rem; }
+.skyline-skip-play-column { max-width: 640px; }
+.skyline-stage { position: relative; width: 100%; aspect-ratio: 2.15; min-height: 190px; overflow: hidden; border: 3px solid #5d4a72; border-radius: 14px; background: #1d1930; box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%); outline: none; }
+.skyline-stage:focus-visible { outline: 3px solid var(--cyan); outline-offset: 4px; }
+.skyline-stage-topline, .skyline-stage-footer { position: absolute; z-index: 1; left: 0; right: 0; display: flex; justify-content: space-between; gap: 8px; padding: 12px 14px; color: rgb(245 240 232 / 75%); font: 700 .54rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; pointer-events: none; }
+.skyline-stage-topline { top: 0; background: linear-gradient(#151220e8, transparent); }
+.skyline-stage-footer { bottom: 0; background: linear-gradient(transparent, #151220e8); }
+.skyline-stage .frame-light { color: #d6c9e5; }
+.skyline-course { position: absolute; inset: 0; width: 100%; height: 100%; }
+.skyline-moon { fill: #f2d98a; opacity: .75; }
+.skyline-windows rect { fill: #68567c; opacity: .55; }
+.skyline-roof-edge { fill: #59d7e6; filter: drop-shadow(0 0 4px rgb(89 215 230 / 70%)); }
+.skyline-roof-grit { stroke: #544861; stroke-width: 2; opacity: .75; }
+.skyline-spike { fill: #ff718c; stroke: #ffd0c5; stroke-width: 1; }
+.skyline-spike-base { stroke: #ff718c; stroke-width: 2; }
+.skyline-shard { fill: #59e4f3; stroke: #d0fbff; stroke-width: 1; filter: drop-shadow(0 0 5px #59e4f3); }
+.skyline-shard-core { fill: #f6f0dc; }
+.skyline-checkpoint-stem { stroke: #a08db8; stroke-width: 2; }
+.skyline-checkpoint-flag { fill: #756486; stroke: #b5a4ca; stroke-width: 1; }
+.skyline-checkpoint-flag.is-active { fill: #c7f34f; stroke: #f2ffc0; filter: drop-shadow(0 0 6px rgb(199 243 79 / 68%)); }
+.skyline-checkpoint-number { fill: #eee5d6; font: 700 9px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.skyline-beacon-stem { stroke: #f5b94e; stroke-width: 3; }
+.skyline-beacon-flag { fill: #f5b94e; stroke: #fff0b4; stroke-width: 1; filter: drop-shadow(0 0 7px rgb(245 185 78 / 70%)); }
+.skyline-runner { filter: drop-shadow(0 0 6px rgb(197 243 79 / 55%)); }
+.skyline-runner-body { fill: #c7f34f; stroke: #f2ffc0; stroke-width: 1; }
+.skyline-runner-helmet { fill: #e9f7b0; stroke: #c7f34f; stroke-width: 2; }
+.skyline-runner-eye { fill: #27233b; }
+.skyline-runner-feet { fill: none; stroke: #f5b94e; stroke-width: 3; stroke-linecap: square; }
+.skyline-stage-overlay { position: absolute; z-index: 2; inset: 32px 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 18px; text-align: center; background: rgb(11 10 17 / 68%); }
+.skyline-stage-overlay strong { color: var(--green); font: 800 clamp(1.1rem, 3vw, 1.6rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; }
+.skyline-stage-overlay span { max-width: 300px; margin-top: 8px; color: #e0d8e9; font-size: .77rem; line-height: 1.5; }
+.skyline-touch-controls { margin: 14px 0 0; display: flex; justify-content: center; gap: 8px; }
+.skyline-touch-controls .button { min-width: 54px; min-height: 48px; padding: 0 13px; touch-action: none; user-select: none; }
+.skyline-touch-controls .button:disabled { cursor: default; opacity: .45; }
+.skyline-touch-controls .skyline-jump-button { min-width: 116px; margin-left: 5px; background: #ff718c; }
+.skyline-jump-button span { font-size: 1.1rem; }
+.skyline-status { min-height: 24px; margin: 12px 2px 0; color: #bfb5d1; font-size: .72rem; line-height: 1.5; text-align: center; }
+
+@media (max-width: 650px) {
+  .skyline-skip-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .skyline-skip-copy h1 { font-size: clamp(1.9rem, 8.5vw, 2.55rem); }
+  .skyline-skip-play-column { width: 100%; max-width: 540px; justify-self: center; }
+  .skyline-stage { height: 180px; min-height: 0; aspect-ratio: auto; border-width: 2px; border-radius: 10px; }
+  .skyline-stage-topline, .skyline-stage-footer { padding: 9px 8px; font-size: .45rem; letter-spacing: .06em; }
+  .skyline-stage-overlay { inset: 27px 7px; padding: 12px; }
+  .skyline-stage-overlay span { font-size: .69rem; }
+}
+
+@media (max-width: 380px) {
+  .skyline-stage { height: 170px; }
+  .skyline-stage-topline, .skyline-stage-footer { font-size: .39rem; }
+  .skyline-touch-controls { gap: 6px; }
+  .skyline-touch-controls .button { min-width: 48px; padding: 0 10px; }
+  .skyline-touch-controls .skyline-jump-button { min-width: 96px; }
+}
