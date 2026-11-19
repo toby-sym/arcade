@@ -8,6 +8,7 @@ import { validMiniCrosswordProgress, type MiniCrosswordProgress } from '../games
 import { validLetterBoxedProgress, type LetterBoxedProgress } from '../games/letterBoxed'
 import { validDominoLogicProgress, type DominoLogicProgress } from '../games/dominoLogic'
 import { validGlyphMatchProgress, type GlyphMatchProgress } from '../games/glyphMatch'
+import { validVertexProgress, type VertexProgress } from '../games/vertex'
 
 export const ARCADE_DATA_KEY = 'arcade.local-data.v1'
 
@@ -30,6 +31,7 @@ export interface ArcadeBests {
   letterBoxed: number | null
   dominoLogic: number | null
   glyphMatch: number | null
+  vertex: number | null
 }
 
 export interface ArcadeData {
@@ -45,6 +47,7 @@ export interface ArcadeData {
   dailyLetterBoxedGame: LetterBoxedProgress | null
   dailyDominoLogicGame: DominoLogicProgress | null
   dailyGlyphMatchGame: GlyphMatchProgress | null
+  dailyVertexGame: VertexProgress | null
   preferences: {
     reduceMotion: boolean
     soundEffects: boolean
@@ -53,9 +56,9 @@ export interface ArcadeData {
 }
 
 export function withImprovedBest(data: ArcadeData, game: keyof ArcadeBests, candidate: number): ArcadeData | null {
-  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && game !== 'letterBoxed' && game !== 'dominoLogic' && game !== 'glyphMatch' && candidate === 0)) return null
+  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && game !== 'letterBoxed' && game !== 'dominoLogic' && game !== 'glyphMatch' && game !== 'vertex' && candidate === 0)) return null
   const previous = data.bests[game]
-  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword' || game === 'letterBoxed' || game === 'dominoLogic' || game === 'glyphMatch'
+  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword' || game === 'letterBoxed' || game === 'dominoLogic' || game === 'glyphMatch' || game === 'vertex'
   const improved = previous === null || (lowerIsBetter ? candidate < previous : candidate > previous)
   if (!improved) return null
   return { ...data, bests: { ...data.bests, [game]: candidate } }
@@ -143,12 +146,17 @@ export function withDailyGlyphMatchGame(data: ArcadeData, progress: GlyphMatchPr
   return { ...data, dailyGlyphMatchGame: { date: progress.date, matchedIndices: [...progress.matchedIndices], moves: progress.moves } }
 }
 
+export function withDailyVertexGame(data: ArcadeData, progress: VertexProgress): ArcadeData | null {
+  if (!validVertexProgress(progress)) return null
+  return { ...data, dailyVertexGame: { date: progress.date, selectedEdges: [...progress.selectedEdges], moves: progress.moves } }
+}
+
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null },
     dailyPatternCompletedDate: null,
     dailyWordGame: null,
     dailyConnectionsGame: null,
@@ -159,12 +167,13 @@ export function emptyArcadeData(): ArcadeData {
     dailyLetterBoxedGame: null,
     dailyDominoLogicGame: null,
     dailyGlyphMatchGame: null,
+    dailyVertexGame: null,
     preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady' },
   }
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -190,6 +199,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
       dailyLetterBoxedGame: validLetterBoxedProgress(parsed.dailyLetterBoxedGame) ? parsed.dailyLetterBoxedGame : null,
       dailyDominoLogicGame: validDominoLogicProgress(parsed.dailyDominoLogicGame) ? parsed.dailyDominoLogicGame : null,
       dailyGlyphMatchGame: validGlyphMatchProgress(parsed.dailyGlyphMatchGame) ? parsed.dailyGlyphMatchGame : null,
+      dailyVertexGame: validVertexProgress(parsed.dailyVertexGame) ? parsed.dailyVertexGame : null,
       bests: {
         snake: validRecord(bests.snake),
         reaction: validRecord(bests.reaction),
@@ -209,6 +219,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         letterBoxed: validRecord(bests.letterBoxed),
         dominoLogic: validRecord(bests.dominoLogic),
         glyphMatch: validRecord(bests.glyphMatch),
+        vertex: validRecord(bests.vertex),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }
