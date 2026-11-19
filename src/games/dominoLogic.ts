@@ -129,7 +129,7 @@ export function dominoLogicReducer(state: DominoLogicState, action: DominoLogicA
   }
 
   if (action.type === 'place') {
-    if (state.selectedDominoId === null) return state
+    if (state.selectedDominoId === null) return { ...state, message: 'Select a domino from the tray before choosing a cell.' }
     const placement: DominoPlacement = {
       dominoId: state.selectedDominoId,
       firstCell: action.cell,
@@ -209,6 +209,11 @@ export function dominoTotals(puzzle: DominoLogicPuzzle, placements: DominoPlacem
 
 export function isDominoLogicSolved(puzzle: DominoLogicPuzzle, placements: DominoPlacement[]): boolean {
   if (placements.length !== puzzle.dominoes.length) return false
+  const verified: DominoPlacement[] = []
+  for (const placement of placements) {
+    if (!canPlaceDomino(puzzle, verified, placement)) return false
+    verified.push(placement)
+  }
   const totals = dominoTotals(puzzle, placements)
   return totals.cells.every((value) => value !== null)
     && totals.rowSums.every((sum, index) => sum === puzzle.rowTargets[index])

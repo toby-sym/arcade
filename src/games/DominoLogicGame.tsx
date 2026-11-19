@@ -110,7 +110,7 @@ export function DominoLogicGame({ onBack, bestUndos, progress, onSaveProgress }:
               ))}
             </div>
             <div className="domino-board-row">
-              <div className="domino-row-totals" aria-label="Row totals">
+              <div className="domino-row-totals" role="group" aria-label="Row target totals">
                 {state.rowTargets.map((target, row) => (
                   <div className="domino-row-total" key={row} role="group" aria-label={`Row ${row + 1}, ${totals.rowSums[row]} of ${target}`}>
                     <span>ROW {row + 1}</span>

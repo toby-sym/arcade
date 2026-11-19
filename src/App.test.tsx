@@ -615,8 +615,12 @@ describe('Arcade navigation and game controls', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Domino 1,/ }))
     expect(screen.getByRole('button', { name: /Domino 1,/ })).toHaveAttribute('aria-pressed', 'true')
+    fireEvent.click(screen.getByRole('button', { name: 'Rotate (R)' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Flip (F)' }))
     fireEvent.click(screen.getByRole('button', { name: 'Row 1, column 1, empty' }))
-    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').dailyDominoLogicGame.placements).toHaveLength(1)
+    const savedProgress = JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').dailyDominoLogicGame
+    expect(savedProgress.placements).toHaveLength(1)
+    expect(savedProgress.placements[0]).toMatchObject({ firstCell: 0, orientation: 'vertical', flipped: true })
     expect(screen.getByRole('button', { name: /Domino 1, .*placed/ })).toBeDisabled()
 
     fireEvent.click(screen.getByRole('button', { name: /all games/i }))
