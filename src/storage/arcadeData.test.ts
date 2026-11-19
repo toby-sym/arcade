@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, readArcadeData, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, parseArcadeDataBackup, readArcadeData, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
 import { createGlyphMatchPuzzle } from '../games/glyphMatch'
 import { createVertexPuzzle } from '../games/vertex'
 import { createTilesPuzzle } from '../games/tiles'
@@ -20,6 +20,24 @@ class MemoryStorage {
 describe('browser-local Arcade data', () => {
   it('returns an empty starting point without saved data', () => {
     expect(readArcadeData(new MemoryStorage())).toEqual(emptyArcadeData())
+  })
+
+  it('accepts complete valid backups and rejects malformed or incomplete files', () => {
+    const backup = emptyArcadeData()
+    backup.bests.snake = 24
+    backup.preferences.soundEffects = true
+    backup.dailyWordGame = { date: '2026-11-19', guesses: ['CRANE'], phase: 'playing' }
+
+    expect(parseArcadeDataBackup(JSON.stringify(backup))).toEqual(backup)
+    expect(parseArcadeDataBackup('{bad json')).toBeNull()
+    expect(parseArcadeDataBackup(JSON.stringify({ ...backup, version: 2 }))).toBeNull()
+    expect(parseArcadeDataBackup(JSON.stringify({ ...backup, bests: { ...backup.bests, snake: -1 } }))).toBeNull()
+    expect(parseArcadeDataBackup(JSON.stringify({ ...backup, dailyWordGame: { ...backup.dailyWordGame, guesses: ['NOPE'] } }))).toBeNull()
+
+    const missingDailyField = { ...backup } as Record<string, unknown>
+    delete missingDailyField.dailyPipsGame
+    expect(parseArcadeDataBackup(JSON.stringify(missingDailyField))).toBeNull()
+    expect(parseArcadeDataBackup(' '.repeat(ARCADE_BACKUP_MAX_BYTES + 1))).toBeNull()
   })
 
   it('round-trips local bests and the motion preference', () => {
