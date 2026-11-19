@@ -487,3 +487,259 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* Arcade cabinet overhaul */
+:root {
+  color-scheme: dark;
+  color: #f6f0dc;
+  background: #0b0914;
+  --paper: #f6f0dc;
+  --paper-deep: #d9d0e9;
+  --ink: #f6f0dc;
+  --muted: #b6aecb;
+  --line: #51466f;
+  --green: #caff40;
+  --green-deep: #9bd52d;
+  --coral: #ff5f83;
+  --violet: #bb96ff;
+  --cyan: #45e7ff;
+  --night: #100d1e;
+  --night-soft: #211a34;
+}
+
+body {
+  color: var(--paper);
+  background: radial-gradient(ellipse at 50% -8%, #302448 0, #171329 36%, #0b0914 78%);
+}
+
+.app-shell {
+  width: min(100%, 1440px);
+  background: linear-gradient(155deg, #19162a 0%, #141120 46%, #100e1a 100%);
+  border-right: 6px solid #29243b;
+  border-left: 6px solid #29243b;
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 0 0 2px #07060d, 0 18px 55px rgb(0 0 0 / 47%), 0 0 42px rgb(187 150 255 / 11%), inset 0 0 0 2px rgb(255 255 255 / 3%);
+}
+
+.topbar {
+  min-height: 94px;
+  padding: 0 16px;
+  border-bottom: 2px solid #53436e;
+  background: linear-gradient(180deg, #27213a 0%, #1b172a 88%, #151221 100%);
+  box-shadow: inset 0 1px rgb(255 255 255 / 8%), 0 5px 0 rgb(5 4 9 / 35%);
+}
+
+.brand {
+  color: var(--paper);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .19em;
+  text-shadow: 0 0 12px rgb(69 231 255 / 28%);
+}
+
+.brand-mark { width: 26px; height: 26px; gap: 3px; }
+.brand-mark span:first-child, .brand-mark span:last-child { background: var(--cyan); }
+.brand-mark span:nth-child(2), .brand-mark span:nth-child(3) { background: var(--coral); }
+.topbar-note { color: var(--green); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .68rem; font-weight: 800; letter-spacing: .14em; }
+.version-label { border: 1px solid #5b4c7b; padding: 6px 9px; color: #d3c6f2; background: #171326; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+.eyebrow, .section-count, .game-number, .game-category, .controls-label, .card-art-index, .frame-topline, .frame-bottomline, .reaction-console-footer, .pattern-console-footer, .breakout-console-footer, .pong-console-footer {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 800;
+}
+
+.eyebrow { color: #c2b9d6; }
+.eyebrow-dot { background: var(--coral); box-shadow: 0 0 0 4px rgb(255 95 131 / 15%), 0 0 13px rgb(255 95 131 / 65%); }
+.hero-copy h1, .snake-copy h1 { color: #fff8e4; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 900; text-shadow: 0 0 24px rgb(69 231 255 / 13%); }
+.hero-copy h1 em { color: var(--cyan); text-shadow: 0 0 18px rgb(69 231 255 / 28%); }
+.title-period { color: var(--coral); text-shadow: 0 0 14px rgb(255 95 131 / 55%); }
+.hero-lede, .snake-lede { color: #c2bad2; }
+
+.hero-art {
+  border: 7px solid #090811;
+  border-radius: 15px;
+  background: radial-gradient(ellipse at 74% 37%, #28214a 0, #151329 50%, #0c0b17 100%);
+  box-shadow: inset 0 0 0 2px #55446f, inset 0 0 36px rgb(69 231 255 / 9%), 0 0 0 2px #3f3557, 0 8px 0 #090811, 0 0 28px rgb(187 150 255 / 14%);
+}
+
+.hero-art::before {
+  inset: 0;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  opacity: .16;
+  background: repeating-linear-gradient(to bottom, transparent 0 3px, rgb(255 255 255 / 12%) 3px 4px);
+  transform: none;
+}
+
+.hero-art::after { display: none; }
+.hero-sun { background: var(--coral); box-shadow: 0 0 0 7px rgb(255 95 131 / 12%), 0 0 36px rgb(255 95 131 / 45%); }
+.hero-art-label { color: var(--green); text-shadow: 0 0 12px rgb(202 255 64 / 38%); }
+.hero-art-index { color: rgb(246 240 220 / 62%); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+.section-heading h2, .home-preferences h2 {
+  color: #fff8e4;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.section-count { color: var(--cyan); }
+.game-list { gap: 20px; }
+.game-card {
+  padding: 6px;
+  border: 2px solid #4a3e67;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #2a233d, #171425 62%);
+  box-shadow: 0 7px 0 #090811, 0 10px 20px rgb(0 0 0 / 26%), inset 0 1px rgb(255 255 255 / 7%);
+}
+
+.game-card-snake:hover, .game-card-reaction:hover, .game-card-pattern:hover, .game-card-breakout:hover, .game-card-pong:hover {
+  border-color: #9b82cf;
+  box-shadow: 0 9px 0 #090811, 0 14px 26px rgb(0 0 0 / 34%), 0 0 20px rgb(187 150 255 / 15%);
+}
+
+.card-art { border: 2px solid #0c0a13; border-radius: 7px 7px 3px 3px; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 12%); }
+.card-info { min-height: 218px; border-radius: 3px 3px 7px 7px; background: linear-gradient(180deg, #211b32, #191526); }
+.card-heading-line { min-height: 18px; }
+.game-number { color: var(--cyan); }
+.game-category { color: #c4b9da; }
+.card-info h3 { color: #fff8e4; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 900; text-transform: uppercase; }
+.card-info p { color: #c2bad2; }
+.controls-label { color: #b8aecb; }
+
+.play-card-button {
+  border: 1px solid #ff92aa;
+  border-radius: 4px;
+  padding: 9px 11px;
+  color: #240c1a;
+  background: linear-gradient(180deg, #ff819d, #ff5f83);
+  box-shadow: 0 3px 0 #9f3656, inset 0 1px rgb(255 255 255 / 50%);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.play-card-button:hover { color: #160d20; background: linear-gradient(180deg, #eaff9b, var(--green)); }
+.play-card-button:active { transform: translateY(2px); box-shadow: 0 1px 0 #9f3656, inset 0 1px rgb(255 255 255 / 50%); }
+
+.home-preferences { border-color: #51466f; }
+.motion-setting strong, .records-setting strong { color: var(--paper); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; }
+.motion-setting small, .records-setting small, .local-data-note { color: #b6aecb; }
+.motion-setting input, .pong-pace-setting input { accent-color: var(--green); }
+.records-setting { border-color: #51466f; }
+.clear-records-button { border-color: #76658f; border-radius: 4px; color: #ffd0da; background: #21172b; box-shadow: 0 3px 0 #090811; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 900; text-transform: uppercase; }
+.clear-records-button:hover { border-color: var(--coral); background: #362033; }
+.clear-records-confirmation { border-color: var(--coral); background: #211729; }
+.clear-records-confirmation p { color: #e0d7ea; }
+
+.snake-view { padding-top: 31px; }
+.back-link { border: 1px solid #554970; border-radius: 4px; padding: 9px 12px; color: #d0c7df; background: #211b32; box-shadow: 0 3px 0 #090811; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .68rem; font-weight: 800; text-transform: uppercase; }
+.back-link:hover { color: var(--green); border-color: #8c7ab0; }
+.snake-copy h1 { font-size: clamp(3rem, 5.8vw, 5.4rem); text-transform: uppercase; }
+.how-to-play { border-color: #51466f; }
+.how-to-play h2 { color: var(--cyan); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .73rem; text-transform: uppercase; }
+.how-to-play p { color: #c2bad2; }
+.score-card { border: 1px solid #4d4169; border-radius: 7px; padding: 12px 14px; background: linear-gradient(145deg, #221c34, #171425); box-shadow: inset 0 1px rgb(255 255 255 / 5%); }
+.score-caption { color: #c5bbd8; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.score-value { color: var(--green); text-shadow: 0 0 12px rgb(202 255 64 / 20%); }
+.score-unit { color: #b6aecb; }
+.local-best-readout { border-color: #51466f; }
+.game-actions { gap: 11px; }
+.button { border-radius: 5px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .69rem; font-weight: 900; letter-spacing: .015em; text-transform: uppercase; box-shadow: 0 4px 0 #08070e, inset 0 1px rgb(255 255 255 / 13%); }
+.button:active { transform: translateY(3px); box-shadow: 0 1px 0 #08070e, inset 0 1px rgb(255 255 255 / 10%); }
+.button-primary { color: #171222; background: linear-gradient(180deg, #d8ff70, var(--green)); box-shadow: 0 4px 0 #688d20, inset 0 1px rgb(255 255 255 / 55%); }
+.button-primary:hover { background: linear-gradient(180deg, #e5ff9b, #baff34); }
+.button-secondary { color: #1d1022; background: linear-gradient(180deg, #ff91aa, var(--coral)); box-shadow: 0 4px 0 #9f3656, inset 0 1px rgb(255 255 255 / 38%); }
+.button-secondary:hover { color: #180f23; background: linear-gradient(180deg, #ffa8bd, #ff6689); }
+.button-quiet { border-color: #65577f; color: #e1d8ed; background: linear-gradient(180deg, #302641, #211b32); }
+.button-quiet:hover { border-color: var(--cyan); color: var(--cyan); }
+.button-danger { color: #fff5ea; background: linear-gradient(180deg, #ff7890, #c9345f); box-shadow: 0 4px 0 #78213c; }
+.button-danger:hover { color: #fff; background: linear-gradient(180deg, #ff96a8, #dc3e6b); }
+.keyboard-hint { color: #b8aecb; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+.play-frame, .reaction-console, .pattern-console, .breakout-console, .pong-console {
+  border: 3px solid #574873;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #29223b 0%, #171425 80%);
+  box-shadow: 0 9px 0 #090811, 0 16px 32px rgb(0 0 0 / 34%), inset 0 1px rgb(255 255 255 / 6%);
+}
+
+.frame-topline, .frame-bottomline, .reaction-console-footer, .pattern-console-footer, .breakout-console-footer, .pong-console-footer { color: #c1b5d5; }
+.frame-light i { background: var(--coral); box-shadow: 0 0 10px rgb(255 95 131 / 45%); }
+.status-playing .frame-light i, .phase-playing .frame-light i { background: var(--green); box-shadow: 0 0 10px rgb(202 255 64 / 75%); }
+.game-board { border: 2px solid #51466f; border-radius: 8px; box-shadow: inset 0 0 25px rgb(69 231 255 / 6%); }
+.game-board::after, .breakout-field::after, .pong-field::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom, transparent 0 3px, rgb(5 4 12 / 17%) 3px 4px);
+  pointer-events: none;
+}
+
+.game-board:focus-visible, .breakout-field:focus-visible, .pong-field:focus-visible { outline-color: var(--green); }
+.board-overlay { background: rgb(12 9 23 / 67%); }
+.board-overlay strong, .breakout-overlay strong, .pong-overlay strong { color: var(--green); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; text-shadow: 0 0 14px rgb(202 255 64 / 18%); }
+.board-overlay > span:last-child, .breakout-overlay span, .pong-overlay span { color: #e0d8e9; }
+.touch-label { color: var(--cyan); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 900; }
+.dpad-button { border: 1px solid #5e507d; border-radius: 5px; color: #1a1423; background: linear-gradient(180deg, #e6ff9a, var(--green)); box-shadow: 0 4px 0 #688d20, inset 0 1px rgb(255 255 255 / 50%); }
+.dpad-button:hover { background: linear-gradient(180deg, #f0ffbf, #d0ff60); }
+.dpad-button:active { transform: translateY(3px) scale(.98); box-shadow: 0 1px 0 #688d20; }
+
+.reaction-console .frame-light i { background: #a49ab8; }
+.reaction-target { border: 2px solid #403458; border-radius: 10px; box-shadow: inset 0 0 0 2px rgb(255 255 255 / 3%), inset 0 0 40px rgb(0 0 0 / 22%); }
+.reaction-target strong { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 900; text-transform: uppercase; }
+.reaction-target-hint { color: rgb(246 240 220 / 80%); }
+.phase-waiting .reaction-target, .phase-false-start .reaction-target { background: linear-gradient(145deg, #d94467, #942e51); }
+.phase-go .reaction-target { color: #171222; background: linear-gradient(145deg, #d6ff72, var(--green)); box-shadow: inset 0 0 34px rgb(255 255 255 / 17%), 0 0 28px rgb(202 255 64 / 18%); }
+.phase-go .reaction-target-hint { color: rgb(23 18 34 / 78%); }
+.phase-result .reaction-target { background: linear-gradient(145deg, #29223f, #171425); }
+.reaction-status, .pattern-status, .breakout-status, .pong-status { color: #bfb5d1; }
+
+.pattern-console .frame-light i { background: #a49ab8; }
+.pattern-board { border: 2px solid #433759; border-radius: 8px; background: #0d0b17; }
+.pattern-tile { border: 2px solid rgb(246 240 220 / 14%); border-radius: 5px; box-shadow: inset 0 -4px rgb(0 0 0 / 12%), inset 0 1px rgb(255 255 255 / 10%); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 900; }
+.pattern-tile.tile-active { filter: brightness(1.28); box-shadow: inset 0 0 0 3px #fff8e4, 0 0 18px rgb(255 255 255 / 26%); }
+.pattern-copy .score-card { border-color: #4d4169; }
+.daily-completion-note { border-left-color: var(--green); color: #e4f7b0; background: rgb(202 255 64 / 10%); }
+
+.breakout-console .frame-light i { background: #a49ab8; }
+.breakout-field, .pong-field { border: 2px solid #403458; border-radius: 8px; background-color: #0e0b19; box-shadow: inset 0 0 36px rgb(69 231 255 / 5%); }
+.breakout-field::before { background-image: repeating-linear-gradient(to bottom, transparent 0 3px, rgb(5 4 12 / 15%) 3px 4px), linear-gradient(90deg, transparent 49.8%, rgb(245 240 232 / 9%) 50%, transparent 50.2%); }
+.breakout-brick { border-radius: 3px; box-shadow: inset 0 -4px rgb(0 0 0 / 24%), inset 0 1px rgb(255 255 255 / 25%), 0 0 7px rgb(255 255 255 / 8%); }
+.breakout-paddle, .pong-player-paddle { box-shadow: 0 0 8px rgb(202 255 64 / 53%), inset 0 1px rgb(255 255 255 / 45%); }
+.breakout-ball, .pong-ball { box-shadow: 0 0 13px rgb(246 240 220 / 78%); }
+.pong-console .frame-light i { background: #a49ab8; }
+.pong-center-line { border-color: rgb(246 240 220 / 28%); }
+.pong-score-lamp { color: rgb(246 240 220 / 17%); }
+.pong-computer-paddle { box-shadow: 0 0 9px rgb(255 95 131 / 52%), inset 0 1px rgb(255 255 255 / 33%); }
+.pong-score { border-color: #4d4169; }
+.pong-score-divider { color: #887a9f; }
+.pong-pace-setting { max-width: 365px; }
+.pong-pace-setting legend { color: #d2c9df; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .69rem; font-weight: 900; text-transform: uppercase; }
+.pong-pace-setting label { border-color: #574873; border-radius: 4px; color: #d3c9e1; background: #211a32; box-shadow: 0 3px 0 #090811; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 800; }
+.pong-pace-setting label:has(input:checked) { border-color: var(--cyan); color: var(--cyan); background: #252039; box-shadow: 0 3px 0 #090811, inset 0 0 14px rgb(69 231 255 / 8%); }
+.pong-pace-setting:disabled label { opacity: .52; }
+.pong-pace-setting:disabled legend::after { color: #a79bb8; }
+
+.breakout-card-art, .pong-card-art { border-color: #0d0b18; }
+.home-preferences { color: var(--paper); }
+.storage-notice { color: #ff9caf; }
+.site-footer { border-color: #51466f; color: #afa5c3; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.site-footer span:last-child { color: #c3b7d8; }
+
+button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3px solid var(--green); outline-offset: 4px; }
+
+@media (max-width: 650px) {
+  .app-shell { border-right-width: 4px; border-left-width: 4px; border-radius: 0 0 15px 15px; }
+  .topbar { min-height: 74px; padding-right: 7px; padding-left: 7px; }
+  .topbar-note { color: #bcb3cf; font-size: .56rem; letter-spacing: .08em; }
+  .version-label { padding: 5px 6px; }
+  .hero-art { border-width: 5px; border-radius: 11px; }
+  .game-card { padding: 4px; border-radius: 9px; }
+  .card-art { border-radius: 5px 5px 2px 2px; }
+  .card-info { border-radius: 2px 2px 5px 5px; }
+  .play-frame, .reaction-console, .pattern-console, .breakout-console, .pong-console { border-radius: 10px; border-width: 2px; }
+  .button { box-shadow: 0 3px 0 #08070e, inset 0 1px rgb(255 255 255 / 13%); }
+}

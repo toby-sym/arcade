@@ -138,7 +138,7 @@ function App() {
           <span className="brand-mark" aria-hidden="true"><span /><span /><span /><span /></span>
           <span>ARCADE</span>
         </button>
-        <span className="topbar-note">A pocket-sized play break</span>
+        <span className="topbar-note">FREE PLAY · 1 PLAYER</span>
         <span className="version-label">{versionLabel}</span>
       </header>
 
