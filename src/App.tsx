@@ -8,6 +8,7 @@ import {
 } from './games/snake'
 import { ReactionGame } from './games/ReactionGame'
 import { PatternGame } from './games/PatternGame'
+import { BreakoutGame } from './games/BreakoutGame'
 import { readArcadeData, withImprovedBest, writeArcadeData, type ArcadeBests } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
@@ -29,7 +30,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -79,6 +80,7 @@ function App() {
   }
   const openReaction = () => setScreen('reaction')
   const openPattern = () => setScreen('pattern')
+  const openBreakout = () => setScreen('breakout')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -124,6 +126,7 @@ function App() {
             onPlaySnake={openSnake}
             onPlayReaction={openReaction}
             onPlayPattern={openPattern}
+            onPlayBreakout={openBreakout}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             storageNotice={storageNotice}
@@ -139,6 +142,12 @@ function App() {
             onBack={() => setScreen('home')}
             bestRounds={arcadeData.bests.pattern}
             onRecordRounds={(rounds) => recordBest('pattern', rounds)}
+          />
+        ) : screen === 'breakout' ? (
+          <BreakoutGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.breakout}
+            onRecordScore={(score) => recordBest('breakout', score)}
           />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
@@ -259,6 +268,7 @@ function Home({
   onPlaySnake,
   onPlayReaction,
   onPlayPattern,
+  onPlayBreakout,
   reduceMotion,
   onReduceMotionChange,
   storageNotice,
@@ -266,6 +276,7 @@ function Home({
   onPlaySnake: () => void
   onPlayReaction: () => void
   onPlayPattern: () => void
+  onPlayBreakout: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   storageNotice: string
@@ -292,7 +303,7 @@ function Home({
             <p className="eyebrow">THE FLOOR</p>
             <h2 id="games-title">Choose your game</h2>
           </div>
-          <span className="section-count">03 PLAYABLE</span>
+          <span className="section-count">04 PLAYABLE</span>
         </div>
         <div className="game-list">
           <article className="game-card game-card-snake">
@@ -333,6 +344,20 @@ function Home({
               <h3>Remember</h3>
               <p>Practice a growing pattern or take on today's shared sequence.</p>
               <div className="card-bottom"><span className="controls-label">TOUCH · CLICK · KEY</span><button className="play-card-button" type="button" onClick={onPlayPattern}>Play Pattern <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-breakout">
+            <div className="card-art breakout-card-art" aria-hidden="true">
+              <div className="breakout-card-bricks"><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /></div>
+              <span className="breakout-card-ball" />
+              <span className="breakout-card-paddle" />
+              <span className="card-art-index">04</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">04</span><span className="game-category">ARCADE CLASSIC</span></div>
+              <h3>Breakout</h3>
+              <p>Keep the ball in play and chip away at the wall.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · WASD · DRAG</span><button className="play-card-button" type="button" onClick={onPlayBreakout}>Play Breakout <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>

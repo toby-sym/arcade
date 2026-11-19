@@ -17,7 +17,7 @@ describe('browser-local Arcade data', () => {
     const storage = new MemoryStorage()
     const saved = {
       version: 1 as const,
-      bests: { snake: 12, reaction: 238, pattern: 4 },
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120 },
       preferences: { reduceMotion: true },
     }
 
@@ -36,6 +36,8 @@ describe('browser-local Arcade data', () => {
     expect(withImprovedBest(reactionRecord!, 'pattern', 0)).toBeNull()
     expect(withImprovedBest(reactionRecord!, 'reaction', 235)?.bests.reaction).toBe(235)
     expect(withImprovedBest(reactionRecord!, 'pattern', 3)?.bests.pattern).toBe(3)
+    expect(withImprovedBest(reactionRecord!, 'breakout', 120)?.bests.breakout).toBe(120)
+    expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, breakout: 120 } }, 'breakout', 100)).toBeNull()
   })
 
   it('reads back saved fields and discards malformed records', () => {
@@ -43,13 +45,13 @@ describe('browser-local Arcade data', () => {
     storage.key = ARCADE_DATA_KEY
     storage.value = JSON.stringify({
       version: 1,
-      bests: { snake: 9, reaction: -40, pattern: 2.5 },
+      bests: { snake: 9, reaction: -40, pattern: 2.5, breakout: 1.2 },
       preferences: { reduceMotion: true },
     })
 
     expect(readArcadeData(storage)).toEqual({
       version: 1,
-      bests: { snake: 9, reaction: null, pattern: null },
+      bests: { snake: 9, reaction: null, pattern: null, breakout: null },
       preferences: { reduceMotion: true },
     })
   })

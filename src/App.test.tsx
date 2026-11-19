@@ -63,7 +63,7 @@ describe('Arcade navigation and game controls', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
     render(<App />)
 
-    expect(screen.getByText('03 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('04 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play reaction/i }))
     expect(screen.getByRole('heading', { name: 'Reaction' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /start a round/i })).toBeInTheDocument()
@@ -100,7 +100,7 @@ describe('Arcade navigation and game controls', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
     render(<App />)
 
-    expect(screen.getByText('03 PLAYABLE')).toBeInTheDocument()
+    expect(screen.getByText('04 PLAYABLE')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /play pattern/i }))
     expect(screen.getByRole('heading', { name: 'Remember' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /start practice/i }))
@@ -167,6 +167,33 @@ describe('Arcade navigation and game controls', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Daily challenge complete. You remembered all 8 tiles.')
     expect(screen.getByRole('button', { name: /try daily again/i })).toBeInTheDocument()
     expect(window.localStorage.getItem(ARCADE_DATA_KEY)).toBeNull()
+  })
+
+  it('opens Breakout and supports keyboard paddle movement, pause, and restart', async () => {
+    vi.useFakeTimers()
+    render(<App />)
+
+    expect(screen.getByText('04 PLAYABLE')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /play breakout/i }))
+    expect(screen.getByRole('heading', { name: 'Breakout' })).toBeInTheDocument()
+    const board = screen.getByRole('group', { name: 'Breakout playfield' })
+    const paddle = board.querySelector('.breakout-paddle')
+    expect(paddle).toHaveStyle({ left: '40.833333333333336%' })
+
+    fireEvent.click(screen.getByRole('button', { name: /start game/i }))
+    act(() => { vi.advanceTimersByTime(20) })
+    expect(board).toHaveFocus()
+    fireEvent.keyDown(board, { key: 'ArrowLeft' })
+    expect(paddle).not.toHaveStyle({ left: '40.833333333333336%' })
+    fireEvent.click(screen.getByRole('button', { name: /pause/i }))
+    expect(screen.getByRole('button', { name: /resume/i })).toBeInTheDocument()
+    fireEvent.keyDown(board, { key: 'Escape' })
+    expect(screen.getByRole('button', { name: /pause/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /restart/i }))
+    expect(screen.getByRole('button', { name: /start game/i })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /all games/i }))
+    expect(screen.getByRole('heading', { name: 'Choose your game' })).toBeInTheDocument()
   })
 
   it('saves the reduced-motion preference and restores it on the next visit', () => {
