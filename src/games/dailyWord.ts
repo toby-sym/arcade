@@ -39,6 +39,7 @@ ABACK ABIDE ABODE ABORT ABOUT ABUSE ACTED ADAGE ADDED ADEPT ADMIN ADULT AFFIX AG
 `.trim().split(/\s+/)
 
 const VALID_WORDS = new Set([...ANSWERS, ...EXTRA_GUESSES].filter((word) => word.length === WORD_LENGTH))
+export const FIVE_LETTER_WORD_LIST: readonly string[] = [...VALID_WORDS]
 const DAY_MS = 86_400_000
 const GAME_EPOCH = Date.parse(`${WORD_GAME_START_DATE}T00:00:00.000Z`)
 
