@@ -1,8 +1,10 @@
-export type PatternPhase = 'ready' | 'showing' | 'input' | 'paused' | 'failed'
+export type PatternPhase = 'ready' | 'showing' | 'input' | 'paused' | 'failed' | 'complete'
+export type PatternMode = 'practice' | 'daily'
 export type PatternResumePhase = 'showing' | 'input'
 
 export interface PatternState {
   phase: PatternPhase
+  mode: PatternMode
   sequence: number[]
   showIndex: number
   activeTile: number | null
@@ -15,6 +17,7 @@ export interface PatternState {
 
 export type PatternAction =
   | { type: 'start'; tile: number }
+  | { type: 'startDaily'; sequence: number[] }
   | { type: 'advance' }
   | { type: 'choose'; tile: number; nextTile: number }
   | { type: 'pause' }
@@ -26,6 +29,7 @@ const tileNames = ['top left', 'top right', 'bottom left', 'bottom right']
 export function createPatternState(): PatternState {
   return {
     phase: 'ready',
+    mode: 'practice',
     sequence: [],
     showIndex: 0,
     activeTile: null,
@@ -44,8 +48,19 @@ export function patternReducer(state: PatternState, action: PatternAction): Patt
       return {
         ...createPatternState(),
         phase: 'showing',
+        mode: 'practice',
         sequence: [action.tile],
         message: 'Watch the pattern. It will light one tile at a time.',
+      }
+
+    case 'startDaily':
+      if (action.sequence.length === 0 || action.sequence.some((tile) => !Number.isInteger(tile) || tile < 0 || tile > 3)) return state
+      return {
+        ...createPatternState(),
+        phase: 'showing',
+        mode: 'daily',
+        sequence: [...action.sequence],
+        message: `Today's ${action.sequence.length}-tile shared challenge. Watch carefully.`,
       }
 
     case 'advance':
@@ -68,7 +83,9 @@ export function patternReducer(state: PatternState, action: PatternAction): Patt
           phase: 'failed',
           activeTile: null,
           failedTile: action.tile,
-          message: `Pattern broken. You completed ${state.completedRounds} ${state.completedRounds === 1 ? 'round' : 'rounds'}. Play again when ready.`,
+          message: state.mode === 'daily'
+            ? 'Not quite. Daily challenge over for this run. Try again when ready.'
+            : `Pattern broken. You completed ${state.completedRounds} ${state.completedRounds === 1 ? 'round' : 'rounds'}. Play again when ready.`,
         }
       }
       if (state.inputIndex < state.sequence.length - 1) {
@@ -76,6 +93,15 @@ export function patternReducer(state: PatternState, action: PatternAction): Patt
         return { ...state, inputIndex, message: `Tile ${inputIndex} of ${state.sequence.length} is correct. Keep going.` }
       }
       {
+        if (state.mode === 'daily') {
+          return {
+            ...state,
+            phase: 'complete',
+            activeTile: null,
+            inputIndex: state.sequence.length,
+            message: `Daily challenge complete. You remembered all ${state.sequence.length} tiles.`,
+          }
+        }
         const sequence = [...state.sequence, action.nextTile]
         const completedRounds = state.completedRounds + 1
         return {
