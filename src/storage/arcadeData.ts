@@ -41,6 +41,7 @@ export interface ArcadeBests {
   pips: number | null
   crossword: number | null
   minesweeper: number | null
+  mazeDash: number | null
 }
 
 export interface ArcadeData {
@@ -197,7 +198,7 @@ type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null },
     dailyPatternCompletedDate: null,
     dailyWordGame: null,
     dailyConnectionsGame: null,
@@ -218,7 +219,7 @@ export function emptyArcadeData(): ArcadeData {
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -273,6 +274,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         pips: validRecord(bests.pips),
         crossword: validRecord(bests.crossword),
         minesweeper: validRecord(bests.minesweeper),
+        mazeDash: validRecord(bests.mazeDash),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }
@@ -303,7 +305,7 @@ export function parseArcadeDataBackup(contents: string): ArcadeData | null {
 
     const empty = emptyArcadeData()
     if (!Object.keys(empty).filter((key) => key !== 'dailyMinesweeperGame').every((key) => key in parsed)) return null
-    if (!Object.keys(empty.bests).filter((key) => key !== 'minesweeper').every((key) => {
+    if (!Object.keys(empty.bests).filter((key) => key !== 'minesweeper' && key !== 'mazeDash').every((key) => {
       const record = bests[key]
       return record === null || (typeof record === 'number' && Number.isSafeInteger(record) && record >= 0)
     })) return null
