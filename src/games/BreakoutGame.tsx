@@ -16,6 +16,8 @@ import {
   remainingBricks,
 } from './breakout'
 
+const KEYBOARD_PADDLE_SPEED = 375
+
 interface BreakoutGameProps {
   onBack: () => void
   bestScore: number | null
@@ -69,10 +71,10 @@ export function BreakoutGame({ onBack, bestScore, onRecordScore }: BreakoutGameP
   }
 
   const handleHeldKey = useHeldKeys({
-    ArrowLeft: () => dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 - 6 }),
-    a: () => dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 - 6 }),
-    ArrowRight: () => dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 + 6 }),
-    d: () => dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 + 6 }),
+    ArrowLeft: (deltaMs) => dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 - KEYBOARD_PADDLE_SPEED * deltaMs / 1000 }),
+    a: (deltaMs) => dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 - KEYBOARD_PADDLE_SPEED * deltaMs / 1000 }),
+    ArrowRight: (deltaMs) => dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 + KEYBOARD_PADDLE_SPEED * deltaMs / 1000 }),
+    d: (deltaMs) => dispatch({ type: 'movePaddle', centerX: state.paddleX + PADDLE_WIDTH / 2 + KEYBOARD_PADDLE_SPEED * deltaMs / 1000 }),
   }, state.phase !== 'paused' && state.phase !== 'over' && state.phase !== 'won')
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
