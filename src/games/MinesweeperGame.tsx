@@ -71,6 +71,9 @@ export function MinesweeperGame({ onBack, bestSeconds, progress, onSaveProgress 
     } else if (event.key.toLowerCase() === 'f') {
       event.preventDefault()
       dispatch({ type: 'toggleFlag', cell })
+    } else if (event.key.toLowerCase() === 'c') {
+      event.preventDefault()
+      dispatch({ type: 'chord', cell })
     }
   }
 
@@ -100,7 +103,7 @@ export function MinesweeperGame({ onBack, bestSeconds, progress, onSaveProgress 
           <div className="how-to-play">
             <h2>How to play</h2>
             <p>Numbers show how many mines touch a square. Reveal every safe square to win. The center opening is safe on every player's copy of the daily board.</p>
-            <p>Click or tap a covered square to reveal it. Use <strong>Flag mode</strong> or press <strong>F</strong> to mark a mine. Arrow keys move between squares; Enter or Space reveals.</p>
+            <p>Click or tap a covered square to reveal it. Tap a revealed number or press <strong>C</strong> after matching its neighboring flags to reveal its covered neighbors. Use <strong>Flag mode</strong> or press <strong>F</strong> to mark a mine. Arrow keys move between squares; Enter or Space reveals or chords.</p>
           </div>
           <div className="score-card minesweeper-score" aria-label={`${remainingMines} estimated mines remaining. Elapsed time ${formatTime(state.elapsedSeconds)}. ${bestSeconds === null ? 'No personal best yet.' : `Fastest local solve ${formatTime(bestSeconds)}.`}`}>
             <div className="breakout-score-main">
@@ -127,7 +130,7 @@ export function MinesweeperGame({ onBack, bestSeconds, progress, onSaveProgress 
             )}
             <button className="button button-quiet" type="button" onClick={restart}>Restart daily field</button>
           </div>
-          <p className="keyboard-hint">Arrows to move · Enter / Space to reveal · F to flag</p>
+          <p className="keyboard-hint">Arrows to move · Enter / Space to reveal or chord · C to chord · F to flag</p>
         </div>
 
         <div className="play-column minesweeper-play-column">
@@ -157,11 +160,12 @@ export function MinesweeperGame({ onBack, bestSeconds, progress, onSaveProgress 
                       key={cell}
                       data-minesweeper-cell={cell}
                       aria-label={label}
+                      aria-keyshortcuts={revealed && adjacent > 0 ? 'C' : undefined}
                       tabIndex={cell === focusedCell ? 0 : -1}
                       disabled={state.phase !== 'playing'}
                       onFocus={() => setFocusedCell(cell)}
                       onKeyDown={(event) => handleCellKeyDown(event, cell)}
-                      onClick={() => dispatch({ type: flagMode ? 'toggleFlag' : 'reveal', cell })}
+                      onClick={() => dispatch({ type: flagMode ? 'toggleFlag' : revealed ? 'chord' : 'reveal', cell })}
                       onContextMenu={(event) => handleContextMenu(event, cell)}
                     >
                       {showMine ? <span aria-hidden="true">✹</span>

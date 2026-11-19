@@ -15,7 +15,7 @@ import { createVertexPuzzle } from './games/vertex'
 import { createTilesPuzzle } from './games/tiles'
 import { createPipsPuzzle } from './games/pips'
 import { createDailyCrosswordPuzzle } from './games/dailyCrossword'
-import { createMinesweeperState } from './games/minesweeper'
+import { adjacentMineCount, createMinesweeperState, MINESWEEPER_CELL_COUNT, neighboringCells } from './games/minesweeper'
 
 async function expectLazyGame(name: string, resumeFakeTimers = false) {
   if (resumeFakeTimers) vi.useRealTimers()
@@ -893,6 +893,37 @@ describe('Arcade navigation and game controls', () => {
     fireEvent.click(screen.getByRole('button', { name: /all games/i }))
     fireEvent.click(screen.getByRole('button', { name: /play daily crossword/i }))
     expect(screen.getByText('Puzzle solved. A fresh crossword arrives tomorrow.')).toBeInTheDocument()
+  })
+
+  it('chords a numbered Minesweeper cell with the C key after its mines are flagged', async () => {
+    const puzzle = createMinesweeperState(utcDateKey())
+    const target = Array.from({ length: MINESWEEPER_CELL_COUNT }, (_, cell) => cell)
+      .find((cell) => !puzzle.mines.includes(cell)
+        && adjacentMineCount(puzzle, cell) > 0
+        && neighboringCells(cell).some((neighbor) => !puzzle.mines.includes(neighbor)))!
+    const mineNeighbors = neighboringCells(target).filter((neighbor) => puzzle.mines.includes(neighbor))
+    const safeNeighbors = neighboringCells(target).filter((neighbor) => !puzzle.mines.includes(neighbor))
+    const progress = { date: puzzle.date, revealed: [target], flagged: [], elapsedSeconds: 0, phase: 'playing' as const }
+    window.localStorage.setItem(ARCADE_DATA_KEY, JSON.stringify({ ...emptyArcadeData(), dailyMinesweeperGame: progress }))
+    render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: /play minesweeper/i }))
+    await expectLazyGame('Minesweeper')
+    const board = screen.getByRole('group', { name: 'Daily Minesweeper board, 9 rows by 9 columns' })
+    const targetButton = board.querySelector<HTMLButtonElement>(`[data-minesweeper-cell="${target}"]`)!
+    expect(targetButton).toHaveAttribute('aria-keyshortcuts', 'C')
+    expect(targetButton).toHaveAccessibleName(/neighboring mine/)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Flag mode off' }))
+    for (const mine of mineNeighbors) fireEvent.click(board.querySelector(`[data-minesweeper-cell="${mine}"]`)!)
+    fireEvent.click(screen.getByRole('button', { name: 'Flag mode on' }))
+    targetButton.focus()
+    fireEvent.keyDown(targetButton, { key: 'c' })
+
+    for (const neighbor of safeNeighbors) {
+      expect(board.querySelector(`[data-minesweeper-cell="${neighbor}"]`)).not.toHaveAccessibleName(/covered/)
+    }
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').dailyMinesweeperGame.revealed).toEqual(expect.arrayContaining(safeNeighbors))
   })
 
   it('plays the shared Minesweeper field and saves progress and a local best', async () => {

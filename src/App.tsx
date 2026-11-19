@@ -1246,7 +1246,7 @@ function Home({
               <div className="card-heading-line"><span className="game-number">23</span><span className="game-category">DAILY CLASSIC</span></div>
               <h3>Minesweeper</h3>
               <p>Read the numbers, mark the mines, and clear today's shared field.</p>
-              <div className="card-bottom"><span className="controls-label">TOUCH · F · ARROWS</span><button className="play-card-button" type="button" onClick={onPlayMinesweeper}>Play Minesweeper <span className="arrow-mark" aria-hidden="true" /></button></div>
+              <div className="card-bottom"><span className="controls-label">TOUCH · C · F · ARROWS</span><button className="play-card-button" type="button" onClick={onPlayMinesweeper}>Play Minesweeper <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>

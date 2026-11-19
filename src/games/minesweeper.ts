@@ -20,6 +20,7 @@ export interface MinesweeperState extends MinesweeperProgress {
 export type MinesweeperAction =
   | { type: 'start' }
   | { type: 'reveal'; cell: number }
+  | { type: 'chord'; cell: number }
   | { type: 'toggleFlag'; cell: number }
   | { type: 'pause' }
   | { type: 'resume' }
@@ -57,6 +58,8 @@ export function minesweeperReducer(state: MinesweeperState, action: MinesweeperA
       return state.phase === 'ready' ? { ...state, phase: 'playing' } : state
     case 'reveal':
       return revealCell(state, action.cell)
+    case 'chord':
+      return chordCell(state, action.cell)
     case 'toggleFlag': {
       if ((state.phase !== 'playing' && state.phase !== 'ready') || !isCell(action.cell) || state.revealed.includes(action.cell)) return state
       const active = state.phase === 'ready' ? { ...state, phase: 'playing' as const } : state
@@ -77,7 +80,11 @@ export function minesweeperReducer(state: MinesweeperState, action: MinesweeperA
 }
 
 export function adjacentMineCount(state: Pick<MinesweeperState, 'mines'>, cell: number): number {
-  return neighbors(cell).filter((neighbor) => state.mines.includes(neighbor)).length
+  return neighboringCells(cell).filter((neighbor) => state.mines.includes(neighbor)).length
+}
+
+export function neighboringCells(cell: number): number[] {
+  return isCell(cell) ? neighbors(cell) : []
 }
 
 export function toMinesweeperProgress(state: MinesweeperState): MinesweeperProgress {
@@ -115,6 +122,29 @@ function revealCell(state: MinesweeperState, cell: number): MinesweeperState {
     revealed,
     phase: won ? 'won' : 'playing',
   }
+}
+
+function chordCell(state: MinesweeperState, cell: number): MinesweeperState {
+  if (state.phase !== 'playing' || !isCell(cell) || !state.revealed.includes(cell)) return state
+  const target = adjacentMineCount(state, cell)
+  if (target === 0) return state
+
+  const nearby = neighbors(cell)
+  const nearbyFlags = nearby.filter((neighbor) => state.flagged.includes(neighbor))
+  if (nearbyFlags.length !== target) return state
+
+  const covered = nearby.filter((neighbor) => !state.revealed.includes(neighbor) && !state.flagged.includes(neighbor))
+  if (covered.length === 0) return state
+  if (covered.some((neighbor) => state.mines.includes(neighbor))) {
+    return { ...state, phase: 'lost', revealed: [...new Set([...state.revealed, ...state.mines])] }
+  }
+
+  const revealed = [...new Set([
+    ...state.revealed,
+    ...covered.flatMap((neighbor) => revealSafeRegion(state, neighbor)),
+  ])]
+  const won = revealed.length === MINESWEEPER_CELL_COUNT - MINESWEEPER_MINE_COUNT
+  return { ...state, revealed, phase: won ? 'won' : 'playing' }
 }
 
 function revealSafeRegion(state: MinesweeperState, start: number): number[] {
