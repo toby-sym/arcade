@@ -1,4 +1,5 @@
-const APP_CACHE = 'arcade-shell-v1'
+const cacheVersion = new URL(self.location.href).searchParams.get('version') || 'v2'
+const APP_CACHE = `arcade-shell-${cacheVersion}`
 const MAX_CACHED_GAME_ASSETS = 40
 const STATIC_FILES = [
   '/manifest.webmanifest',
@@ -15,9 +16,21 @@ self.addEventListener('install', (event) => {
     const html = await response.clone().text()
     const builtAssets = [...html.matchAll(/(?:src|href)=["'](\/assets\/[^"']+)["']/g)]
       .map((match) => match[1])
+    const manifestResponse = await fetch('/.vite/manifest.json', { cache: 'reload' })
+    if (!manifestResponse.ok) throw new Error('Arcade asset manifest could not be cached.')
+
+    const manifest = await manifestResponse.json()
+    const splitAssets = Object.values(manifest).flatMap((entry) => [
+      entry.file,
+      ...(entry.css || []),
+      ...(entry.assets || []),
+    ])
+    const assetUrls = [...new Set([...builtAssets, ...splitAssets]
+      .filter((asset) => typeof asset === 'string')
+      .map((asset) => asset.startsWith('/') ? asset : `/${asset}`))]
     const cache = await caches.open(APP_CACHE)
     await cache.put('/index.html', response)
-    await cache.addAll([...STATIC_FILES, ...builtAssets])
+    await cache.addAll([...STATIC_FILES, ...assetUrls])
     await self.skipWaiting()
   })())
 })
