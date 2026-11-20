@@ -3,6 +3,7 @@ import {
   createPocketPinballState,
   PINBALL_BALL_RADIUS,
   PINBALL_BUMPERS,
+  PINBALL_ROLLOVER,
   pocketPinballReducer,
   pocketPinballTime,
   type PocketPinballState,
@@ -32,6 +33,27 @@ describe('Pocket Pinball table', () => {
     expect(state.ball.y).toBeLessThan(ready.ball.y)
   })
 
+  it('sends a served ball through the exit gap and into the lower pop bumpers', () => {
+    let state = pocketPinballReducer(createPocketPinballState(), { type: 'start' })
+    state = pocketPinballReducer(state, { type: 'launch' })
+    for (let frame = 0; frame < 15; frame += 1) state = pocketPinballReducer(state, { type: 'tick', deltaMs: 50 })
+    expect(state.ballInShooter).toBe(false)
+    expect(state.score).toBeGreaterThanOrEqual(75)
+    expect(state.ballsRemaining).toBe(3)
+  })
+
+  it('uses held flippers to return the live ball and keep the first ball in play', () => {
+    let state = pocketPinballReducer(createPocketPinballState(), { type: 'start' })
+    state = pocketPinballReducer(state, { type: 'launch' })
+    state = pocketPinballReducer(state, { type: 'control', control: 'left', pressed: true })
+    state = pocketPinballReducer(state, { type: 'control', control: 'right', pressed: true })
+    for (let frame = 0; frame < 60; frame += 1) state = pocketPinballReducer(state, { type: 'tick', deltaMs: 50 })
+    expect(state.leftFlipper.angle).toBeLessThan(0)
+    expect(state.rightFlipper.angle).toBeGreaterThan(Math.PI)
+    expect(state.ballsRemaining).toBe(3)
+    expect(state.score).toBeGreaterThan(250)
+  })
+
   it('moves each flipper continuously while its control is held', () => {
     let state = pocketPinballReducer(createPocketPinballState(), { type: 'start' })
     state = pocketPinballReducer(state, { type: 'control', control: 'left', pressed: true })
@@ -54,6 +76,18 @@ describe('Pocket Pinball table', () => {
     state = pocketPinballReducer(state, { type: 'tick', deltaMs: 50 })
     expect(state.score).toBe(bumper.points)
     expect(state.ball.vx).toBeLessThan(0)
+  })
+
+  it('lights the one-shot rollover when the ball crosses the upper lane', () => {
+    let state = liveBall(createPocketPinballState(), {
+      x: PINBALL_ROLLOVER.x - 25,
+      y: PINBALL_ROLLOVER.y,
+      vx: 400,
+      vy: 0,
+    })
+    state = pocketPinballReducer(state, { type: 'tick', deltaMs: 50 })
+    expect(state.rolloverLit).toBe(true)
+    expect(state.score).toBe(250)
   })
 
   it('spends a timed nudge for a controlled save and restores its cooldown', () => {
@@ -81,6 +115,6 @@ describe('Pocket Pinball table', () => {
     state = pocketPinballReducer(state, { type: 'resume' })
     expect(state.phase).toBe('playing')
     expect(pocketPinballTime(125_900)).toBe('02:05')
-    expect(pocketPinballReducer(state, { type: 'restart' })).toMatchObject({ phase: 'ready', score: 0, ballsRemaining: 3, targetMask: 0 })
+    expect(pocketPinballReducer(state, { type: 'restart' })).toMatchObject({ phase: 'ready', score: 0, ballsRemaining: 3, targetMask: 0, rolloverLit: false })
   })
 })

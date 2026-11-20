@@ -37,6 +37,7 @@ export interface PocketPinballState {
   ballsRemaining: number
   score: number
   targetMask: number
+  rolloverLit: boolean
   elapsedMs: number
   nudgeCooldownMs: number
   message: string
@@ -57,7 +58,7 @@ export const PINBALL_BUMPERS: readonly PinballBumper[] = [
   { id: 'northstar', x: 260, y: 144, radius: 39, points: 150 },
   { id: 'northeast', x: 375, y: 183, radius: 33, points: 100 },
   { id: 'west', x: 174, y: 334, radius: 29, points: 75 },
-  { id: 'east', x: 346, y: 334, radius: 29, points: 75 },
+  { id: 'east', x: 398, y: 334, radius: 29, points: 75 },
 ]
 
 export const PINBALL_TARGETS: readonly PinballPoint[] = [
@@ -70,6 +71,8 @@ export const PINBALL_SLINGS: readonly { start: PinballPoint; end: PinballPoint }
   { start: { x: 61, y: 497 }, end: { x: 142, y: 582 } },
   { start: { x: 459, y: 497 }, end: { x: 378, y: 582 } },
 ]
+
+export const PINBALL_ROLLOVER: PinballPoint = { x: 260, y: 438 }
 
 export const PINBALL_FLIPPER_LENGTH = 101
 
@@ -106,6 +109,7 @@ export function createPocketPinballState(): PocketPinballState {
     ballsRemaining: PINBALL_MAX_BALLS,
     score: 0,
     targetMask: 0,
+    rolloverLit: false,
     elapsedMs: 0,
     nudgeCooldownMs: 0,
     message: 'Three balls. Two flippers. Keep the silver ball in play and light every target.',
@@ -132,7 +136,7 @@ export function pocketPinballReducer(state: PocketPinballState, action: PocketPi
       return {
         ...state,
         ballInShooter: false,
-        ball: { ...state.ball, vx: -175, vy: -455 },
+        ball: { ...state.ball, vx: -50, vy: -812 },
         message: 'Shot away. The lit bumpers and three upper targets score points.',
       }
     case 'nudge':
@@ -205,17 +209,24 @@ function advancePinballStep(state: PocketPinballState, dt: number): PocketPinbal
     ball.vy = Math.abs(ball.vy) * 0.8
   }
 
-  if (ball.y > 420 && ball.x < 416 && ball.x > 365) {
+  if (ball.y > 560 && ball.x < 416 && ball.x > 365) {
     ball.x = 416 - PINBALL_BALL_RADIUS
     ball.vx = -Math.abs(ball.vx) * 0.82
   }
 
-  for (const sling of PINBALL_SLINGS) {
+  for (const [index, sling] of PINBALL_SLINGS.entries()) {
     const collision = reflectFromSegment(ball, sling.start, sling.end, 8, 1.08)
     if (collision.hit) {
       ball = collision.ball
       if (collision.approaching) {
         score += 50
+        ball = {
+          ...ball,
+          x: ball.x + (index === 0 ? 12 : -12),
+          y: Math.min(ball.y, Math.min(sling.start.y, sling.end.y) - PINBALL_BALL_RADIUS - 2),
+          vx: (index === 0 ? 1 : -1) * Math.max(220, Math.abs(ball.vx)),
+          vy: -Math.max(320, Math.abs(ball.vy) * 1.08),
+        }
         message = 'Slingshot! The lower rails send the ball back upfield.'
       }
     }
@@ -246,6 +257,17 @@ function advancePinballStep(state: PocketPinballState, dt: number): PocketPinbal
     }
   }
 
+  let rolloverLit = state.rolloverLit
+  const rollover = reflectFromCircle(ball, PINBALL_ROLLOVER, 8 + PINBALL_BALL_RADIUS, 1.04)
+  if (rollover.hit) {
+    ball = rollover.ball
+    if (rollover.approaching && !rolloverLit) {
+      rolloverLit = true
+      score += 250
+      message = 'Rollover lit · 250 points.'
+    }
+  }
+
   for (const [flipper, hinge] of [[leftFlipper, LEFT_HINGE], [rightFlipper, RIGHT_HINGE]] as const) {
     const collision = reflectFromFlipper(ball, flipper, hinge)
     if (collision) {
@@ -265,6 +287,7 @@ function advancePinballStep(state: PocketPinballState, dt: number): PocketPinbal
         ballsRemaining: 0,
         score,
         targetMask,
+        rolloverLit,
         phase: 'over',
         message: `Table over · ${score} points in ${pocketPinballTime(state.elapsedMs)}.`,
       }
@@ -277,11 +300,12 @@ function advancePinballStep(state: PocketPinballState, dt: number): PocketPinbal
       ballsRemaining,
       score,
       targetMask,
+      rolloverLit,
       message: `Ball drained. ${ballsRemaining} ${ballsRemaining === 1 ? 'ball' : 'balls'} remain · press Space to launch.`,
     }
   }
 
-  return { ...movedFlippers, ball, score, targetMask, message }
+  return { ...movedFlippers, ball, score, targetMask, rolloverLit, message }
 }
 
 function moveFlipper(flipper: PinballFlipper, targetAngle: number, dt: number): PinballFlipper {
