@@ -4044,6 +4044,69 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
 @media (prefers-reduced-motion: reduce) {
   .fathom-card-radar { transition: none; }
 }
+
+/* Fourfold: drop one disc at a time and read the local opponent */
+.fourfold-layout { grid-template-columns: minmax(260px, .82fr) minmax(0, 1.18fr); align-items: start; gap: clamp(24px, 5vw, 64px); }
+.fourfold-copy h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+.fourfold-score { gap: 14px; }
+.fourfold-score .score-value { font-size: clamp(1.55rem, 3vw, 2.1rem); font-variant-numeric: tabular-nums; }
+.fourfold-score .score-unit { max-width: 220px; }
+.fourfold-score .local-best-readout strong { font-size: clamp(.9rem, 1.7vw, 1.15rem); font-variant-numeric: tabular-nums; }
+.fourfold-local-note { margin: 9px 0 0; color: #a99eb4; font-size: .66rem; line-height: 1.55; }
+.fourfold-play-column { width: 100%; max-width: 790px; justify-self: end; }
+.fourfold-console { --fourfold-board: #29425e; --fourfold-well: #18283e; padding: 13px; border: 3px solid #52627d; border-radius: 15px; color: #f0ebdb; background: linear-gradient(145deg, #2d3048, #171522 73%); box-shadow: 0 5px 0 #080711, 0 10px 25px rgb(0 0 0 / 40%), inset 0 0 0 1px rgb(207 217 255 / 9%); }
+.fourfold-console .frame-topline { min-height: 23px; padding: 0 3px 9px; }
+.fourfold-turnline { min-height: 52px; padding: 8px 11px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #55506b; border-radius: 7px; background: rgb(11 10 21 / 48%); }
+.fourfold-turnline > div:first-child { display: grid; gap: 3px; }
+.fourfold-turnline > div:first-child span { color: #a9a1bb; font: 800 .39rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.fourfold-turnline > div:first-child strong { color: #fff3d9; font-size: .7rem; }
+.fourfold-side-mark { width: 25px; height: 25px; display: grid; place-items: center; border: 1px solid #ff6286; border-radius: 50%; background: rgb(255 98 134 / 10%); }
+.fourfold-side-mark i { width: 11px; height: 11px; border-radius: 50%; background: #ff6286; box-shadow: 0 0 9px rgb(255 98 134 / 67%); }
+.fourfold-side-mark i.is-cpu { background: #d5fa58; box-shadow: 0 0 9px rgb(213 250 88 / 67%); }
+.fourfold-column-controls { width: min(100%, 560px); margin: 12px auto 4px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+.fourfold-drop { min-width: 0; min-height: 43px; border: 1px solid #586b89; border-radius: 5px; color: #f2e9d3; background: linear-gradient(#3d506d, #293c57); box-shadow: 0 3px 0 #10192a; cursor: pointer; font: 900 .85rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; touch-action: manipulation; }
+.fourfold-drop.is-selected:not(:disabled) { border-color: #d5fa58; color: #d5fa58; background: linear-gradient(#485a55, #354842); }
+.fourfold-drop:disabled { opacity: .4; cursor: default; }
+.fourfold-drop:focus-visible, .fourfold-action:focus-visible { outline: 3px solid #58def3; outline-offset: 2px; }
+.fourfold-board-frame { position: relative; overflow: hidden; width: min(100%, 560px); margin: 0 auto; padding: clamp(9px, 2vw, 15px); border: 1px solid #5a6785; border-radius: 9px; background: radial-gradient(ellipse at 50% 25%, #344b69, #202d49 75%); box-shadow: inset 0 0 0 4px rgb(10 12 23 / 32%); }
+.fourfold-board { width: 100%; aspect-ratio: 7 / 6; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: repeat(6, minmax(0, 1fr)); overflow: hidden; border: 1px solid #71809a; border-radius: 8px 8px 4px 4px; background: linear-gradient(150deg, #355375, var(--fourfold-board)); box-shadow: 0 5px 0 #10192a, inset 0 0 0 3px rgb(212 224 255 / 7%); }
+.fourfold-cell { min-width: 0; min-height: 0; display: grid; place-items: center; border: 1px solid rgb(205 220 255 / 13%); color: transparent; background: radial-gradient(circle, var(--fourfold-well) 0 34%, rgb(17 29 48 / 42%) 36% 52%, transparent 54%); font-size: clamp(1.1rem, 3vw, 2.2rem); line-height: 1; text-shadow: 0 2px 0 rgb(0 0 0 / 25%); }
+.fourfold-cell.is-player { color: #ff6388; text-shadow: 0 0 12px rgb(255 99 136 / 50%), 0 2px 0 #692641; }
+.fourfold-cell.is-cpu { color: #d5fa58; text-shadow: 0 0 12px rgb(213 250 88 / 45%), 0 2px 0 #526322; }
+.fourfold-overlay { position: absolute; z-index: 2; inset: 0; display: grid; place-items: center; padding: 14px; background: rgb(12 12 24 / 78%); backdrop-filter: blur(2px); text-align: center; }
+.fourfold-overlay > div { max-width: 260px; }
+.fourfold-overlay span { display: block; margin-bottom: 7px; color: #d5fa58; font: 900 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .15em; }
+.fourfold-overlay strong { color: #fff3d9; font-size: clamp(1rem, 3vw, 1.55rem); }
+.fourfold-overlay p { margin: 7px 0 0; color: #c8bfd4; font-size: .57rem; line-height: 1.5; }
+.fourfold-status { min-height: 37px; margin: 10px 1px 2px; padding: 9px 12px; border-left: 3px solid #ff6388; color: #e2d9ea; background: #211b2d; font-size: .61rem; line-height: 1.45; text-align: center; }
+.fourfold-legend { display: flex; justify-content: center; gap: 16px; padding: 10px 2px; color: #aaa3b9; font: 800 .36rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; }
+.fourfold-legend span { display: flex; align-items: center; gap: 5px; }
+.fourfold-legend i { width: 8px; height: 8px; border-radius: 50%; }
+.fourfold-legend .legend-player { background: #ff6388; }
+.fourfold-legend .legend-cpu { background: #d5fa58; }
+.fourfold-actions { width: min(100%, 520px); margin: 3px auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 7px; }
+.fourfold-action { min-height: 43px; padding: 7px 8px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #5b5671; border-radius: 5px; color: #f1eaf4; background: linear-gradient(#3b3652, #2a273f); box-shadow: 0 3px 0 #0c0b14; cursor: pointer; font: 900 .45rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .04em; text-transform: uppercase; touch-action: manipulation; }
+.fourfold-action-primary { color: #20251b; border-color: #a8bc4b; background: linear-gradient(#d9ed78, #acc34c); box-shadow: 0 3px 0 #526322; }
+.fourfold-action-pause { color: #19241e; border-color: #8ac9ad; background: linear-gradient(#a9dfc4, #71bd9b); box-shadow: 0 3px 0 #34664d; }
+.fourfold-action kbd { color: inherit; font: 800 .35rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; opacity: .72; }
+.fourfold-footnote { margin: 8px 2px; color: #a99eb4; font-size: .64rem; line-height: 1.5; text-align: center; }
+.fourfold-card-art { overflow: hidden; background: linear-gradient(145deg, #314a66, #1b263d); }
+.fourfold-card-disc { position: absolute; width: 22px; height: 22px; border: 2px solid #f8efdc; border-radius: 50%; box-shadow: inset 0 -4px 0 rgb(0 0 0 / 26%), 0 2px 5px rgb(0 0 0 / 35%); }
+.fourfold-card-disc.disc-one { left: 29%; top: 51%; background: #ff6388; }
+.fourfold-card-disc.disc-two { left: 43%; top: 51%; background: #ff6388; }
+.fourfold-card-disc.disc-three { left: 57%; top: 51%; background: #ff6388; }
+.fourfold-card-disc.disc-four { left: 71%; top: 51%; background: #d5fa58; }
+.fourfold-card-win-line { position: absolute; left: 26%; right: 19%; top: 61%; height: 2px; background: #fff3d9; box-shadow: 0 0 8px #fff3d9; }
+@media (max-width: 760px) {
+  .fourfold-layout { grid-template-columns: 1fr; gap: 22px; }
+  .fourfold-play-column { max-width: 620px; justify-self: center; }
+}
+@media (max-width: 420px) {
+  .fourfold-console { padding: 9px; }
+  .fourfold-turnline { min-height: 46px; padding: 6px 8px; }
+  .fourfold-drop { min-height: 40px; }
+  .fourfold-board-frame { padding: 8px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .latchkey-key-glyph, .latchkey-runner.is-celebrating { animation: none; }
 }
