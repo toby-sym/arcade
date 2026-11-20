@@ -3951,6 +3951,99 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .latchkey-console-footer { font-size: .31rem; }
   .latchkey-control { min-height: 46px; }
 }
+
+/* Fathom: chart the water and triangulate a hidden fleet */
+.fathom-layout { grid-template-columns: minmax(260px, .82fr) minmax(0, 1.18fr); align-items: start; gap: clamp(24px, 5vw, 64px); }
+.fathom-copy h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+.fathom-score { gap: 14px; }
+.fathom-score .score-value { font-size: clamp(1.55rem, 3vw, 2.1rem); font-variant-numeric: tabular-nums; }
+.fathom-score .score-unit { max-width: 220px; }
+.fathom-score .local-best-readout strong { font-size: clamp(.9rem, 1.7vw, 1.15rem); font-variant-numeric: tabular-nums; }
+.fathom-local-note { margin: 9px 0 0; color: #a99eb4; font-size: .66rem; line-height: 1.55; }
+.fathom-play-column { width: 100%; max-width: 790px; justify-self: end; }
+.fathom-console { --fathom-deep: #102b39; --fathom-water: #133745; padding: 13px; border: 3px solid #3b6372; border-radius: 15px; color: #e9f4ec; background: linear-gradient(145deg, #1d3944, #111b29 72%); box-shadow: 0 5px 0 #080e13, 0 10px 25px rgb(0 0 0 / 40%), inset 0 0 0 1px rgb(125 227 227 / 10%); }
+.fathom-console .frame-topline { min-height: 23px; padding: 0 3px 9px; }
+.fathom-roundline { min-height: 52px; padding: 8px 11px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #416472; border-radius: 7px; background: rgb(8 19 27 / 50%); }
+.fathom-roundline > div { display: grid; gap: 3px; }
+.fathom-roundline > div span { color: #9ab6be; font: 800 .4rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; }
+.fathom-roundline > div strong { color: #fff3d9; font-size: .76rem; }
+.fathom-roundline > b { min-width: 56px; color: #d5fa58; font: 900 1.2rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-align: right; }
+.fathom-roundline > b small { display: block; color: #a6c2c9; font-size: .34rem; letter-spacing: .1em; }
+.fathom-instruments { margin: 0; padding: 10px 3px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.fathom-instruments span { min-height: 28px; padding: 5px 6px; display: flex; align-items: center; gap: 6px; overflow: hidden; border: 1px solid #365462; border-radius: 4px; color: #d4e4df; background: rgb(13 39 50 / 60%); font: 800 .37rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .04em; white-space: nowrap; }
+.fathom-instruments i { width: 7px; height: 7px; flex: 0 0 auto; border: 1px solid #72d6da; border-radius: 50%; background: #173d49; }
+.fathom-instruments .is-sunk { color: #95aaa9; border-color: #315058; background: rgb(11 26 34 / 56%); text-decoration: line-through; opacity: .58; }
+.fathom-instruments .is-sunk i { border-color: #ff6387; background: #ff6387; box-shadow: 0 0 7px rgb(255 99 135 / 62%); }
+.fathom-board-frame { position: relative; overflow: hidden; padding: 18px 12px 12px; border: 1px solid #416472; border-radius: 8px; background: radial-gradient(ellipse at 50% 42%, #1b4c59, #102f3c 75%); box-shadow: inset 0 0 0 4px rgb(4 16 23 / 34%); }
+.fathom-compass { position: absolute; top: 6px; right: 11px; display: flex; align-items: center; gap: 4px; color: #91b5bb; font: 900 .36rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.fathom-compass i { width: 8px; height: 8px; border: 1px solid #83e1df; border-radius: 50%; box-shadow: 0 0 8px rgb(131 225 223 / 55%); }
+.fathom-board { width: min(100%, 560px); margin: 0 auto; outline: none; }
+.fathom-board:focus-visible { outline: 3px solid #58def3; outline-offset: 2px; }
+.fathom-coordinates { color: #8eb6bf; font: 900 .44rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .03em; text-align: center; }
+.fathom-column-coordinates { margin-left: 25px; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.fathom-column-coordinates span { padding-bottom: 4px; }
+.fathom-grid-main { display: grid; grid-template-columns: 25px minmax(0, 1fr); align-items: stretch; }
+.fathom-row-coordinates { display: grid; grid-template-rows: repeat(8, minmax(0, 1fr)); align-items: center; }
+.fathom-cells { overflow: hidden; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); grid-template-rows: repeat(8, minmax(0, 1fr)); aspect-ratio: 1; border: 1px solid #5b9299; border-radius: 4px; background: #16424f; box-shadow: 0 3px 0 #0b222d, inset 0 0 0 2px rgb(128 222 221 / 8%); }
+.fathom-cell { position: relative; min-width: 0; min-height: 0; aspect-ratio: 1; padding: 0; display: grid; place-items: center; border: 1px solid rgb(139 207 206 / 18%); border-radius: 0; color: #d8f3ea; background: linear-gradient(145deg, rgb(70 148 158 / 26%), rgb(28 86 101 / 42%)); cursor: crosshair; touch-action: manipulation; }
+.fathom-cell:hover:not(:disabled) { z-index: 1; background-color: rgb(104 202 206 / 30%); }
+.fathom-cell.in-sonar:not(.is-hit):not(.is-miss) { background-color: rgb(128 209 178 / 20%); }
+.fathom-cell.is-selected:not(:disabled) { z-index: 2; outline: 2px solid #d5fa58; outline-offset: -3px; background-color: rgb(213 250 88 / 15%); }
+.fathom-cell:focus-visible { z-index: 3; outline: 3px solid #fff4d5; outline-offset: -4px; }
+.fathom-cell.is-hit { background: radial-gradient(circle, #ff9b85 0 7%, #ee4f70 8% 34%, #482c46 36% 100%); }
+.fathom-cell.is-sunk { background: linear-gradient(135deg, #ff6387, #a72e59); box-shadow: inset 0 0 0 2px rgb(255 217 193 / 52%); }
+.fathom-cell.is-miss { background: radial-gradient(circle, #91e6e4 0 9%, #317d89 11% 19%, #123946 21% 100%); }
+.fathom-cell:disabled { cursor: default; }
+.fathom-hit-mark { color: #fff4d5; font-size: clamp(.65rem, 2vw, 1.1rem); font-style: normal; font-weight: 900; text-shadow: 0 1px 3px rgb(47 10 37 / 75%); }
+.fathom-miss-mark { width: 18%; height: 18%; border: 1px solid #c0ffff; border-radius: 50%; background: #8fe8e6; box-shadow: 0 0 8px rgb(143 232 230 / 65%); }
+.fathom-echo-count { color: #d5fa58; font: 900 clamp(.5rem, 1.25vw, .8rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-shadow: 0 1px 4px #0b222d; }
+.fathom-overlay { position: absolute; z-index: 4; inset: 0; display: grid; place-items: center; padding: 14px; background: rgb(8 19 27 / 80%); backdrop-filter: blur(2px); text-align: center; }
+.fathom-overlay > div { max-width: 270px; }
+.fathom-overlay span { display: block; margin-bottom: 7px; color: #d5fa58; font: 900 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .16em; }
+.fathom-overlay strong { color: #fff3d9; font-size: clamp(1rem, 3vw, 1.55rem); }
+.fathom-overlay p { margin: 7px 0 0; color: #c1d8dd; font-size: .57rem; line-height: 1.5; }
+.fathom-status { min-height: 38px; margin: 10px 1px 4px; padding: 9px 12px; border-left: 3px solid #75d4d6; color: #d6e8e4; background: #122e38; font-size: .61rem; line-height: 1.45; text-align: center; }
+.fathom-status.is-scanning { border-left-color: #d5fa58; color: #e2edb9; }
+.fathom-grid-help { margin: 4px 2px 8px; color: #a9c1c5; font-size: .47rem; line-height: 1.45; text-align: center; }
+.fathom-actions { width: min(100%, 540px); margin: 10px auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 7px; }
+.fathom-action { min-height: 43px; padding: 7px 8px; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid #476875; border-radius: 5px; color: #e8f0e3; background: linear-gradient(#2d4d59, #203b47); box-shadow: 0 3px 0 #091a21; cursor: pointer; font: 900 .45rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .04em; text-transform: uppercase; touch-action: manipulation; }
+.fathom-action-primary { color: #20271b; border-color: #a4b94a; background: linear-gradient(#d9ed78, #acc34c); box-shadow: 0 3px 0 #526322; }
+.fathom-action-primary.is-active { color: #162b30; border-color: #7adbdc; background: linear-gradient(#a1e8df, #64bdc4); box-shadow: 0 3px 0 #245964; }
+.fathom-action-pause { color: #172b32; border-color: #83c6b9; background: linear-gradient(#a9dfc4, #71bd9b); box-shadow: 0 3px 0 #34664d; }
+.fathom-action:disabled { opacity: .42; cursor: default; }
+.fathom-action:focus-visible { outline: 3px solid #58def3; outline-offset: 2px; }
+.fathom-action kbd { color: inherit; font: 800 .35rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; opacity: .72; }
+.fathom-legend { display: flex; justify-content: center; gap: 17px; padding: 11px 2px 2px; color: #a9c1c5; font: 800 .35rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; }
+.fathom-legend span { display: flex; align-items: center; gap: 5px; }
+.fathom-legend i { width: 8px; height: 8px; border-radius: 50%; }
+.fathom-legend .legend-hit { background: #ff6387; }
+.fathom-legend .legend-miss { background: #91e6e4; }
+.fathom-legend .legend-scan { border: 1px solid #d5fa58; background: rgb(213 250 88 / 20%); }
+.fathom-footnote { margin: 8px 2px; color: #a99eb4; font-size: .64rem; line-height: 1.5; text-align: center; }
+.fathom-card-art { overflow: hidden; background: radial-gradient(circle at 50% 50%, #214f5b, #122832 76%); }
+.fathom-card-radar { position: absolute; left: 50%; top: 50%; border: 1px solid rgb(123 224 219 / 62%); border-radius: 50%; transform: translate(-50%, -50%); }
+.fathom-card-radar.radar-one { width: 34%; aspect-ratio: 1; }
+.fathom-card-radar.radar-two { width: 60%; aspect-ratio: 1; opacity: .6; }
+.fathom-card-mark { position: absolute; color: #ff6989; font: 900 1.2rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-shadow: 0 0 8px rgb(255 105 137 / 75%); }
+.fathom-card-mark.mark-one { left: 35%; top: 28%; }
+.fathom-card-mark.mark-two { right: 27%; bottom: 27%; }
+.fathom-card-mark.mark-three { left: 67%; top: 24%; color: #d5fa58; }
+@media (max-width: 760px) {
+  .fathom-layout { grid-template-columns: 1fr; gap: 22px; }
+  .fathom-play-column { max-width: 620px; justify-self: center; }
+}
+@media (max-width: 420px) {
+  .fathom-console { padding: 9px; }
+  .fathom-roundline { min-height: 46px; padding: 6px 8px; }
+  .fathom-instruments { gap: 3px; padding: 8px 1px; }
+  .fathom-instruments span { padding: 4px 3px; font-size: .32rem; }
+  .fathom-board-frame { padding: 18px 6px 8px; }
+  .fathom-grid-main { grid-template-columns: 20px minmax(0, 1fr); }
+  .fathom-column-coordinates { margin-left: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fathom-card-radar { transition: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   .latchkey-key-glyph, .latchkey-runner.is-celebrating { animation: none; }
 }

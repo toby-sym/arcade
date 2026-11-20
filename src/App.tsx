@@ -67,6 +67,7 @@ const RackRunGame = lazy(() => import('./games/RackRunGame').then(({ RackRunGame
 const PinParadeGame = lazy(() => import('./games/PinParadeGame').then(({ PinParadeGame }) => ({ default: PinParadeGame })))
 const DeckhandGame = lazy(() => import('./games/DeckhandGame').then(({ DeckhandGame }) => ({ default: DeckhandGame })))
 const LatchkeyGame = lazy(() => import('./games/LatchkeyGame').then(({ LatchkeyGame }) => ({ default: LatchkeyGame })))
+const FathomGame = lazy(() => import('./games/FathomGame').then(({ FathomGame }) => ({ default: FathomGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -124,6 +125,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'pinparade', title: 'Pin Parade', categories: ['arcade'], terms: 'bowling ten-pin strikes spares lane hook spin frames score' },
   { id: 'deckhand', title: 'Deckhand', categories: ['arcade'], terms: 'solitaire klondike patience cards draw stock waste tableau foundation' },
   { id: 'latchkey', title: 'Latchkey', categories: ['arcade'], terms: 'platform rooms key jumps ledges doors side view' },
+  { id: 'fathom', title: 'Fathom', categories: ['arcade'], terms: 'sonar fleet ocean battleship ships search grid strategy' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -147,7 +149,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -558,6 +560,7 @@ function App() {
   const openPinParade = () => setScreen('pinparade')
   const openDeckhand = () => setScreen('deckhand')
   const openLatchkey = () => setScreen('latchkey')
+  const openFathom = () => setScreen('fathom')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -649,6 +652,7 @@ function App() {
             onPlayPinParade={openPinParade}
             onPlayDeckhand={openDeckhand}
             onPlayLatchkey={openLatchkey}
+            onPlayFathom={openFathom}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -968,6 +972,13 @@ function App() {
             onRecordTime={(seconds) => recordBest('latchkey', seconds)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'fathom' ? (
+          <FathomGame
+            onBack={() => setScreen('home')}
+            bestShots={arcadeData.bests.fathom}
+            onRecordShots={(shots) => recordBest('fathom', shots)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1131,6 +1142,7 @@ function Home({
   onPlayPinParade,
   onPlayDeckhand,
   onPlayLatchkey,
+  onPlayFathom,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1191,6 +1203,7 @@ function Home({
   onPlayPinParade: () => void
   onPlayDeckhand: () => void
   onPlayLatchkey: () => void
+  onPlayFathom: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1908,6 +1921,22 @@ function Home({
               <h3>Latchkey</h3>
               <p>Find the key, pulse over the gaps, and open three original rooms.</p>
               <div className="card-bottom"><span className="controls-label">← → · SPACE · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayLatchkey}>Play Latchkey <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-fathom" hidden={!visibleGameIds.has('fathom')}>
+            <div className="card-art fathom-card-art" aria-hidden="true">
+              <span className="fathom-card-radar radar-one" />
+              <span className="fathom-card-radar radar-two" />
+              <span className="fathom-card-mark mark-one">×</span>
+              <span className="fathom-card-mark mark-two">×</span>
+              <span className="fathom-card-mark mark-three">·</span>
+              <span className="card-art-index">46</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">46</span><span className="game-category">SONAR STRATEGY</span></div>
+              <h3>Fathom</h3>
+              <p>Find a hidden fleet by plotting hits and reading three sonar sweeps.</p>
+              <div className="card-bottom"><span className="controls-label">CLICK · ARROWS · S SONAR</span><button className="play-card-button" type="button" onClick={onPlayFathom}>Play Fathom <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
