@@ -60,6 +60,7 @@ const NeonRallyGame = lazy(() => import('./games/NeonRallyGame').then(({ NeonRal
 const MoonshotGame = lazy(() => import('./games/MoonshotGame').then(({ MoonshotGame }) => ({ default: MoonshotGame })))
 const BeatBeaconGame = lazy(() => import('./games/BeatBeaconGame').then(({ BeatBeaconGame }) => ({ default: BeatBeaconGame })))
 const TuningForkGame = lazy(() => import('./games/TuningForkGame').then(({ TuningForkGame }) => ({ default: TuningForkGame })))
+const MagnetronGame = lazy(() => import('./games/MagnetronGame').then(({ MagnetronGame }) => ({ default: MagnetronGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -110,6 +111,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'moonshot', title: 'Moonshot Mini Golf', categories: ['arcade'], terms: 'golf putt aim power walls craters strokes sport' },
   { id: 'beatbeacon', title: 'Beat Beacon', categories: ['arcade'], terms: 'music rhythm drum timing beat sound pads' },
   { id: 'tuningfork', title: 'Tuning Fork', categories: ['arcade'], terms: 'music pitch intervals higher lower tone notes ear training' },
+  { id: 'magnetron', title: 'Magnetron', categories: ['arcade'], terms: 'magnetic polarity pull push puck physics field obstacle course' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -133,7 +135,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -537,6 +539,7 @@ function App() {
   const openMoonshot = () => setScreen('moonshot')
   const openBeatBeacon = () => setScreen('beatbeacon')
   const openTuningFork = () => setScreen('tuningfork')
+  const openMagnetron = () => setScreen('magnetron')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -621,6 +624,7 @@ function App() {
             onPlayMoonshot={openMoonshot}
             onPlayBeatBeacon={openBeatBeacon}
             onPlayTuningFork={openTuningFork}
+            onPlayMagnetron={openMagnetron}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -891,6 +895,13 @@ function App() {
             onRecordScore={(score) => recordBest('tuningFork', score)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'magnetron' ? (
+          <MagnetronGame
+            onBack={() => setScreen('home')}
+            bestTimeMs={arcadeData.bests.magnetron}
+            onRecordTime={(timeMs) => recordBest('magnetron', timeMs)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1047,6 +1058,7 @@ function Home({
   onPlayMoonshot,
   onPlayBeatBeacon,
   onPlayTuningFork,
+  onPlayMagnetron,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1100,6 +1112,7 @@ function Home({
   onPlayMoonshot: () => void
   onPlayBeatBeacon: () => void
   onPlayTuningFork: () => void
+  onPlayMagnetron: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1707,6 +1720,22 @@ function Home({
               <h3>Tuning Fork</h3>
               <p>Listen to two tones. Find whether the pitch moves up or down by a step or a leap.</p>
               <div className="card-bottom"><span className="controls-label">1–4 · TOUCH · AUDIO</span><button className="play-card-button" type="button" onClick={onPlayTuningFork}>Play Tuning Fork <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-magnetron" hidden={!visibleGameIds.has('magnetron')}>
+            <div className="card-art magnetron-card-art" aria-hidden="true">
+              <span className="magnetron-card-rail rail-one" />
+              <span className="magnetron-card-rail rail-two" />
+              <span className="magnetron-card-pole pole-pull">+</span>
+              <span className="magnetron-card-pole pole-push">−</span>
+              <span className="magnetron-card-puck" />
+              <span className="card-art-index">39</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">39</span><span className="game-category">FIELD PUZZLE</span></div>
+              <h3>Magnetron</h3>
+              <p>Flip magnetic poles to steer a puck through three original obstacle courses.</p>
+              <div className="card-bottom"><span className="controls-label">1–4 · TOUCH · ESC</span><button className="play-card-button" type="button" onClick={onPlayMagnetron}>Play Magnetron <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
