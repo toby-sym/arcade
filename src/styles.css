@@ -3630,3 +3630,98 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .beamworks-view *, .beamworks-mirror-button, .beamworks-action { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .beamworks-ray, .beamworks-receiver.is-lit circle:first-child { filter: none !important; }
 }
+
+.rack-run-layout { grid-template-columns: minmax(260px, .82fr) minmax(0, 1.18fr); align-items: start; gap: clamp(24px, 5vw, 64px); }
+.rack-run-copy h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+.rack-run-score { gap: 14px; }
+.rack-run-score .score-value { font-size: clamp(1.55rem, 3vw, 2.1rem); }
+.rack-run-score .score-unit { max-width: 220px; }
+.rack-run-score .local-best-readout strong { font-size: clamp(.9rem, 1.7vw, 1.15rem); }
+.rack-run-local-note { margin: 9px 0 0; color: #a99eb4; font-size: .66rem; line-height: 1.55; }
+.rack-run-play-column { width: 100%; max-width: 760px; justify-self: end; }
+.rack-run-console { padding: 13px; border: 3px solid #4e4059; border-radius: 15px; background: linear-gradient(145deg, #292631, #14131c 72%); box-shadow: 0 5px 0 #08080e, 0 10px 25px rgb(0 0 0 / 40%), inset 0 0 0 1px rgb(238 184 90 / 10%); }
+.rack-run-console .frame-topline { min-height: 23px; padding: 0 3px 9px; }
+.rack-run-roundline { min-height: 54px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #55495c; border-radius: 6px; background: #1b1823; }
+.rack-run-roundline > div { min-width: 0; display: grid; gap: 4px; }
+.rack-run-roundline span { color: #aea0b2; font: 800 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .09em; }
+.rack-run-roundline strong { overflow: hidden; color: #fff1d8; font: 900 .69rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-overflow: ellipsis; white-space: nowrap; }
+.rack-run-roundline > b { flex: 0 0 auto; color: #f0bd57; font: 900 .91rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+.rack-run-roundline small { color: #b8acbf; font-size: .43rem; }
+.rack-run-table-frame { width: min(100%, 620px); margin: 10px auto 0; overflow: hidden; border: 1px solid #75563c; border-radius: 12px; background: #392c25; box-shadow: inset 0 0 0 4px rgb(236 190 133 / 8%), 0 4px 12px rgb(0 0 0 / 35%); touch-action: none; }
+.rack-run-table { display: block; width: 100%; height: auto; outline: none; }
+.rack-run-table:focus-visible { outline: 3px solid #72e0eb; outline-offset: -5px; }
+.rack-run-rail { fill: url(#rack-run-rail); stroke: #bb9161; stroke-width: 3; }
+.rack-run-cushion { fill: #264d3f; stroke: #b58954; stroke-width: 5; }
+.rack-run-cloth { stroke: #47806a; stroke-width: 1; }
+.rack-run-felt-mark { fill: none; stroke: rgb(219 212 152 / 25%); stroke-width: 1; }
+.rack-run-head-string { stroke: rgb(229 225 188 / 34%); stroke-width: 1; stroke-dasharray: 5 6; }
+.rack-run-pocket circle:first-child { fill: #d1a36b; }
+.rack-run-pocket circle:last-child { fill: #11131a; stroke: #241d1b; stroke-width: 3; }
+.rack-run-pocket.is-called circle:first-child { fill: #d8ff70; filter: drop-shadow(0 0 7px rgb(216 255 112 / 70%)); }
+.rack-run-aim-guide line:first-child { stroke: #d8ff70; stroke-width: 2; stroke-dasharray: 5 6; opacity: .72; }
+.rack-run-cue-stick { stroke: #f1d8a0; stroke-width: 5; stroke-linecap: round; filter: drop-shadow(0 0 2px rgb(31 24 19 / 70%)); }
+.rack-run-ball-shadow { fill: rgb(8 20 18 / 55%); }
+.rack-run-ball-body { stroke: rgb(255 255 255 / 60%); stroke-width: 1.2; }
+.rack-run-ball-glint { fill: rgb(255 255 255 / 68%); transform: rotate(-30deg); }
+.rack-run-ball-number-disc { fill: #f8f4e7; }
+.rack-run-ball-number { fill: #1d1b20; font: 900 6px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.rack-run-ball-cue .rack-run-ball-body { stroke: #fff; stroke-width: 1.6; }
+.rack-run-ball-eight .rack-run-ball-number-disc { fill: #eee9de; }
+.rack-run-table-message { fill: #d8ff70; font: 900 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .17em; paint-order: stroke; stroke: #12352d; stroke-width: 3px; }
+.rack-run-status { min-height: 40px; margin: 8px 1px; padding: 9px 12px; border-left: 3px solid #d7b66d; color: #d2c8d5; background: #1c1923; font-size: .65rem; line-height: 1.45; text-align: center; }
+.rack-run-called-pockets { width: min(100%, 620px); margin: 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+.rack-run-pocket-button { min-width: 0; min-height: 41px; padding: 5px 7px; display: flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #594d62; border-radius: 4px; color: #e9dfd5; background: linear-gradient(#312d34, #211f27); cursor: pointer; font: 800 .44rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .035em; touch-action: manipulation; }
+.rack-run-pocket-button kbd { width: 17px; height: 17px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid #6b5b5c; border-radius: 3px; color: #f0bd57; font: 900 .45rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.rack-run-pocket-button.is-called { border-color: #cdb76c; color: #f1e4a9; background: linear-gradient(#49422f, #302b25); box-shadow: inset 0 0 0 1px rgb(216 255 112 / 14%); }
+.rack-run-pocket-button:disabled { opacity: .52; cursor: default; }
+.rack-run-pocket-button:focus-visible, .rack-run-adjust:focus-visible, .rack-run-action:focus-visible { outline: 3px solid #72e0eb; outline-offset: 2px; }
+.rack-run-shot-controls { width: min(100%, 620px); margin: 8px auto 0; display: grid; grid-template-columns: minmax(110px, .65fr) minmax(0, 1.35fr); align-items: center; gap: 10px; }
+.rack-run-aim-controls { display: grid; grid-template-columns: 42px minmax(0, 1fr) 42px; align-items: center; gap: 6px; }
+.rack-run-aim-controls > span { color: #bbaebe; font: 900 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; text-align: center; }
+.rack-run-adjust { min-height: 40px; border: 1px solid #5b5060; border-radius: 4px; color: #e5d6ed; background: #28232e; cursor: pointer; font-size: 1rem; touch-action: manipulation; }
+.rack-run-adjust:disabled { opacity: .5; cursor: default; }
+.rack-run-power-control { min-width: 0; display: grid; grid-template-columns: auto minmax(60px, 1fr) 40px; align-items: center; gap: 9px; color: #b8acbf; font: 800 .42rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .06em; }
+.rack-run-power-control input { min-width: 0; width: 100%; accent-color: #d8ff70; }
+.rack-run-power-control input:focus-visible { outline: 2px solid #72e0eb; outline-offset: 3px; }
+.rack-run-power-control output { color: #e0fb86; font-variant-numeric: tabular-nums; text-align: right; }
+.rack-run-actions { margin-top: 9px; display: grid; grid-template-columns: minmax(0, 1fr) repeat(2, minmax(72px, auto)); gap: 7px; }
+.rack-run-action { min-height: 46px; padding: 7px 9px; display: flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #594d62; border-radius: 5px; color: #e8d9ef; background: linear-gradient(#342b3d, #241e2c); box-shadow: 0 3px 0 #0b0a11; cursor: pointer; font: 900 .52rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .035em; text-transform: uppercase; touch-action: manipulation; }
+.rack-run-action-primary { color: #201913; border-color: #a7854e; background: linear-gradient(#edce7c, #d19c4e); box-shadow: 0 3px 0 #80552f; }
+.rack-run-action-pause { color: #18171d; border-color: #bacb71; background: linear-gradient(#e0fb86, #b6e651); box-shadow: 0 3px 0 #52672c; }
+.rack-run-action-shoot { color: #151c1d; border-color: #5d9fa6; background: linear-gradient(#95edf0, #57c8d4); box-shadow: 0 3px 0 #327782; }
+.rack-run-action:disabled { opacity: .47; cursor: default; }
+.rack-run-action kbd { color: inherit; font: 800 .39rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; opacity: .75; }
+.rack-run-console-footer { min-height: 19px; padding: 9px 3px 0; display: flex; justify-content: space-between; gap: 8px; color: #a79bad; font: 800 .37rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .035em; }
+.rack-run-footnote { margin: 8px 2px; color: #a99eb4; font-size: .64rem; line-height: 1.5; text-align: center; }
+.rack-run-card-art { overflow: hidden; background: radial-gradient(ellipse at 50% 50%, #285347, #151620 78%); }
+.rack-run-card-rail { position: absolute; inset: 20% 13%; border: 7px solid #8c5f3d; border-radius: 28px; box-shadow: inset 0 0 0 2px #d1a36b, 0 0 0 1px #d1a36b; background: #16473e; }
+.rack-run-card-ball { position: absolute; z-index: 1; top: 43%; left: 27%; width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid rgb(255 255 255 / 60%); border-radius: 50%; color: #1b1c22; background: #f6f0df; font: 900 .42rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; box-shadow: 0 2px 4px rgb(0 0 0 / 55%); }
+.rack-run-card-ball.one { top: 39%; left: 59%; color: #fff4dc; background: #dc754c; }
+.rack-run-card-ball.eight { top: 51%; left: 65%; color: #f5f0e5; background: #252633; }
+.rack-run-card-pocket { position: absolute; top: 25%; right: 19%; width: 18px; height: 18px; border: 3px solid #d1a36b; border-radius: 50%; background: #12131a; }
+
+@media (max-width: 760px) {
+  .rack-run-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .rack-run-copy h1 { font-size: clamp(2.1rem, 8vw, 2.8rem); }
+  .rack-run-play-column { max-width: 690px; justify-self: center; }
+  .rack-run-console { padding: 9px; border-width: 2px; border-radius: 10px; }
+}
+
+@media (max-width: 380px) {
+  .rack-run-score { padding: 11px; gap: 8px; }
+  .rack-run-score .score-unit { font-size: .55rem; }
+  .rack-run-roundline { padding-inline: 8px; gap: 6px; }
+  .rack-run-roundline span { font-size: .36rem; }
+  .rack-run-roundline strong { font-size: .58rem; }
+  .rack-run-pocket-button { gap: 4px; padding-inline: 3px; font-size: .37rem; }
+  .rack-run-shot-controls { grid-template-columns: 1fr; gap: 6px; }
+  .rack-run-aim-controls { grid-template-columns: 44px minmax(0, 1fr) 44px; }
+  .rack-run-actions { grid-template-columns: minmax(0, 1fr) repeat(2, minmax(62px, auto)); gap: 5px; }
+  .rack-run-action { min-height: 44px; padding-inline: 5px; font-size: .43rem; }
+  .rack-run-console-footer { font-size: .32rem; letter-spacing: .015em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rack-run-view *, .rack-run-pocket-button, .rack-run-adjust, .rack-run-action { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .rack-run-pocket.is-called circle:first-child { filter: none; }
+}
