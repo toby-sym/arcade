@@ -78,6 +78,7 @@ export interface ArcadeBests {
   keytrace: number | null
   pixelMosaic: number | null
   minuteHand: number | null
+  pocketOrbit: number | null
 }
 
 export interface ArcadeData {
@@ -116,7 +117,7 @@ export interface ArcadeData {
 export function withImprovedBest(data: ArcadeData, game: keyof ArcadeBests, candidate: number): ArcadeData | null {
   if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && game !== 'letterBoxed' && game !== 'dominoLogic' && game !== 'glyphMatch' && game !== 'vertex' && game !== 'tiles' && game !== 'pips' && game !== 'crossword' && game !== 'minesweeper' && game !== 'cipherCircuit' && game !== 'colorConduit' && game !== 'gravityLoom' && game !== 'tideglass' && game !== 'neonRally' && game !== 'moonshot' && game !== 'beatBeacon' && game !== 'tuningFork' && game !== 'magnetron' && game !== 'keystone' && game !== 'beamworks' && game !== 'pinParade' && game !== 'latchkey' && game !== 'pegline' && game !== 'tallyMarket' && game !== 'keytrace' && game !== 'pixelMosaic' && candidate === 0)) return null
   const previous = data.bests[game]
-  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword' || game === 'letterBoxed' || game === 'dominoLogic' || game === 'glyphMatch' || game === 'vertex' || game === 'tiles' || game === 'pips' || game === 'crossword' || game === 'minesweeper' || game === 'cipherCircuit' || game === 'colorConduit' || game === 'gravityLoom' || game === 'tideglass' || game === 'neonRally' || game === 'moonshot' || game === 'magnetron' || game === 'keystone' || game === 'beamworks' || game === 'rackRun' || game === 'deckhand' || game === 'latchkey' || game === 'fathom' || game === 'pegline' || game === 'tallyMarket' || game === 'keytrace' || game === 'pixelMosaic' || game === 'minuteHand'
+  const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword' || game === 'letterBoxed' || game === 'dominoLogic' || game === 'glyphMatch' || game === 'vertex' || game === 'tiles' || game === 'pips' || game === 'crossword' || game === 'minesweeper' || game === 'cipherCircuit' || game === 'colorConduit' || game === 'gravityLoom' || game === 'tideglass' || game === 'neonRally' || game === 'moonshot' || game === 'magnetron' || game === 'keystone' || game === 'beamworks' || game === 'rackRun' || game === 'deckhand' || game === 'latchkey' || game === 'fathom' || game === 'pegline' || game === 'tallyMarket' || game === 'keytrace' || game === 'pixelMosaic' || game === 'minuteHand' || game === 'pocketOrbit'
   const improved = previous === null || (lowerIsBetter ? candidate < previous : candidate > previous)
   if (!improved) return null
   return { ...data, bests: { ...data.bests, [game]: candidate } }
@@ -323,7 +324,7 @@ type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null, pixelMosaic: null, minuteHand: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null, pixelMosaic: null, minuteHand: null, pocketOrbit: null },
     dailyPatternCompletedDate: null,
     dailyWordGame: null,
     dailyConnectionsGame: null,
@@ -358,7 +359,7 @@ export function withFavouriteGameIds(data: ArcadeData, gameIds: readonly string[
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null, pixelMosaic: null, minuteHand: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null, pixelMosaic: null, minuteHand: null, pocketOrbit: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -449,6 +450,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         keytrace: validRecord(bests.keytrace),
         pixelMosaic: validRecord(bests.pixelMosaic),
         minuteHand: validRecord(bests.minuteHand),
+        pocketOrbit: validRecord(bests.pocketOrbit),
       },
       preferences: {
         reduceMotion: preferences.reduceMotion === true,
@@ -485,7 +487,7 @@ export function parseArcadeDataBackup(contents: string): ArcadeData | null {
     const empty = emptyArcadeData()
     const missingFields = Object.keys(empty).filter((key) => key !== 'dailyMinesweeperGame' && key !== 'dailyCipherCircuitGame' && key !== 'dailyColorConduitGame' && key !== 'dailyGravityLoomGame' && key !== 'dailyTideglassGame' && key !== 'dailyTallyMarketGame' && key !== 'dailyPixelMosaicGame' && key !== 'dailyMinuteHandGame' && !(key in parsed))
     if (missingFields.length) return null
-    const invalidBestFields = Object.keys(empty.bests).filter((key) => key !== 'minesweeper' && key !== 'mazeDash' && key !== 'skylineSkip' && key !== 'cipherCircuit' && key !== 'orbitCourier' && key !== 'colorConduit' && key !== 'switchyard' && key !== 'prismDash' && key !== 'gravityLoom' && key !== 'tideglass' && key !== 'skyhook' && key !== 'pocketPinball' && key !== 'neonRally' && key !== 'moonshot' && key !== 'beatBeacon' && key !== 'tuningFork' && key !== 'magnetron' && key !== 'keystone' && key !== 'beamworks' && key !== 'rackRun' && key !== 'pinParade' && key !== 'deckhand' && key !== 'latchkey' && key !== 'fathom' && key !== 'fourfold' && key !== 'pegline' && key !== 'tallyMarket' && key !== 'keytrace' && key !== 'pixelMosaic' && key !== 'minuteHand').filter((key) => {
+    const invalidBestFields = Object.keys(empty.bests).filter((key) => key !== 'minesweeper' && key !== 'mazeDash' && key !== 'skylineSkip' && key !== 'cipherCircuit' && key !== 'orbitCourier' && key !== 'colorConduit' && key !== 'switchyard' && key !== 'prismDash' && key !== 'gravityLoom' && key !== 'tideglass' && key !== 'skyhook' && key !== 'pocketPinball' && key !== 'neonRally' && key !== 'moonshot' && key !== 'beatBeacon' && key !== 'tuningFork' && key !== 'magnetron' && key !== 'keystone' && key !== 'beamworks' && key !== 'rackRun' && key !== 'pinParade' && key !== 'deckhand' && key !== 'latchkey' && key !== 'fathom' && key !== 'fourfold' && key !== 'pegline' && key !== 'tallyMarket' && key !== 'keytrace' && key !== 'pixelMosaic' && key !== 'minuteHand' && key !== 'pocketOrbit').filter((key) => {
       const record = bests[key]
       return record !== null && !(typeof record === 'number' && Number.isSafeInteger(record) && record >= 0)
     })

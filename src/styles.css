@@ -4616,3 +4616,109 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
 @media (prefers-reduced-motion: reduce) {
   .deckhand-view *, .deckhand-action, .deckhand-card { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+.pocketorbit-layout { grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr); align-items: start; gap: clamp(22px, 4vw, 56px); }
+.pocketorbit-copy h1 { max-width: 9ch; }
+.pocketorbit-score { width: 100%; max-width: 410px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 10px; }
+.pocketorbit-score > div { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; }
+.pocketorbit-score .score-caption { font-size: .48rem; letter-spacing: .08em; line-height: 1.35; }
+.pocketorbit-score > div:first-child .score-caption { white-space: nowrap; }
+.pocketorbit-score .score-value { font-size: clamp(1.15rem, 2.3vw, 1.65rem); }
+.pocketorbit-score .score-unit { grid-column: 1; font-size: .55rem; }
+.pocketorbit-run-stat { padding-inline: 10px; border-inline-start: 1px solid #3c334b; border-inline-end: 0; }
+.pocketorbit-score .local-best-readout { min-width: 0; grid-column: 1 / -1; margin: 0; padding-top: 8px; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: baseline; column-gap: 8px; border-top: 1px solid var(--line); }
+.pocketorbit-score .local-best-readout .score-caption { grid-column: 1 / -1; }
+.pocketorbit-score .local-best-readout .score-value { font-size: 1.15rem; }
+.pocketorbit-score .local-best-readout .score-unit { grid-column: auto; }
+.pocketorbit-local-note { margin: 10px 0 0; color: #b8adca; font-size: .68rem; line-height: 1.5; }
+.pocketorbit-console { min-width: 0; padding: 12px; border: 3px solid #55446f; border-radius: 12px; background: linear-gradient(145deg, #282238, #171421); box-shadow: inset 0 0 0 2px #0d0b14, 0 5px 0 #0b0912, 0 10px 24px rgb(0 0 0 / 28%); }
+.pocketorbit-roundline { min-height: 52px; margin-top: 8px; padding: 7px 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid #514461; border-radius: 5px; color: #fff2d9; background: #17141f; }
+.pocketorbit-roundline > div { min-width: 0; display: grid; gap: 4px; }
+.pocketorbit-roundline > div span, .pocketorbit-roundline > b small { color: #b9accb; font: 900 .4rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; }
+.pocketorbit-roundline > div strong { overflow-wrap: anywhere; color: #56e1f2; font: 900 .49rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; }
+.pocketorbit-roundline > b { color: #d5fa58; font: 900 .95rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: nowrap; }
+.pocketorbit-flight-deck { position: relative; margin-top: 8px; overflow: hidden; border: 1px solid #6d5c7d; border-radius: 5px; background: #11101d; box-shadow: inset 0 0 0 3px #0b0913, 0 0 0 1px rgb(255 255 255 / 4%); }
+.pocketorbit-field { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; }
+.pocketorbit-guide-orbit { fill: none; stroke: #d5fa58; stroke-width: 1.5; stroke-dasharray: 4 8; opacity: .38; }
+.pocketorbit-well { fill: #21192f; stroke: #ff8a9f; stroke-width: 3; }
+.pocketorbit-moon { fill: #172739; stroke: #6ce7f2; stroke-width: 2; }
+.pocketorbit-object-label { fill: #c9bed7; font: 900 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 1.2px; paint-order: stroke; stroke: #11101d; stroke-width: 4px; stroke-linejoin: round; }
+.pocketorbit-object-label.moon-label { fill: #80e4f2; }
+.pocketorbit-preview-path { fill: none; stroke: #d5fa58; stroke-width: 3; stroke-dasharray: 2 12; stroke-linecap: round; opacity: .8; }
+.pocketorbit-live-trail { fill: none; stroke: #ff7c9d; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: url(#pocketorbit-glow); }
+.pocketorbit-beacon-ring { fill: #171420; stroke: #61dfeb; stroke-width: 2.5; }
+.pocketorbit-beacon-gem { fill: #d5fa58; }
+.pocketorbit-beacon.is-collected .pocketorbit-beacon-ring { fill: #356d61; stroke: #d5fa58; }
+.pocketorbit-beacon.is-collected .pocketorbit-beacon-gem { opacity: 0; }
+.pocketorbit-check { fill: #fff6dd; font: 900 20px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.pocketorbit-dock-ring { fill: rgb(84 224 239 / 8%); stroke: #56e1f2; stroke-width: 3; stroke-dasharray: 5 5; }
+.pocketorbit-dock-core { fill: #ff7a98; filter: url(#pocketorbit-glow); }
+.pocketorbit-aim-vector line { stroke: #ff7897; stroke-width: 4; stroke-linecap: round; marker-end: none; }
+.pocketorbit-ship path:first-child { fill: #fff3d9; stroke: #56e1f2; stroke-width: 2; stroke-linejoin: round; }
+.pocketorbit-ship.is-flying path:first-child { fill: #ff7795; }
+.pocketorbit-engine-flare { fill: #d5fa58; opacity: .9; }
+.pocketorbit-complete-mark circle { fill: #d5fa58; stroke: #171421; stroke-width: 2; }
+.pocketorbit-complete-mark path { fill: none; stroke: #171421; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.pocketorbit-overlay { position: absolute; inset: 0; padding: clamp(14px, 4vw, 28px); display: grid; place-items: center; background: linear-gradient(90deg, rgb(16 14 26 / 78%), rgb(16 14 26 / 44%)); pointer-events: none; text-align: center; }
+.pocketorbit-overlay > div { max-width: 390px; padding: 17px 18px; border: 1px solid rgb(137 116 167 / 58%); border-radius: 6px; background: rgb(23 20 33 / 87%); box-shadow: 0 6px 20px rgb(0 0 0 / 28%); }
+.pocketorbit-overlay span { display: block; margin-bottom: 8px; color: #d5fa58; font: 900 .45rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .17em; }
+.pocketorbit-overlay strong { display: block; color: #fff4df; font-size: clamp(.9rem, 2vw, 1.25rem); line-height: 1.2; }
+.pocketorbit-overlay p { margin: 8px 0 0; color: #cbc0d5; font-size: .72rem; line-height: 1.45; }
+.pocketorbit-flight-status { min-height: 44px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid #403649; color: #c9bfd5; font-size: .68rem; line-height: 1.4; }
+.pocketorbit-flight-status > span { max-width: 58ch; }
+.pocketorbit-flight-status b { color: #56e1f2; font: 900 .72rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: nowrap; }
+.pocketorbit-flight-status small { color: #a99eb4; font-size: .42rem; }
+.pocketorbit-controls { padding: 9px 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.pocketorbit-dial-group { min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
+.pocketorbit-dial-group > span { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 8px; color: #b6a9c7; font: 900 .4rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; }
+.pocketorbit-dial-group > span strong { color: #d5fa58; }
+.pocketorbit-dial-group button, .pocketorbit-action { min-width: 0; min-height: 40px; padding: 6px 8px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #625274; border-radius: 4px; color: #eee4f1; background: #211c2b; box-shadow: 0 3px 0 #0c0911; cursor: pointer; font: 900 .6rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .035em; text-transform: uppercase; touch-action: manipulation; }
+.pocketorbit-dial-group button:hover:not(:disabled), .pocketorbit-action:hover { border-color: #58def3; }
+.pocketorbit-dial-group button:disabled { opacity: .5; cursor: not-allowed; }
+.pocketorbit-dial-group button:focus-visible, .pocketorbit-action:focus-visible { outline: 2px solid #58def3; outline-offset: 2px; }
+.pocketorbit-dial-group kbd, .pocketorbit-action kbd { color: #9f91b0; font-size: .36rem; }
+.pocketorbit-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.pocketorbit-action { padding-inline: 12px; }
+.pocketorbit-action-primary { border-color: #ff7695; color: #1c1521; background: linear-gradient(#ff8ba4, #fa5f83); box-shadow: 0 3px 0 #aa3454; }
+.pocketorbit-action-primary kbd { color: #4f1c2a; }
+.pocketorbit-action-pause { border-color: #d5fa58; color: #d5fa58; }
+.pocketorbit-footnote { margin: 10px 3px 0; color: #a99eb4; font-size: .6rem; line-height: 1.45; text-align: center; }
+.pocketorbit-card-art { position: relative; overflow: hidden; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 48%, #312944, #171422 75%); }
+.pocketorbit-card-orbit { position: absolute; aspect-ratio: 1; border: 1px dashed rgb(213 250 88 / 40%); border-radius: 50%; transform: rotate(-24deg) scaleY(.65); }
+.pocketorbit-card-orbit.orbit-one { width: 39%; }
+.pocketorbit-card-orbit.orbit-two { width: 60%; border-color: rgb(91 216 235 / 34%); }
+.pocketorbit-card-well { width: 13%; aspect-ratio: 1; border: 3px solid #ff7695; border-radius: 50%; background: radial-gradient(circle, #ffe8a7, #a75bc5 70%); box-shadow: 0 0 22px rgb(255 118 149 / 40%); }
+.pocketorbit-card-moon, .pocketorbit-card-beacon { position: absolute; width: 5%; aspect-ratio: 1; border-radius: 50%; background: #57deed; box-shadow: 0 0 12px rgb(87 222 237 / 55%); }
+.pocketorbit-card-moon { top: 26%; left: 28%; width: 7%; background: #7b99fc; }
+.pocketorbit-card-ship { position: absolute; top: 27%; left: 62%; width: 0; height: 0; border-right: 9px solid transparent; border-bottom: 23px solid #fff3d9; border-left: 9px solid transparent; transform: rotate(45deg); filter: drop-shadow(0 0 5px #58def3); }
+.pocketorbit-card-beacon.beacon-one { top: 28%; left: 49%; }
+.pocketorbit-card-beacon.beacon-two { bottom: 27%; left: 37%; background: #d5fa58; }
+.pocketorbit-card-beacon.beacon-three { right: 27%; bottom: 30%; background: #d5fa58; }
+@media (max-width: 760px) {
+  .pocketorbit-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .pocketorbit-copy { min-width: 0; }
+  .pocketorbit-play-column { max-width: 720px; justify-self: center; }
+  .pocketorbit-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .pocketorbit-overlay { padding: 10px; }
+  .pocketorbit-overlay > div { padding: 11px 12px; }
+  .pocketorbit-overlay p { font-size: .64rem; }
+}
+@media (max-width: 420px) {
+  .pocketorbit-score { gap: 6px; padding: 10px; }
+  .pocketorbit-score .score-caption { font-size: .45rem; letter-spacing: .06em; }
+  .pocketorbit-score .score-unit { font-size: .52rem; }
+  .pocketorbit-run-stat { padding-inline: 6px; }
+  .pocketorbit-roundline { min-height: 44px; padding-inline: 7px; }
+  .pocketorbit-roundline > div span, .pocketorbit-roundline > b small { font-size: .34rem; }
+  .pocketorbit-roundline > div strong { font-size: .4rem; }
+  .pocketorbit-flight-status { font-size: .6rem; }
+  .pocketorbit-controls { gap: 6px; }
+  .pocketorbit-dial-group { gap: 4px; }
+  .pocketorbit-dial-group button { min-height: 42px; padding-inline: 3px; font-size: .6rem; }
+  .pocketorbit-dial-group kbd { display: none; }
+  .pocketorbit-action { flex: 1 1 auto; min-height: 44px; padding-inline: 6px; font-size: .6rem; }
+  .pocketorbit-overlay strong { font-size: .85rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pocketorbit-view *, .pocketorbit-view *::before, .pocketorbit-view *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
