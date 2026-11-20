@@ -3725,3 +3725,99 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .rack-run-view *, .rack-run-pocket-button, .rack-run-adjust, .rack-run-action { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .rack-run-pocket.is-called circle:first-child { filter: none; }
 }
+
+.pin-parade-layout { grid-template-columns: minmax(260px, .82fr) minmax(0, 1.18fr); align-items: start; gap: clamp(24px, 5vw, 64px); }
+.pin-parade-copy h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+.pin-parade-score { gap: 14px; }
+.pin-parade-score .score-value { font-size: clamp(1.55rem, 3vw, 2.1rem); }
+.pin-parade-score .score-unit { max-width: 220px; }
+.pin-parade-score .local-best-readout strong { font-size: clamp(.9rem, 1.7vw, 1.15rem); }
+.pin-parade-local-note { margin: 9px 0 0; color: #a99eb4; font-size: .66rem; line-height: 1.55; }
+.pin-parade-play-column { width: 100%; max-width: 720px; justify-self: end; }
+.pin-parade-console { padding: 13px; border: 3px solid #4e4059; border-radius: 15px; background: linear-gradient(145deg, #302731, #14131c 72%); box-shadow: 0 5px 0 #08080e, 0 10px 25px rgb(0 0 0 / 40%), inset 0 0 0 1px rgb(222 167 101 / 10%); }
+.pin-parade-console .frame-topline { min-height: 23px; padding: 0 3px 9px; }
+.pin-parade-roundline { min-height: 54px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #55495c; border-radius: 6px; background: #1b1823; }
+.pin-parade-roundline > div { min-width: 0; display: grid; gap: 4px; }
+.pin-parade-roundline span { color: #aea0b2; font: 800 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.pin-parade-roundline strong { overflow: hidden; color: #fff1d8; font: 900 .72rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-overflow: ellipsis; white-space: nowrap; }
+.pin-parade-roundline > b { flex: 0 0 auto; color: #f0bd57; font: 900 .91rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+.pin-parade-roundline small { color: #b8acbf; font-size: .43rem; }
+.pin-parade-lane-frame { width: min(100%, 380px); margin: 10px auto 0; overflow: hidden; border: 1px solid #946b48; border-radius: 13px; background: #29232a; box-shadow: inset 0 0 0 4px rgb(236 190 133 / 9%), 0 4px 12px rgb(0 0 0 / 35%); touch-action: none; }
+.pin-parade-lane { display: block; width: 100%; height: auto; outline: none; }
+.pin-parade-lane:focus-visible { outline: 3px solid #72e0eb; outline-offset: -5px; }
+.pin-parade-lane-surround { fill: url(#pin-parade-rail); stroke: #d2a66d; stroke-width: 2; }
+.pin-parade-gutter { fill: #30313a; stroke: #56535b; stroke-width: 2; }
+.pin-parade-lane-wood { stroke: #f0ca8d; stroke-width: 2; }
+.pin-parade-boards { opacity: .76; }
+.pin-parade-lane-highlight { fill: none; stroke: rgb(255 237 197 / 34%); stroke-width: 2; }
+.pin-parade-aim-mark circle { fill: rgb(95 60 40 / 55%); stroke: rgb(255 231 190 / 55%); stroke-width: 1; }
+.pin-parade-foul-line { stroke: #9f3d44; stroke-width: 3; }
+.pin-parade-lane-label { fill: #6e432e; font: 900 8px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .25em; }
+.pin-parade-aim-guide { stroke: #d8ff70; stroke-width: 2; stroke-dasharray: 5 7; filter: drop-shadow(0 0 4px rgb(216 255 112 / 70%)); pointer-events: none; }
+.pin-parade-pin-shadow { fill: rgb(43 27 21 / 45%); }
+.pin-parade-pin-body { fill: #f8f1e3; stroke: #fffdf5; stroke-width: 1; filter: drop-shadow(0 1px 2px rgb(44 30 23 / 60%)); }
+.pin-parade-pin-stripe { fill: none; stroke: #d64d55; stroke-width: 1.8; stroke-linecap: round; }
+.pin-parade-pin-dot { fill: #d64d55; }
+.pin-parade-pin.is-fallen .pin-parade-pin-body { fill: #b7a99a; stroke: #ded1c4; }
+.pin-parade-pin.is-fallen .pin-parade-pin-stripe { stroke: #a95b5f; }
+.pin-parade-ball-shadow { fill: rgb(13 31 33 / 45%); }
+.pin-parade-ball-body { stroke: #b9fcf0; stroke-width: 1.5; }
+.pin-parade-ball-hole { fill: #173f4a; stroke: #b9fcf0; stroke-width: .5; }
+.pin-parade-lane-message { fill: #f3d399; font: 900 14px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .15em; paint-order: stroke; stroke: #593b2d; stroke-width: 3px; }
+.pin-parade-status { min-height: 40px; margin: 8px 1px; padding: 9px 12px; border-left: 3px solid #d7b66d; color: #d2c8d5; background: #1c1923; font-size: .65rem; line-height: 1.45; text-align: center; }
+.pin-parade-frames { width: min(100%, 510px); margin: 0 auto; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+.pin-parade-frame { min-width: 0; min-height: 47px; padding: 4px 3px; display: grid; grid-template-rows: 10px 13px 1fr; align-items: center; justify-items: center; border: 1px solid #4d4354; border-radius: 4px; color: #c9bbce; background: #211e28; }
+.pin-parade-frame.is-current { border-color: #d0a95d; box-shadow: inset 0 0 0 1px rgb(240 189 87 / 25%); }
+.pin-parade-frame > span { color: #9f93a8; font: 800 .36rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.pin-parade-frame small { overflow: hidden; width: 100%; color: #f1d89e; font: 800 .42rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.pin-parade-frame strong { color: #f6eedf; font: 900 .49rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.pin-parade-controls { width: min(100%, 510px); margin: 8px auto 0; display: grid; gap: 6px; }
+.pin-parade-aim-controls { display: grid; grid-template-columns: 46px minmax(0, 1fr) 46px; align-items: center; gap: 8px; }
+.pin-parade-aim-controls > span { display: flex; justify-content: center; gap: 8px; color: #afa3b8; font: 900 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; }
+.pin-parade-aim-controls strong { color: #f0bd57; font-variant-numeric: tabular-nums; }
+.pin-parade-adjust { min-height: 39px; border: 1px solid #5b5060; border-radius: 4px; color: #e7d8e9; background: #28232e; cursor: pointer; font-size: 1rem; touch-action: manipulation; }
+.pin-parade-adjust:disabled { opacity: .5; cursor: default; }
+.pin-parade-slider { display: grid; grid-template-columns: 43px minmax(60px, 1fr) 70px; align-items: center; gap: 8px; color: #b8acbf; font: 800 .42rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .07em; }
+.pin-parade-slider input { width: 100%; min-width: 0; accent-color: #d8ff70; }
+.pin-parade-slider input:focus-visible { outline: 2px solid #72e0eb; outline-offset: 3px; }
+.pin-parade-slider output { overflow: hidden; color: #e0fb86; font-variant-numeric: tabular-nums; text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+.pin-parade-actions { width: min(100%, 510px); margin: 9px auto 0; display: grid; grid-template-columns: minmax(0, 1fr) repeat(2, minmax(72px, auto)); gap: 7px; }
+.pin-parade-action { min-height: 46px; padding: 7px 9px; display: flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #594d62; border-radius: 5px; color: #e8d9ef; background: linear-gradient(#342b3d, #241e2c); box-shadow: 0 3px 0 #0b0a11; cursor: pointer; font: 900 .51rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .03em; text-transform: uppercase; touch-action: manipulation; }
+.pin-parade-action-primary { color: #211a17; border-color: #a7854e; background: linear-gradient(#edce7c, #d19c4e); box-shadow: 0 3px 0 #80552f; }
+.pin-parade-action-pause { color: #18171d; border-color: #bacb71; background: linear-gradient(#e0fb86, #b6e651); box-shadow: 0 3px 0 #52672c; }
+.pin-parade-action-bowl { color: #151c1d; border-color: #5d9fa6; background: linear-gradient(#95edf0, #57c8d4); box-shadow: 0 3px 0 #327782; }
+.pin-parade-action:disabled { opacity: .47; cursor: default; }
+.pin-parade-action kbd { color: inherit; font: 800 .37rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; opacity: .75; }
+.pin-parade-action:focus-visible, .pin-parade-adjust:focus-visible { outline: 3px solid #72e0eb; outline-offset: 2px; }
+.pin-parade-console-footer { min-height: 19px; padding: 9px 3px 0; display: flex; justify-content: space-between; gap: 8px; color: #a79bad; font: 800 .35rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .025em; }
+.pin-parade-footnote { margin: 8px 2px; color: #a99eb4; font-size: .64rem; line-height: 1.5; text-align: center; }
+.pin-parade-card-art { overflow: hidden; background: radial-gradient(ellipse at 50% 50%, #322a33, #15131b 78%); }
+.pin-parade-card-lane { position: absolute; top: 12%; left: 43%; width: 14%; height: 77%; border: 3px solid #c48d59; border-radius: 8px; background: linear-gradient(90deg, #8a5834, #e3b171 45%, #b47b4c); box-shadow: 0 0 0 2px #593e31; }
+.pin-parade-card-pin { position: absolute; z-index: 1; top: 25%; left: 48%; width: 14px; height: 18px; display: grid; place-items: center; border-radius: 45% 45% 35% 35%; color: #302528; background: #fff3df; font: 900 .37rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; box-shadow: 0 2px 3px rgb(0 0 0 / 50%); }
+.pin-parade-card-pin.pin-two { top: 31%; left: 44%; transform: rotate(-12deg); }
+.pin-parade-card-pin.pin-three { top: 31%; left: 53%; transform: rotate(12deg); }
+.pin-parade-card-ball { position: absolute; bottom: 18%; left: 48%; width: 19px; height: 19px; border: 2px solid #c3fff1; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #a4f8ee, #287c7e 72%); box-shadow: 0 0 9px rgb(100 225 210 / 55%); }
+
+@media (max-width: 760px) {
+  .pin-parade-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .pin-parade-copy h1 { font-size: clamp(2.1rem, 8vw, 2.8rem); }
+  .pin-parade-play-column { max-width: 690px; justify-self: center; }
+  .pin-parade-console { padding: 9px; border-width: 2px; border-radius: 10px; }
+}
+
+@media (max-width: 380px) {
+  .pin-parade-score { padding: 11px; gap: 8px; }
+  .pin-parade-score .score-unit { font-size: .55rem; }
+  .pin-parade-roundline { padding-inline: 8px; gap: 6px; }
+  .pin-parade-roundline span { font-size: .36rem; }
+  .pin-parade-roundline strong { font-size: .57rem; }
+  .pin-parade-slider { grid-template-columns: 38px minmax(45px, 1fr) 58px; gap: 5px; font-size: .36rem; }
+  .pin-parade-actions { grid-template-columns: minmax(0, 1fr) repeat(2, minmax(61px, auto)); gap: 5px; }
+  .pin-parade-action { min-height: 44px; padding-inline: 5px; font-size: .41rem; }
+  .pin-parade-console-footer { font-size: .3rem; letter-spacing: .01em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pin-parade-view *, .pin-parade-adjust, .pin-parade-action { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .pin-parade-aim-guide { filter: none !important; }
+}
