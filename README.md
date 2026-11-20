@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, and Tuning Fork are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, and Magnetron are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -282,6 +282,13 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Complete eight original pairs. Each correct interval earns 100 points; a missed choice advances to the next pair and reveals its direction and size.
 - **Pause set** or **Escape** holds the current pair. **Restart** clears the run.
 - Your highest score stays saved in this browser and does not sync. Audio is optional; the visual pitch contour remains available when Arcade sounds are off.
+
+## Magnetron controls
+
+- Reverse magnetic posts to pull or push the puck through three original obstacle courses and into each exit ring. A polarity change sends a quick field pulse toward or away from that post; no key holding is needed.
+- Use **1–4** for posts in order or tap their polarity controls. Posts show their current pull or push state with both a sign and a label.
+- **Escape** pauses or resumes. **Reset puck** returns to the start of the current course and adds three seconds. **R** or **Restart** begins a fresh three-course run. The game pauses when its browser tab is hidden.
+- Your fastest clear stays saved in this browser and does not sync.
 
 ## Local records and preferences
 
