@@ -67,7 +67,7 @@ describe('Arcade navigation and game controls', () => {
     expect(snakeArticle).toHaveAttribute('hidden')
 
     fireEvent.click(screen.getByRole('button', { name: 'All games' }))
-    expect(screen.getByText('Showing all 39 games.')).toBeInTheDocument()
+    expect(screen.getByText('Showing all 40 games.')).toBeInTheDocument()
     expect(pipsArticle).not.toHaveAttribute('hidden')
     expect(snakeArticle).not.toHaveAttribute('hidden')
   })
