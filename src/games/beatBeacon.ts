@@ -74,10 +74,15 @@ export function beatBeaconStepTimeMs(stepIndex: number): number {
   return timeMs + (stepIndex % BEAT_BEACON_BEATS_PER_TRACK) * (60_000 / track.bpm)
 }
 
-export function beatBeaconCurrentStep(state: BeatBeaconState): number | null {
+export function beatBeaconCurrentStep(state: BeatBeaconState, nowMs?: number): number | null {
   if (state.phase !== 'playing') return null
   const index = state.judgements.findIndex((judgement) => judgement === null)
-  return index === -1 ? null : index
+  if (index === -1) return null
+  if (nowMs !== undefined && state.startedAtMs !== null) {
+    const cueAt = state.startedAtMs + beatBeaconStepTimeMs(index)
+    if (nowMs < cueAt - BEAT_BEACON_TIMING_WINDOW_MS || nowMs > cueAt + BEAT_BEACON_TIMING_WINDOW_MS) return null
+  }
+  return index
 }
 
 export function tickBeatBeacon(state: BeatBeaconState, nowMs: number): BeatBeaconState {
@@ -98,6 +103,7 @@ export function tickBeatBeacon(state: BeatBeaconState, nowMs: number): BeatBeaco
     : nowMs - state.startedAtMs >= BEAT_BEACON_COUNT_IN_MS - BEAT_BEACON_TIMING_WINDOW_MS
       ? 'playing'
       : 'countIn'
+  if (missed === 0 && phase === state.phase) return state
   return {
     ...state,
     phase,

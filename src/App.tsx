@@ -58,6 +58,7 @@ const SkyhookGame = lazy(() => import('./games/SkyhookGame').then(({ SkyhookGame
 const PocketPinballGame = lazy(() => import('./games/PocketPinballGame').then(({ PocketPinballGame }) => ({ default: PocketPinballGame })))
 const NeonRallyGame = lazy(() => import('./games/NeonRallyGame').then(({ NeonRallyGame }) => ({ default: NeonRallyGame })))
 const MoonshotGame = lazy(() => import('./games/MoonshotGame').then(({ MoonshotGame }) => ({ default: MoonshotGame })))
+const BeatBeaconGame = lazy(() => import('./games/BeatBeaconGame').then(({ BeatBeaconGame }) => ({ default: BeatBeaconGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -106,6 +107,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'pocketpinball', title: 'Pocket Pinball', categories: ['arcade'], terms: 'pinball flippers bumpers targets nudge table' },
   { id: 'neonrally', title: 'Neon Rally', categories: ['arcade'], terms: 'race circuit car driving steering acceleration lap time' },
   { id: 'moonshot', title: 'Moonshot Mini Golf', categories: ['arcade'], terms: 'golf putt aim power walls craters strokes sport' },
+  { id: 'beatbeacon', title: 'Beat Beacon', categories: ['arcade'], terms: 'music rhythm drum timing beat sound pads' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -129,7 +131,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -531,6 +533,7 @@ function App() {
   const openPocketPinball = () => setScreen('pocketpinball')
   const openNeonRally = () => setScreen('neonrally')
   const openMoonshot = () => setScreen('moonshot')
+  const openBeatBeacon = () => setScreen('beatbeacon')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -613,6 +616,7 @@ function App() {
             onPlayPocketPinball={openPocketPinball}
             onPlayNeonRally={openNeonRally}
             onPlayMoonshot={openMoonshot}
+            onPlayBeatBeacon={openBeatBeacon}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -869,6 +873,13 @@ function App() {
             onRecordStrokes={(strokes) => recordBest('moonshot', strokes)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'beatbeacon' ? (
+          <BeatBeaconGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.beatBeacon}
+            onRecordScore={(score) => recordBest('beatBeacon', score)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1023,6 +1034,7 @@ function Home({
   onPlayPocketPinball,
   onPlayNeonRally,
   onPlayMoonshot,
+  onPlayBeatBeacon,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1074,6 +1086,7 @@ function Home({
   onPlayPocketPinball: () => void
   onPlayNeonRally: () => void
   onPlayMoonshot: () => void
+  onPlayBeatBeacon: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1650,6 +1663,22 @@ function Home({
               <h3>Moonshot Mini Golf</h3>
               <p>Bank five lunar greens, read the craters, and finish in fewer strokes than par.</p>
               <div className="card-bottom"><span className="controls-label">DRAG · ARROWS · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayMoonshot}>Play Moonshot Mini Golf <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-beat-beacon" hidden={!visibleGameIds.has('beatbeacon')}>
+            <div className="card-art beat-beacon-card-art" aria-hidden="true">
+              <span className="beat-beacon-card-pulse pulse-kick" />
+              <span className="beat-beacon-card-pulse pulse-snare" />
+              <span className="beat-beacon-card-pulse pulse-hat" />
+              <span className="beat-beacon-card-pulse pulse-tom" />
+              <span className="beat-beacon-card-lane"><i /><i /><i /><i /><i /><i /><i /><i /></span>
+              <span className="card-art-index">37</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">37</span><span className="game-category">RHYTHM ARCADE</span></div>
+              <h3>Beat Beacon</h3>
+              <p>Follow four original drum patterns. Catch the light and land each hit on the beat.</p>
+              <div className="card-bottom"><span className="controls-label">Q W E R · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayBeatBeacon}>Play Beat Beacon <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
