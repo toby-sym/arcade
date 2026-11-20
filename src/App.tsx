@@ -56,6 +56,7 @@ const TideglassGame = lazy(() => import('./games/TideglassGame').then(({ Tidegla
 import { createTideglassState, type TideglassProgress } from './games/tideglass'
 const SkyhookGame = lazy(() => import('./games/SkyhookGame').then(({ SkyhookGame }) => ({ default: SkyhookGame })))
 const PocketPinballGame = lazy(() => import('./games/PocketPinballGame').then(({ PocketPinballGame }) => ({ default: PocketPinballGame })))
+const NeonRallyGame = lazy(() => import('./games/NeonRallyGame').then(({ NeonRallyGame }) => ({ default: NeonRallyGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -102,6 +103,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'tideglass', title: 'Tideglass', categories: ['daily'], terms: 'harbor route buoys currents sluices water daily puzzle' },
   { id: 'skyhook', title: 'Skyhook', categories: ['arcade'], terms: 'space grapple swing tether anchor beacon flight' },
   { id: 'pocketpinball', title: 'Pocket Pinball', categories: ['arcade'], terms: 'pinball flippers bumpers targets nudge table' },
+  { id: 'neonrally', title: 'Neon Rally', categories: ['arcade'], terms: 'race circuit car driving steering acceleration lap time' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -125,7 +127,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -525,6 +527,7 @@ function App() {
   const openTideglass = () => setScreen('tideglass')
   const openSkyhook = () => setScreen('skyhook')
   const openPocketPinball = () => setScreen('pocketpinball')
+  const openNeonRally = () => setScreen('neonrally')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -605,6 +608,7 @@ function App() {
             onPlayTideglass={openTideglass}
             onPlaySkyhook={openSkyhook}
             onPlayPocketPinball={openPocketPinball}
+            onPlayNeonRally={openNeonRally}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -847,6 +851,13 @@ function App() {
             onRecordScore={(score) => recordBest('pocketPinball', score)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'neonrally' ? (
+          <NeonRallyGame
+            onBack={() => setScreen('home')}
+            bestTimeMs={arcadeData.bests.neonRally}
+            onRecordTime={(timeMs) => recordBest('neonRally', timeMs)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -999,6 +1010,7 @@ function Home({
   onPlayTideglass,
   onPlaySkyhook,
   onPlayPocketPinball,
+  onPlayNeonRally,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1048,6 +1060,7 @@ function Home({
   onPlayTideglass: () => void
   onPlaySkyhook: () => void
   onPlayPocketPinball: () => void
+  onPlayNeonRally: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1595,6 +1608,20 @@ function Home({
               <h3>Pocket Pinball</h3>
               <p>Work both flippers, light the upper targets, and nudge the ball back from the drain.</p>
               <div className="card-bottom"><span className="controls-label">LEFT / A · RIGHT / D</span><button className="play-card-button" type="button" onClick={onPlayPocketPinball}>Play Pocket Pinball <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-neonrally" hidden={!visibleGameIds.has('neonrally')}>
+            <div className="card-art neon-rally-card-art" aria-hidden="true">
+              <span className="neon-rally-card-track" />
+              <span className="neon-rally-card-car" />
+              <span className="neon-rally-card-gate" />
+              <span className="card-art-index">35</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">35</span><span className="game-category">ARCADE RACE</span></div>
+              <h3>Neon Rally</h3>
+              <p>Thread every gate, hold the racing line, and set a clean three-lap time.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS / WASD · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayNeonRally}>Play Neon Rally <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
