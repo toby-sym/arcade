@@ -71,6 +71,7 @@ const FathomGame = lazy(() => import('./games/FathomGame').then(({ FathomGame })
 const FourfoldGame = lazy(() => import('./games/FourfoldGame').then(({ FourfoldGame }) => ({ default: FourfoldGame })))
 const PeglineGame = lazy(() => import('./games/PeglineGame').then(({ PeglineGame }) => ({ default: PeglineGame })))
 const TallyMarketGame = lazy(() => import('./games/TallyMarketGame').then(({ TallyMarketGame }) => ({ default: TallyMarketGame })))
+const KeytraceGame = lazy(() => import('./games/KeytraceGame').then(({ KeytraceGame }) => ({ default: KeytraceGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { createTallyMarketState, type TallyMarketProgress } from './games/tallyMarket'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
@@ -133,6 +134,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'fourfold', title: 'Fourfold', categories: ['arcade'], terms: 'connect four in a row strategy local computer opponent board' },
   { id: 'pegline', title: 'Pegline', categories: ['arcade'], terms: 'peg solitaire marble jump hop remove board logic puzzle' },
   { id: 'tallymarket', title: 'Tally Market', categories: ['daily'], terms: 'number tiles arithmetic sums targets baskets daily puzzle' },
+  { id: 'keytrace', title: 'Keytrace', categories: ['daily'], terms: 'typing words keyboard speed accuracy daily challenge' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -156,7 +158,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline' | 'tallymarket'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline' | 'tallymarket' | 'keytrace'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -582,6 +584,7 @@ function App() {
   const openFourfold = () => setScreen('fourfold')
   const openPegline = () => setScreen('pegline')
   const openTallyMarket = () => setScreen('tallymarket')
+  const openKeytrace = () => setScreen('keytrace')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -677,6 +680,7 @@ function App() {
             onPlayFourfold={openFourfold}
             onPlayPegline={openPegline}
             onPlayTallyMarket={openTallyMarket}
+            onPlayKeytrace={openKeytrace}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -1025,6 +1029,13 @@ function App() {
             onSaveProgress={saveDailyTallyMarketGame}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'keytrace' ? (
+          <KeytraceGame
+            onBack={() => setScreen('home')}
+            bestTimeMs={arcadeData.bests.keytrace}
+            onRecordTime={(milliseconds) => recordBest('keytrace', milliseconds)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1192,6 +1203,7 @@ function Home({
   onPlayFourfold,
   onPlayPegline,
   onPlayTallyMarket,
+  onPlayKeytrace,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1256,6 +1268,7 @@ function Home({
   onPlayFourfold: () => void
   onPlayPegline: () => void
   onPlayTallyMarket: () => void
+  onPlayKeytrace: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -2036,6 +2049,21 @@ function Home({
               <h3>Tally Market</h3>
               <p>Place number tags into three baskets. Reach each target without overshooting.</p>
               <div className="card-bottom"><span className="controls-label">TAP · CLICK · KEYBOARD</span><button className="play-card-button" type="button" onClick={onPlayTallyMarket}>Play Tally Market <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-keytrace" hidden={!visibleGameIds.has('keytrace')}>
+            <div className="card-art keytrace-card-art" aria-hidden="true">
+              <span className="keytrace-card-key">A</span>
+              <span className="keytrace-card-key key-two">S</span>
+              <span className="keytrace-card-key key-three">D</span>
+              <span className="keytrace-card-word">TYPE · FLOW · CLEAR</span>
+              <span className="card-art-index">50</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">50</span><span className="game-category">DAILY TYPING</span></div>
+              <h3>Keytrace</h3>
+              <p>Type today’s twelve-word strip. Find a smooth rhythm and beat your fastest accurate time.</p>
+              <div className="card-bottom"><span className="controls-label">KEYBOARD · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayKeytrace}>Play Keytrace <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
