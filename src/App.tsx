@@ -65,6 +65,7 @@ const KeystoneGame = lazy(() => import('./games/KeystoneGame').then(({ KeystoneG
 const BeamworksGame = lazy(() => import('./games/BeamworksGame').then(({ BeamworksGame }) => ({ default: BeamworksGame })))
 const RackRunGame = lazy(() => import('./games/RackRunGame').then(({ RackRunGame }) => ({ default: RackRunGame })))
 const PinParadeGame = lazy(() => import('./games/PinParadeGame').then(({ PinParadeGame }) => ({ default: PinParadeGame })))
+const DeckhandGame = lazy(() => import('./games/DeckhandGame').then(({ DeckhandGame }) => ({ default: DeckhandGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -120,6 +121,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'beamworks', title: 'Beamworks', categories: ['arcade'], terms: 'laser light mirrors beam reflectors rotate optics puzzle routing' },
   { id: 'rackrun', title: 'Rack Run', categories: ['arcade'], terms: 'pool billiards cue ball aim pocket call shot table angles collision' },
   { id: 'pinparade', title: 'Pin Parade', categories: ['arcade'], terms: 'bowling ten-pin strikes spares lane hook spin frames score' },
+  { id: 'deckhand', title: 'Deckhand', categories: ['arcade'], terms: 'solitaire klondike patience cards draw stock waste tableau foundation' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -143,7 +145,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -552,6 +554,7 @@ function App() {
   const openBeamworks = () => setScreen('beamworks')
   const openRackRun = () => setScreen('rackrun')
   const openPinParade = () => setScreen('pinparade')
+  const openDeckhand = () => setScreen('deckhand')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -641,6 +644,7 @@ function App() {
             onPlayBeamworks={openBeamworks}
             onPlayRackRun={openRackRun}
             onPlayPinParade={openPinParade}
+            onPlayDeckhand={openDeckhand}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -946,6 +950,13 @@ function App() {
             onRecordScore={(score) => recordBest('pinParade', score)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'deckhand' ? (
+          <DeckhandGame
+            onBack={() => setScreen('home')}
+            bestSeconds={arcadeData.bests.deckhand}
+            onRecordTime={(seconds) => recordBest('deckhand', seconds)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1107,6 +1118,7 @@ function Home({
   onPlayBeamworks,
   onPlayRackRun,
   onPlayPinParade,
+  onPlayDeckhand,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1165,6 +1177,7 @@ function Home({
   onPlayBeamworks: () => void
   onPlayRackRun: () => void
   onPlayPinParade: () => void
+  onPlayDeckhand: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1851,6 +1864,21 @@ function Home({
               <h3>Pin Parade</h3>
               <p>Set your line, power, and spin. Bowl ten frames for the high score.</p>
               <div className="card-bottom"><span className="controls-label">DRAG · ARROWS · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayPinParade}>Play Pin Parade <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-deckhand" hidden={!visibleGameIds.has('deckhand')}>
+            <div className="card-art deckhand-card-art" aria-hidden="true">
+              <span className="deckhand-card-mini mini-one">A<span>♠</span></span>
+              <span className="deckhand-card-mini mini-two">7<span>♦</span></span>
+              <span className="deckhand-card-mini mini-three">K<span>♣</span></span>
+              <span className="deckhand-card-mini mini-four">Q<span>♥</span></span>
+              <span className="card-art-index">44</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">44</span><span className="game-category">CARD SOLITAIRE</span></div>
+              <h3>Deckhand</h3>
+              <p>Build all four suits to kings. Uncover the columns and work the stock.</p>
+              <div className="card-bottom"><span className="controls-label">CLICK · TAB · Z UNDO</span><button className="play-card-button" type="button" onClick={onPlayDeckhand}>Play Deckhand <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
