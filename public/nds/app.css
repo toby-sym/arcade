@@ -17,6 +17,7 @@
 
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; min-height: 100vh; background: radial-gradient(ellipse at 50% -20%, #29203a 0, var(--night) 55rem); }
+body.nds-immersive-active { overflow: hidden; overscroll-behavior: none; }
 button, input, select { font: inherit; }
 button, label, select { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible, label:focus-within, select:focus-visible, input:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
@@ -47,6 +48,7 @@ a { color: var(--cyan); }
 .status-pill { border: 1px solid #4b405d; border-radius: 999px; padding: 4px 8px; color: #a79ab8; font: 800 .53rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
 .status-pill.is-running { border-color: #58702b; color: var(--lime); }
 .status-pill.is-paused { border-color: #80663a; color: #ffd36a; }
+.controller-status { margin: 4px 2px 0; color: #a79ab8; text-align: right; font: 800 .48rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
 .bezel { padding: clamp(8px, 1.4vw, 16px); border: 2px solid #635277; border-radius: 9px; background: #0c0912; box-shadow: inset 0 0 0 4px #20192a, 0 5px 0 #0d0a12; }
 .screen-stage { position: relative; width: 100%; max-width: 740px; aspect-ratio: 2 / 3; margin: auto; overflow: hidden; display: grid; place-items: center; background: #030306; touch-action: none; }
 .screen-stage canvas { display: block; max-width: 100%; max-height: 100%; image-rendering: pixelated; background: #030306; }
@@ -147,6 +149,63 @@ a { color: var(--cyan); }
   .setting-row { padding: 10px 14px; }
   .settings-section > .small-note { padding: 0 14px 13px; }
   .legal-note { padding: 13px 14px; }
+}
+
+.nds-shell.is-immersive {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--night);
+}
+.nds-shell.is-immersive .nds-header,
+.nds-shell.is-immersive .intro,
+.nds-shell.is-immersive .side-panel { display: none; }
+.nds-shell.is-immersive main { min-height: 0; flex: 1; display: flex; flex-direction: column; }
+.nds-shell.is-immersive .player-layout { min-height: 0; height: 100%; flex: 1; display: flex; align-items: stretch; }
+.nds-shell.is-immersive .cabinet { min-height: 0; height: 100%; flex: 1; padding: 8px; display: flex; flex-direction: column; }
+.nds-shell.is-immersive .cabinet-bar { flex: 0 0 auto; margin-bottom: 7px; }
+.nds-shell.is-immersive .bezel { min-height: 0; flex: 1; padding: 4px; display: flex; }
+.nds-shell.is-immersive .screen-stage { width: auto; height: 100%; max-width: 100%; max-height: 100%; flex: 0 1 auto; aspect-ratio: 2 / 3; }
+.nds-shell.is-immersive .cabinet-actions { flex: 0 0 auto; margin-top: 8px; gap: 6px; }
+.nds-shell.is-immersive .touch-deck { flex: 0 0 auto; margin-top: 8px; padding: 7px 3px; gap: clamp(5px, 2vw, 20px); }
+.nds-shell.is-immersive .key-hint { display: none; }
+.nds-shell.is-immersive .controller-status { margin-top: 5px; }
+.nds-shell.is-immersive .message { min-height: 0; margin-top: 4px; text-align: center; }
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .nds-shell.is-immersive { padding-top: max(4px, env(safe-area-inset-top)); padding-bottom: max(0px, env(safe-area-inset-bottom)); }
+  .nds-shell.is-immersive .cabinet { padding: 4px; }
+  .nds-shell.is-immersive .cabinet-bar { margin-bottom: 4px; }
+  .nds-shell.is-immersive .cabinet-actions { margin-top: 5px; }
+  .nds-shell.is-immersive .touch-deck { margin-top: 5px; padding-top: 1px; padding-bottom: 1px; }
+  .nds-shell.is-immersive .dpad,
+  .nds-shell.is-immersive .face-buttons { width: min(100%, 20vh); }
+  .nds-shell.is-immersive .touch-pad { gap: 3px; }
+  .nds-shell.is-immersive .system-pad { gap: 3px 2px; }
+  .nds-shell.is-immersive .system-pad button { min-height: 22px; }
+  .nds-shell.is-immersive .system-pad button:nth-child(3),
+  .nds-shell.is-immersive .system-pad button:nth-child(4) { min-height: 20px; }
+  .nds-shell.is-immersive .controller-status,
+  .nds-shell.is-immersive .message:not(.is-error) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

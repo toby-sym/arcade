@@ -13,7 +13,9 @@ const romInput = el("rom-input");
 const saveInput = el("save-input");
 const stateInput = el("state-input");
 const canvas = el("screen");
-const stage = el("stage");
+const fullscreenRoot = el("nds-shell");
+const fullscreenButton = el("fullscreen-button");
+const controllerStatus = el("controller-status");
 const playerStatus = el("game-status");
 const message = el("message");
 const emptyScreen = el("screen-empty");
@@ -35,6 +37,7 @@ let detachInputs = [];
 let removeSaveListener = null;
 let soundEnabled = false;
 let busy = false;
+let fullscreenFallback = false;
 let persistenceQueue = Promise.resolve();
 const activePointers = new Map();
 const heldTouchButtons = new Map();
@@ -61,6 +64,7 @@ function setGameControlsEnabled(enabled) {
   for (const button of document.querySelectorAll("[data-button]")) button.disabled = !enabled;
   pauseButton.disabled = !enabled;
   restartButton.disabled = !enabled;
+  fullscreenButton.disabled = !enabled;
   soundButton.disabled = !enabled;
   saveStateButton.disabled = !enabled;
   exportSaveButton.disabled = !enabled;
@@ -208,7 +212,11 @@ function makeSmallButton(label, text, onClick) {
 }
 
 function attachInput() {
-  detachInputs = [player.attachKeyboard(), player.attachGamepad(), player.attachPointer(canvas)];
+  detachInputs = [
+    player.attachKeyboard(),
+    player.attachGamepad({ onStatus: (count) => { controllerStatus.textContent = count ? `${count} CONTROLLER${count === 1 ? '' : 'S'} READY` : "NO CONTROLLER"; } }),
+    player.attachPointer(canvas),
+  ];
 }
 
 function detachInput() {
@@ -520,12 +528,45 @@ restartButton.addEventListener("click", async () => {
   }
 });
 
-el("fullscreen-button").addEventListener("click", async () => {
-  try {
-    if (document.fullscreenElement) await document.exitFullscreen();
-    else await stage.requestFullscreen();
-  } catch {
-    setMessage("Fullscreen is not available in this browser.", true);
+function syncFullscreenUi() {
+  const active = fullscreenFallback || document.fullscreenElement === fullscreenRoot;
+  fullscreenRoot.classList.toggle("is-immersive", active);
+  document.body.classList.toggle("nds-immersive-active", active);
+  fullscreenButton.textContent = active ? "Exit fullscreen" : "Fullscreen";
+  fullscreenButton.setAttribute("aria-pressed", String(active));
+}
+
+fullscreenButton.addEventListener("click", async () => {
+  if (document.fullscreenElement === fullscreenRoot) {
+    await document.exitFullscreen().catch(() => {});
+    return;
+  }
+  if (fullscreenFallback) {
+    fullscreenFallback = false;
+    syncFullscreenUi();
+    return;
+  }
+  if (document.fullscreenEnabled && typeof fullscreenRoot.requestFullscreen === "function") {
+    try {
+      await fullscreenRoot.requestFullscreen();
+      return;
+    } catch {
+      // Fall back to a fixed, safe-area-aware viewport on browsers such as iOS Safari.
+    }
+  }
+  fullscreenFallback = true;
+  syncFullscreenUi();
+  setMessage("Expanded to the available screen. iOS Safari keeps its browser controls visible.");
+});
+
+document.addEventListener("fullscreenchange", () => {
+  if (document.fullscreenElement !== fullscreenRoot) fullscreenFallback = false;
+  syncFullscreenUi();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && fullscreenFallback) {
+    fullscreenFallback = false;
+    syncFullscreenUi();
   }
 });
 
