@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#15111e" />
     <title>Nintendo DS cabinet · Arcade</title>
     <link rel="icon" href="/arcade-icon.svg" type="image/svg+xml" />
@@ -10,7 +10,7 @@
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to player</a>
-    <div class="nds-shell">
+    <div id="nds-shell" class="nds-shell">
       <header class="nds-header">
         <a class="brand" href="/" aria-label="Back to Arcade home">
           <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
@@ -47,7 +47,7 @@
             <div class="cabinet-actions" aria-label="Playback controls">
               <button id="pause-button" class="button button-primary" type="button" disabled>Pause game</button>
               <button id="restart-button" class="button button-quiet" type="button" disabled>Restart</button>
-              <button id="fullscreen-button" class="button button-quiet" type="button">Fullscreen</button>
+              <button id="fullscreen-button" class="button button-quiet" type="button" aria-pressed="false" disabled>Fullscreen</button>
               <button id="sound-button" class="button button-quiet" type="button" aria-pressed="false" disabled>Sound off</button>
             </div>
 
@@ -82,7 +82,8 @@
                 <button type="button" data-button="START" aria-label="Start" disabled>START</button>
               </div>
             </div>
-            <p class="key-hint">Keyboard: arrows · Z A · X B · A X · S Y · Q / E shoulders · V Select · Enter Start</p>
+            <p class="key-hint">Keyboard: arrows · Z A · X B · A X · S Y · Q / E shoulders · V Select · Enter Start · Standard gamepad: D-pad / stick · face buttons · shoulders · Start/Select</p>
+            <p id="controller-status" class="controller-status" role="status" aria-live="polite">NO CONTROLLER</p>
             <p id="message" class="message" role="status" aria-live="polite">Choose a game file to start. Touch the lower screen to use the stylus.</p>
           </section>
 

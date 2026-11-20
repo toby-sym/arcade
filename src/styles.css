@@ -23,6 +23,7 @@
 html { min-width: 320px; scroll-behavior: smooth; }
 
 body { min-width: 320px; min-height: 100vh; margin: 0; }
+body.gba-immersive-active { overflow: hidden; overscroll-behavior: none; }
 
 button, a { font: inherit; }
 
@@ -199,6 +200,7 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .gba-cabinet, .gba-save-panel { min-width: 0; border: 1px solid #51436b; border-radius: 10px; color: #eee7f3; background: linear-gradient(145deg, #261d34, #191522); box-shadow: 0 6px 0 #0b0911, inset 0 0 0 4px rgb(255 255 255 / 2%); }
 .gba-cabinet { padding: clamp(15px, 2.4vw, 28px); }
 .gba-cabinet-heading { margin: 0 2px 14px; display: flex; justify-content: space-between; gap: 10px; color: #b9adc9; font: 800 .6rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .15em; }
+.gba-gamepad-status { color: #65d9ef; white-space: nowrap; }
 .gba-status { color: #827990; }
 .gba-status-running { color: #caff40; }
 .gba-status-paused { color: #ffd36a; }
@@ -295,6 +297,59 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .local-play-button, .gba-open-button, .gba-dpad button, .gba-face-buttons button, .gba-shoulder-buttons button, .gba-system-buttons button { transition: none; }
   .gba-dpad button:active, .gba-face-buttons button:active, .gba-shoulder-buttons button:active, .gba-system-buttons button:active { transform: none; }
+}
+
+.gba-cabinet.is-immersive,
+.gba-cabinet:fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  width: 100vw;
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  border: 0;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  background: #100d1e;
+  box-shadow: none;
+  -webkit-overflow-scrolling: touch;
+}
+.gba-cabinet.is-immersive .gba-cabinet-heading,
+.gba-cabinet:fullscreen .gba-cabinet-heading { flex: 0 0 auto; margin: 0 2px 7px; }
+.gba-cabinet.is-immersive .gba-bezel,
+.gba-cabinet:fullscreen .gba-bezel { min-height: 0; flex: 1; display: grid; place-items: center; padding: 6px; }
+.gba-cabinet.is-immersive .gba-screen-stage,
+.gba-cabinet:fullscreen .gba-screen-stage { width: auto; height: 100%; max-width: 100%; max-height: 100%; aspect-ratio: 3 / 2; }
+.gba-cabinet.is-immersive .gba-controls,
+.gba-cabinet:fullscreen .gba-controls { flex: 0 0 auto; min-height: 126px; margin-top: 7px; }
+.gba-cabinet.is-immersive .gba-key-hint,
+.gba-cabinet:fullscreen .gba-key-hint { display: none; }
+.gba-cabinet.is-immersive .gba-actions,
+.gba-cabinet:fullscreen .gba-actions { flex: 0 0 auto; justify-content: center; margin-top: 8px; }
+.gba-cabinet.is-immersive .gba-message,
+.gba-cabinet:fullscreen .gba-message { flex: 0 0 auto; min-height: 0; margin-top: 5px; text-align: center; }
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .gba-cabinet.is-immersive,
+  .gba-cabinet:fullscreen { padding-top: max(4px, env(safe-area-inset-top)); padding-bottom: max(4px, env(safe-area-inset-bottom)); }
+  .gba-cabinet.is-immersive .gba-controls,
+  .gba-cabinet:fullscreen .gba-controls { min-height: clamp(82px, 27vh, 112px); margin-top: 4px; gap: 6px; }
+  .gba-cabinet.is-immersive .gba-dpad,
+  .gba-cabinet:fullscreen .gba-dpad { width: clamp(76px, 24vh, 100px); height: clamp(76px, 24vh, 100px); }
+  .gba-cabinet.is-immersive .gba-face-buttons button,
+  .gba-cabinet:fullscreen .gba-face-buttons button { width: 46px; height: 46px; }
+  .gba-cabinet.is-immersive .gba-shoulder-buttons button,
+  .gba-cabinet:fullscreen .gba-shoulder-buttons button { min-height: 21px; }
+  .gba-cabinet.is-immersive .gba-system-buttons button,
+  .gba-cabinet:fullscreen .gba-system-buttons button { min-height: 19px; }
+  .gba-cabinet.is-immersive .gba-message,
+  .gba-cabinet:fullscreen .gba-message { display: none; }
 }
 
 .snake-view { padding: 28px 0 58px; }

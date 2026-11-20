@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ChangeEvent, type KeyboardEvent, type PointerEvent } from 'react'
 import { EmulatorBridge, listByRom, loadState as loadGbaState } from '@gba-kit/gba-browser'
 import type { SaveStateMeta } from '@gba-kit/gba-browser'
+import { readStandardGamepads, type StandardGamepadLike } from './gamepad'
 import {
   GBA_STATE_FILE_MAX_BYTES,
   GBA_MAX_SAVE_STATES,
@@ -42,6 +43,41 @@ function releaseKey(bridge: EmulatorBridge, key: string) {
   bridge.handleKeyUp(new KeyboardEvent('keyup', { key, bubbles: true, cancelable: true }))
 }
 
+type InputSource = 'keyboard' | 'touch' | 'gamepad'
+type HeldKeys = Map<string, Set<InputSource>>
+
+function pressInputKey(bridge: EmulatorBridge, heldKeys: HeldKeys, key: string, source: InputSource) {
+  const normalized = normalizedKey(key)
+  let sources = heldKeys.get(normalized)
+  if (!sources) {
+    sources = new Set()
+    heldKeys.set(normalized, sources)
+    bridge.handleKeyDown(new KeyboardEvent('keydown', { key: normalized, bubbles: true, cancelable: true }))
+  }
+  sources.add(source)
+}
+
+function releaseInputKey(bridge: EmulatorBridge, heldKeys: HeldKeys, key: string, source: InputSource) {
+  const normalized = normalizedKey(key)
+  const sources = heldKeys.get(normalized)
+  if (!sources?.delete(source) || sources.size > 0) return
+  heldKeys.delete(normalized)
+  releaseKey(bridge, normalized)
+}
+
+function releaseAllInputKeys(bridge: EmulatorBridge, heldKeys: HeldKeys) {
+  for (const key of heldKeys.keys()) releaseKey(bridge, key)
+  heldKeys.clear()
+}
+
+function releaseInputSource(bridge: EmulatorBridge, heldKeys: HeldKeys, source: InputSource) {
+  for (const [key, sources] of heldKeys) {
+    if (!sources.delete(source) || sources.size > 0) continue
+    heldKeys.delete(key)
+    releaseKey(bridge, key)
+  }
+}
+
 function downloadFile(name: string, data: Blob) {
   const url = URL.createObjectURL(data)
   const link = document.createElement('a')
@@ -56,14 +92,18 @@ function downloadFile(name: string, data: Blob) {
 export function GbaConsole({ onBack }: { onBack: () => void }) {
   const fileInput = useRef<HTMLInputElement>(null)
   const saveInput = useRef<HTMLInputElement>(null)
+  const cabinetRef = useRef<HTMLDivElement>(null)
   const screenRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const bridgeRef = useRef<EmulatorBridge | null>(null)
   const romBufferRef = useRef<ArrayBuffer | null>(null)
   const currentRomRef = useRef<RecentGbaRom | null>(null)
-  const heldKeys = useRef(new Set<string>())
+  const heldKeys = useRef<HeldKeys>(new Map())
+  const fullscreenFallback = useRef(false)
   const [bridgeState, setBridgeState] = useState<'idle' | 'running' | 'paused'>('idle')
   const [currentRom, setCurrentRom] = useState<RecentGbaRom | null>(null)
+  const [gamepadCount, setGamepadCount] = useState(0)
+  const [fullscreenMode, setFullscreenMode] = useState<'native' | 'viewport' | null>(null)
   const [recentRoms, setRecentRoms] = useState(() => readRecentGbaRoms())
   const [saveStates, setSaveStates] = useState<SaveStateMeta[]>([])
   const [thumbUrls, setThumbUrls] = useState<Record<number, string>>({})
@@ -86,8 +126,7 @@ export function GbaConsole({ onBack }: { onBack: () => void }) {
     if (canvasRef.current) bridge.attachCanvas(canvasRef.current)
 
     const stopInput = () => {
-      for (const key of heldKeys.current) releaseKey(bridge, key)
-      heldKeys.current.clear()
+      releaseAllInputKeys(bridge, heldKeys.current)
     }
     const pauseWhenHidden = () => {
       if (document.hidden) {
@@ -110,6 +149,126 @@ export function GbaConsole({ onBack }: { onBack: () => void }) {
       romBufferRef.current = null
     }
   }, [])
+
+  useEffect(() => {
+    const bridge = bridgeRef.current
+    if (!currentRom || !bridge) {
+      setGamepadCount(0)
+      return
+    }
+
+    let frame: number | null = null
+    let alive = true
+    let focused = document.hasFocus()
+    let lastCount = -1
+    let heldByGamepad = new Set<string>()
+
+    const releaseGamepadKeys = () => {
+      for (const key of heldByGamepad) releaseInputKey(bridge, heldKeys.current, key, 'gamepad')
+      heldByGamepad.clear()
+    }
+    const syncGamepads = () => {
+      if (!focused || document.hidden) {
+        releaseGamepadKeys()
+        if (lastCount !== 0) {
+          lastCount = 0
+          setGamepadCount(0)
+        }
+        return
+      }
+
+      let gamepads: ArrayLike<StandardGamepadLike> = []
+      try {
+        gamepads = navigator.getGamepads?.() ?? []
+      } catch {
+        gamepads = []
+      }
+      const next = readStandardGamepads(gamepads)
+      for (const key of heldByGamepad) if (!next.keys.has(key)) releaseInputKey(bridge, heldKeys.current, key, 'gamepad')
+      for (const key of next.keys) if (!heldByGamepad.has(key)) pressInputKey(bridge, heldKeys.current, key, 'gamepad')
+      heldByGamepad = next.keys
+      if (lastCount !== next.connectedCount) {
+        lastCount = next.connectedCount
+        setGamepadCount(next.connectedCount)
+      }
+    }
+    const tick = () => {
+      frame = null
+      if (!alive) return
+      syncGamepads()
+      schedule()
+    }
+    const schedule = () => {
+      if (alive && focused && !document.hidden && frame === null) frame = window.requestAnimationFrame(tick)
+    }
+    const refresh = () => {
+      syncGamepads()
+      schedule()
+    }
+    const onBlur = () => {
+      focused = false
+      syncGamepads()
+    }
+    const onFocus = () => {
+      focused = true
+      refresh()
+    }
+    const onVisibilityChange = () => {
+      if (document.hidden && frame !== null) {
+        window.cancelAnimationFrame(frame)
+        frame = null
+      }
+      refresh()
+    }
+
+    window.addEventListener('blur', onBlur)
+    window.addEventListener('focus', onFocus)
+    window.addEventListener('gamepadconnected', refresh)
+    window.addEventListener('gamepaddisconnected', refresh)
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    refresh()
+
+    return () => {
+      alive = false
+      if (frame !== null) window.cancelAnimationFrame(frame)
+      window.removeEventListener('blur', onBlur)
+      window.removeEventListener('focus', onFocus)
+      window.removeEventListener('gamepadconnected', refresh)
+      window.removeEventListener('gamepaddisconnected', refresh)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      releaseGamepadKeys()
+      setGamepadCount(0)
+    }
+  }, [currentRom?.hash])
+
+  useEffect(() => {
+    const syncFullscreen = () => {
+      if (document.fullscreenElement) {
+        fullscreenFallback.current = false
+        setFullscreenMode(document.fullscreenElement === cabinetRef.current ? 'native' : null)
+      } else if (!fullscreenFallback.current) {
+        setFullscreenMode(null)
+      }
+    }
+    const leaveViewportFullscreen = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape' && fullscreenFallback.current) {
+        fullscreenFallback.current = false
+        setFullscreenMode(null)
+      }
+    }
+    document.addEventListener('fullscreenchange', syncFullscreen)
+    document.addEventListener('keydown', leaveViewportFullscreen)
+    return () => {
+      document.removeEventListener('fullscreenchange', syncFullscreen)
+      document.removeEventListener('keydown', leaveViewportFullscreen)
+    }
+  }, [])
+
+  useEffect(() => {
+    const active = fullscreenMode === 'viewport'
+    document.body.classList.toggle('gba-immersive-active', active)
+    return () => document.body.classList.remove('gba-immersive-active')
+  }, [fullscreenMode])
 
   useEffect(() => {
     const urls = Object.fromEntries(saveStates.map((state) => [state.id, URL.createObjectURL(state.thumbnail)]))
@@ -215,35 +374,29 @@ export function GbaConsole({ onBack }: { onBack: () => void }) {
     const key = normalizedKey(event.key)
     if (!keyboardButtons.has(key)) return
     event.preventDefault()
-    if (heldKeys.current.has(key)) return
-    heldKeys.current.add(key)
-    bridgeRef.current?.handleKeyDown(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }))
+    if (heldKeys.current.get(key)?.has('keyboard')) return
+    const bridge = bridgeRef.current
+    if (bridge) pressInputKey(bridge, heldKeys.current, key, 'keyboard')
   }
 
   const handleKeyboardUp = (event: KeyboardEvent<HTMLDivElement>) => {
     const key = normalizedKey(event.key)
-    if (!heldKeys.current.has(key)) return
-    heldKeys.current.delete(key)
-    releaseKey(bridgeRef.current!, key)
+    const bridge = bridgeRef.current
+    if (bridge) releaseInputKey(bridge, heldKeys.current, key, 'keyboard')
   }
 
   const pressTouchButton = (event: PointerEvent<HTMLButtonElement>, key: string) => {
     event.preventDefault()
-    pressKey(key)
+    const bridge = bridgeRef.current
+    if (bridge) pressInputKey(bridge, heldKeys.current, key, 'touch')
     event.currentTarget.setPointerCapture(event.pointerId)
-  }
-
-  const pressKey = (key: string) => {
-    const normalized = normalizedKey(key)
-    if (heldKeys.current.has(normalized)) return
-    heldKeys.current.add(normalized)
-    bridgeRef.current?.handleKeyDown(new KeyboardEvent('keydown', { key: normalized, bubbles: true, cancelable: true }))
   }
 
   const handleControlKeyDown = (event: KeyboardEvent<HTMLButtonElement>, key: string) => {
     if (event.key !== 'Enter' && event.key !== ' ') return
     event.preventDefault()
-    pressKey(key)
+    const bridge = bridgeRef.current
+    if (bridge) pressInputKey(bridge, heldKeys.current, key, 'touch')
   }
 
   const handleControlKeyUp = (event: KeyboardEvent<HTMLButtonElement>, key: string) => {
@@ -254,9 +407,34 @@ export function GbaConsole({ onBack }: { onBack: () => void }) {
 
   const releaseTouchButton = (key: string) => {
     const normalized = normalizedKey(key)
-    if (!heldKeys.current.delete(normalized)) return
     const bridge = bridgeRef.current
-    if (bridge) releaseKey(bridge, normalized)
+    if (bridge) releaseInputKey(bridge, heldKeys.current, normalized, 'touch')
+  }
+
+  const toggleFullscreen = async () => {
+    const cabinet = cabinetRef.current
+    if (!cabinet) return
+    if (document.fullscreenElement === cabinet) {
+      await document.exitFullscreen().catch(() => undefined)
+      return
+    }
+    if (fullscreenFallback.current) {
+      fullscreenFallback.current = false
+      setFullscreenMode(null)
+      return
+    }
+    if (document.fullscreenEnabled && typeof cabinet.requestFullscreen === 'function') {
+      try {
+        await cabinet.requestFullscreen()
+        setFullscreenMode('native')
+        return
+      } catch {
+        // iOS Safari and embedded browsers can reject element fullscreen. Use the viewport layout below.
+      }
+    }
+    fullscreenFallback.current = true
+    setFullscreenMode('viewport')
+    setMessage('Expanded to the available screen. iOS Safari keeps its browser controls visible.')
   }
 
   const toggleRun = () => {
@@ -408,13 +586,17 @@ export function GbaConsole({ onBack }: { onBack: () => void }) {
       <p className="gba-emulator-credit">Emulator: GBA Kit 0.9.0 under the MIT license. <a href="/licenses/gba-kit-MIT.txt" target="_blank" rel="noreferrer">Read the license</a>.</p>
 
       <div className="gba-layout">
-        <div className="gba-cabinet">
-          <div className="gba-cabinet-heading"><span>ARCADE / GBA</span><span className={`gba-status gba-status-${bridgeState}`}>{bridgeState === 'running' ? 'RUNNING' : bridgeState === 'paused' ? 'PAUSED' : 'NO GAME'}</span></div>
+        <div ref={cabinetRef} className={`gba-cabinet${fullscreenMode === 'viewport' ? ' is-immersive' : ''}`}>
+          <div className="gba-cabinet-heading">
+            <span>ARCADE / GBA</span>
+            <span className="gba-gamepad-status" role="status" aria-live="polite">{gamepadCount ? `${gamepadCount} PAD${gamepadCount === 1 ? '' : 'S'} READY` : 'NO PAD'}</span>
+            <span className={`gba-status gba-status-${bridgeState}`}>{bridgeState === 'running' ? 'RUNNING' : bridgeState === 'paused' ? 'PAUSED' : 'NO GAME'}</span>
+          </div>
           <div className="gba-bezel">
             <div ref={screenRef} className="gba-screen-stage" tabIndex={0} onKeyDown={handleKeyboardDown} onKeyUp={handleKeyboardUp} onBlur={(event) => {
               if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-                for (const key of heldKeys.current) releaseKey(bridgeRef.current!, key)
-                heldKeys.current.clear()
+                const bridge = bridgeRef.current
+                if (bridge) releaseInputSource(bridge, heldKeys.current, 'keyboard')
               }
             }}>
               <canvas ref={canvasRef} className="gba-screen" aria-label={currentRom ? `Game screen for ${currentRom.name}` : 'Game Boy Advance screen. Choose a ROM to play.'} onPointerDown={() => screenRef.current?.focus()} />
@@ -439,9 +621,10 @@ export function GbaConsole({ onBack }: { onBack: () => void }) {
               {touchButtons.slice(4).map((button) => <button key={button.key} type="button" className={button.className} onPointerDown={(event) => pressTouchButton(event, button.key)} onPointerUp={() => releaseTouchButton(button.key)} onPointerCancel={() => releaseTouchButton(button.key)} onLostPointerCapture={() => releaseTouchButton(button.key)} onKeyDown={(event) => handleControlKeyDown(event, button.key)} onKeyUp={(event) => handleControlKeyUp(event, button.key)}>{button.label}</button>)}
             </div>
           </div>
-          <p className="gba-key-hint">Keyboard: arrows · Z A · X B · A R · S L · Enter Start · Backspace Select</p>
+          <p className="gba-key-hint">Keyboard: arrows · Z A · X B · A R · S L · Enter Start · Backspace Select · Standard controller: D-pad / stick · A/B · L/R · Start/Select</p>
           <div className="gba-actions">
             <button className="button button-primary" type="button" onClick={toggleRun} disabled={!currentRom}>{bridgeState === 'running' ? 'Pause game' : 'Start / resume'}<span aria-hidden="true">{bridgeState === 'running' ? 'Ⅱ' : '▶'}</span></button>
+            <button className="button button-quiet" type="button" onClick={() => void toggleFullscreen()} disabled={!currentRom} aria-pressed={fullscreenMode !== null}>{fullscreenMode ? 'Exit fullscreen' : 'Fullscreen'}</button>
             <button className="button button-quiet" type="button" onClick={restart} disabled={!currentRom}>Restart</button>
             <button className="button button-quiet" type="button" onClick={toggleAudio} disabled={!currentRom} aria-pressed={audioEnabled}>{audioEnabled ? 'Sound on' : 'Sound off'}</button>
             <button className="button button-quiet" type="button" onClick={() => void createSave()} disabled={!currentRom || busy}>Save state</button>
