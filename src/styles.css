@@ -4415,7 +4415,7 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
 .pixelmosaic-cell.is-incorrect { color: #fff2d9; border-color: #fc6488; background: linear-gradient(145deg, #8f3d5b, #602c4c); box-shadow: 0 0 0 1px rgb(255 96 139 / 25%); }
 .pixelmosaic-cell:disabled { cursor: default; }
 .pixelmosaic-status { min-height: 35px; margin: 10px 1px 3px; padding: 9px 12px; border-left: 3px solid #7ed6be; color: #e2d9ea; background: #211f29; font-size: .6rem; line-height: 1.45; text-align: center; }
-.pixelmosaic-overlay { position: absolute; z-index: 2; inset: 37px 13px 66px; display: grid; place-items: center; padding: 14px; border-radius: 8px; background: rgb(12 12 24 / 83%); backdrop-filter: blur(2px); text-align: center; }
+.pixelmosaic-overlay { position: absolute; z-index: 2; inset: 37px 13px 66px; display: grid; place-items: center; padding: 14px; border-radius: 8px; background: rgb(12 12 24 / 83%); backdrop-filter: blur(2px); text-align: center; pointer-events: none; }
 .pixelmosaic-overlay > div { max-width: 290px; }
 .pixelmosaic-overlay span { display: block; margin-bottom: 7px; color: #d5fa58; font: 900 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .15em; }
 .pixelmosaic-overlay strong { color: #fff3d9; font-size: clamp(1rem, 3vw, 1.55rem); }
