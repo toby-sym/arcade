@@ -59,13 +59,13 @@ The home floor includes a browser-local shelf for up to eight favourites. The sh
 | Tally Market | Place one-use number tags into three daily baskets without overshooting, reach every exact target, and save the fewest-action clear |
 | Keytrace | Type a deterministic daily twelve-word strip, pause or restart the timed run, and save the fastest clear with at least 95% accuracy |
 | Pixel Mosaic | Solve an original daily 8×8 picture-logic grid using row and column run clues, pause or restart, and save the fastest clear |
+| Minute Hand | Set an analog clock to match five original daily time clues, adjust by keyboard or touch, pause or restart, and save the fewest-adjustment clear |
 
 ## Next candidates
 
 These ideas are ordered to add mechanics Arcade does not already have. Recheck the shipped catalogue before starting each game.
 
-1. **Minute Hand** — set a clock face to match a handful of locally generated time clues, with optional hints and a fewest-moves record.
-2. **Pocket Orbit** — flick a small satellite between gravity wells to collect beacons and dock safely in a compact daily physics puzzle.
-3. **Word Ladder** — transform one original daily word into another by changing one letter at a time, keeping every step a valid bundled word.
+1. **Pocket Orbit** — flick a small satellite between gravity wells to collect beacons and dock safely in a compact daily physics puzzle.
+2. **Word Ladder** — transform one original daily word into another by changing one letter at a time, keeping every step a valid bundled word.
 
 Ideas can change as the catalogue grows. Keep each game self-contained, accessible, responsive, and playable offline; save personal bests in this browser.
