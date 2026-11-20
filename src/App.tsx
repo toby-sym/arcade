@@ -61,6 +61,7 @@ const MoonshotGame = lazy(() => import('./games/MoonshotGame').then(({ MoonshotG
 const BeatBeaconGame = lazy(() => import('./games/BeatBeaconGame').then(({ BeatBeaconGame }) => ({ default: BeatBeaconGame })))
 const TuningForkGame = lazy(() => import('./games/TuningForkGame').then(({ TuningForkGame }) => ({ default: TuningForkGame })))
 const MagnetronGame = lazy(() => import('./games/MagnetronGame').then(({ MagnetronGame }) => ({ default: MagnetronGame })))
+const KeystoneGame = lazy(() => import('./games/KeystoneGame').then(({ KeystoneGame }) => ({ default: KeystoneGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -112,6 +113,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'beatbeacon', title: 'Beat Beacon', categories: ['arcade'], terms: 'music rhythm drum timing beat sound pads' },
   { id: 'tuningfork', title: 'Tuning Fork', categories: ['arcade'], terms: 'music pitch intervals higher lower tone notes ear training' },
   { id: 'magnetron', title: 'Magnetron', categories: ['arcade'], terms: 'magnetic polarity pull push puck physics field obstacle course' },
+  { id: 'keystone', title: 'Keystone', categories: ['arcade'], terms: 'sokoban blocks crates push switches sockets doors tile logic puzzle' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -135,7 +137,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -540,6 +542,7 @@ function App() {
   const openBeatBeacon = () => setScreen('beatbeacon')
   const openTuningFork = () => setScreen('tuningfork')
   const openMagnetron = () => setScreen('magnetron')
+  const openKeystone = () => setScreen('keystone')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -625,6 +628,7 @@ function App() {
             onPlayBeatBeacon={openBeatBeacon}
             onPlayTuningFork={openTuningFork}
             onPlayMagnetron={openMagnetron}
+            onPlayKeystone={openKeystone}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -902,6 +906,13 @@ function App() {
             onRecordTime={(timeMs) => recordBest('magnetron', timeMs)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'keystone' ? (
+          <KeystoneGame
+            onBack={() => setScreen('home')}
+            bestMoves={arcadeData.bests.keystone}
+            onRecordMoves={(moves) => recordBest('keystone', moves)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1059,6 +1070,7 @@ function Home({
   onPlayBeatBeacon,
   onPlayTuningFork,
   onPlayMagnetron,
+  onPlayKeystone,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1113,6 +1125,7 @@ function Home({
   onPlayBeatBeacon: () => void
   onPlayTuningFork: () => void
   onPlayMagnetron: () => void
+  onPlayKeystone: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1736,6 +1749,21 @@ function Home({
               <h3>Magnetron</h3>
               <p>Flip magnetic poles to steer a puck through three original obstacle courses.</p>
               <div className="card-bottom"><span className="controls-label">1–4 · TOUCH · ESC</span><button className="play-card-button" type="button" onClick={onPlayMagnetron}>Play Magnetron <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-keystone" hidden={!visibleGameIds.has('keystone')}>
+            <div className="card-art keystone-card-art" aria-hidden="true">
+              <span className="keystone-card-socket" />
+              <span className="keystone-card-block block-one" />
+              <span className="keystone-card-block block-two" />
+              <span className="keystone-card-door" />
+              <span className="card-art-index">40</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">40</span><span className="game-category">PUSH PUZZLE</span></div>
+              <h3>Keystone</h3>
+              <p>Push blocks onto sockets to power the locks and open four original chambers.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · W A S D · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayKeystone}>Play Keystone <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
