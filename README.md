@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, and Neon Rally are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, and Moonshot Mini Golf are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the thirty-five games from the game floor.
+Vite prints the local URL after startup. Choose any of the thirty-six games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -259,6 +259,13 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Hold **Up / W** to accelerate, **Down / S** to brake, and **Left / Right** or **A / D** to steer. Ease off before the bends; the grass slows the car.
 - On a phone, hold the four touch controls. **Escape** pauses, and **R** restarts the race.
 - The fastest three-lap time stays saved in this browser and does not sync.
+
+## Moonshot Mini Golf controls
+
+- Finish the five original lunar holes in as few strokes as you can. The tour is par 18; walls rebound the ball and craters slow it down.
+- Pull back from the ball and release to aim and set shot power. You can also aim with **Left / Right** or **A / D**, change power with **Up / Down** or **W / S**, then shoot with **Space** or **Enter**.
+- On touch screens, drag from the ball or use the aim buttons and power slider. **Return to tee** resets the current hole and adds one penalty stroke.
+- Escape pauses. **R** restarts the tour. Your fewest strokes stay saved in this browser and do not sync.
 
 ## Local records and preferences
 
