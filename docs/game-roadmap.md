@@ -39,11 +39,12 @@ Arcade games use original names, presentation, rules, and puzzle content. Daily 
 | Gravity Loom | Tilt a chamber to roll a spark through paired portals into daily receivers |
 | Tideglass | Route three colored buoys through switchable sluices to matching daily berths |
 | Skyhook | Carry a capsule's momentum between tether anchors, collect beacons, and dock |
+| Pocket Pinball | Hold live flippers, bank shots off bumpers, light upper targets, and save a high score |
 
 ## Next candidates
 
 These ideas are ordered to add mechanics Arcade does not already have. Recheck the shipped catalogue before starting each game.
 
-1. **Pocket Pinball** — keep an original table alive with responsive left and right flippers, bank shots off bumpers, and aim for a local high score.
+1. **Neon Rally** — race a small top-down circuit with continuous steering, acceleration, braking, and checkpoint timing; compare a best lap saved in this browser.
 
 Ideas can change as the catalogue grows. Keep each game self-contained, accessible, responsive, and playable offline; save personal bests in this browser.
