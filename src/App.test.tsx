@@ -154,8 +154,10 @@ describe('Arcade navigation and game controls', () => {
     fireEvent.click(picker.getByRole('button', { name: 'Play Snake' }))
     await expectLazyGame('Snake')
     fireEvent.click(screen.getByRole('button', { name: /all games/i }))
-    fireEvent.click(within(shelf).getByRole('button', { name: 'Unpin Snake' }))
-    expect(picker.getByRole('checkbox', { name: /^Block Drop/ })).toBeEnabled()
+    const returnedShelf = screen.getByRole('region', { name: 'Your favourites' })
+    fireEvent.click(within(returnedShelf).getByRole('button', { name: 'Unpin Snake' }))
+    fireEvent.click(within(returnedShelf).getByText('Manage favourites'))
+    expect(within(returnedShelf).getByRole('checkbox', { name: /^Block Drop/ })).toBeEnabled()
     expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').preferences.favouriteGameIds).not.toContain('snake')
   })
 
