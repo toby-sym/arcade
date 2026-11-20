@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, and Keystone are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, and Beamworks are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the thirty-eight games from the game floor.
+Vite prints the local URL after startup. Choose any of the forty-one games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -296,6 +296,13 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Use the **Arrow keys** or **W A S D**, or tap the direction pad. Each press moves one square; holding a key does not repeat. **Z** or **Undo** takes back one move.
 - **Escape** pauses or resumes. **R** or **Restart** begins the route again.
 - Your fewest moves across all four chambers stays saved in this browser and does not sync.
+
+## Beamworks controls
+
+- Route the beam through mirrors and into the receiver. Clear four original circuits in as few mirror turns as possible.
+- Tap a mirror or press its **1–4** key to switch between its slash and backslash angles. The ray updates immediately, and connecting a receiver advances to the next circuit.
+- **Z** or **Undo** takes back a turn. **Escape** pauses or resumes; **R** or **Restart** resets the route.
+- Your fewest mirror turns stay saved in this browser and do not sync.
 
 ## Local records and preferences
 
