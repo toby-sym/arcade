@@ -27,11 +27,21 @@ export function PixelMosaicGame({ onBack, bestTimeMs, progress, onSaveProgress, 
   const [mode, setMode] = useState<Exclude<PixelMosaicMark, 'unknown'>>('filled')
   const [focusedCell, setFocusedCell] = useState(0)
   const cellRefs = useRef<Array<HTMLButtonElement | null>>([])
+  const stateRef = useRef(state)
+  const saveProgressRef = useRef(onSaveProgress)
   const pauseButtonRef = useRef<HTMLButtonElement>(null)
   const elapsedMs = pixelMosaicElapsedMs(state, clock)
 
   useEffect(() => {
-    onSaveProgress(pixelMosaicProgress(state))
+    stateRef.current = state
+  }, [state])
+
+  useEffect(() => {
+    saveProgressRef.current = onSaveProgress
+  }, [onSaveProgress])
+
+  useEffect(() => {
+    onSaveProgress(pixelMosaicProgress(state, performance.now()))
   }, [state])
 
   useEffect(() => {
@@ -39,7 +49,7 @@ export function PixelMosaicGame({ onBack, bestTimeMs, progress, onSaveProgress, 
     const timer = window.setInterval(() => {
       const now = performance.now()
       setClock(now)
-      onSaveProgress(pixelMosaicProgress(state, now))
+      saveProgressRef.current(pixelMosaicProgress(stateRef.current, now))
     }, 1000)
     return () => window.clearInterval(timer)
   }, [state.phase, state.startedAt, state.elapsedMs])
