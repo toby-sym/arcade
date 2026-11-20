@@ -18,7 +18,8 @@ npm run dev
 ## Game Boy Advance cabinet
 
 - Choose a `.gba` game file from your device. Arcade accepts files up to 32 MB and keeps the ROM only in memory while it is open. It does not upload or save the ROM.
-- Use the **arrow keys** for directions, **Z** for A, **X** for B, **A / S** for R / L, **Enter** for Start, and **Backspace** for Select. Focus the screen after loading to use a keyboard. On touch screens, press and hold the on-screen controls.
+- Use the **arrow keys** for directions, **Z** for A, **X** for B, **A / S** for R / L, **Enter** for Start, and **Backspace** for Select. Focus the screen after loading to use a keyboard. On touch screens, press and hold the on-screen controls. Standard controllers map the D-pad or left stick, A/B, L/R, Start, and Select; on iPhone or iPad, pair the controller in Bluetooth settings and press a button after loading a game.
+- **Fullscreen** opens the cabinet in the browser’s fullscreen mode where supported. iOS Safari expands it to the available viewport; Safari’s browser controls remain visible. Safe-area spacing keeps the screen and touch controls clear of device edges.
 - **Start / resume** and **Pause game** control playback; **Escape** pauses; **Restart** asks before clearing unsaved progress. Sound is opt-in.
 - Select **Save state** to create a local checkpoint; the emulator pauses when it takes the snapshot. Resume, rename, export, or delete checkpoints from the Save states panel. Arcade keeps up to ten checkpoints for each ROM in this browser’s IndexedDB and asks before removing the oldest one when the limit is reached. State exports are portable JSON files and can only be imported after choosing the same ROM.
 - Recent history keeps only the file name, its full-file SHA-256 fingerprint, and the last-played time in local storage. **Clear history** removes that metadata; saved states are managed separately. Nothing syncs to another browser or device.
@@ -29,13 +30,15 @@ The GBA runtime is provided by `@gba-kit/gba-browser` 0.9.0 and its `@gba-kit` d
 ## Nintendo DS cabinet
 
 - Open **Nintendo DS cabinet** and choose a `.nds` or `.srl` game file from your device. Arcade accepts files up to 512 MB. The ROM stays in the current tab and is never uploaded; larger games can use substantial device memory.
-- Use the **arrow keys** for directions, **Z** for A, **X** for B, **A** for X, **S** for Y, **Q / E** for L / R, **Enter** for Start, and **V** for Select. On touch screens, press and hold the on-screen controls; touch or drag on the lower screen to use the stylus.
+- Use the **arrow keys** for directions, **Z** for A, **X** for B, **A** for X, **S** for Y, **Q / E** for L / R, **Enter** for Start, and **V** for Select. On touch screens, press and hold the on-screen controls; touch or drag on the lower screen to use the stylus. Standard controllers map the D-pad or left stick, face buttons, shoulders, Start, and Select; on iPhone or iPad, pair a controller in Bluetooth settings and press a button after loading a game.
 - **Pause game** or **Resume game** controls playback. The game pauses when the browser tab is hidden. **Restart** reloads the game from its latest local battery save. Sound starts muted; use **Sound on** to enable it.
 - Battery saves are kept in this browser. Create up to three save-state checkpoints per game, or import and export `.sav` and `.mdsstate` files. Saved data stays local to this browser and does not sync.
 - Use only games you have the right to play. Arcade does not bundle or link to game files, ROM downloads, or Nintendo BIOS files. melonDS supplies its own FreeBIOS implementation.
 - The DS cabinet uses melonDS DS 1.4.0, a separate GPL-3.0 component. **This GPL-3.0 notice applies to the DS emulator component; Arcade's own source code is not being relicensed under GPL-3.0.** Its full license and third-party notices are linked in the cabinet. The corresponding source is at the exact [melonDS Web source revision](https://github.com/soyangelromero/melonds-wasm/tree/37949881cd6fb6240d69818d4fa899dd812b9cf5); the Arcade cabinet page and integration source are in [`public/nds`](public/nds/).
 
 The DS player requires a secure browser context with `SharedArrayBuffer`, WebGL2, and cross-origin isolation. Local Vite development and the production container set the needed COOP/COEP headers on `/nds/` only.
+
+Use **Fullscreen** while a game is loaded to expand the cabinet. iOS Safari uses a safe-area-aware viewport layout because it does not provide element fullscreen for this player; Safari’s own browser controls remain visible.
 
 Vite prints the local URL after startup. Choose from the available games on the game floor.
 

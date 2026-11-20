@@ -214,17 +214,58 @@ export class InputState {
    * Gamepad API (standard mapping only: pads with another `mapping` are ignored, their indices mean nothing portable).
    * Polls on requestAnimationFrame; every connected standard pad is OR-ed together. Returns the detach function.
    */
-  attachGamepad({ map = DEFAULT_PADMAP, threshold = GAMEPAD_STICK_THRESHOLD, getGamepads = () => navigator.getGamepads?.() ?? [], raf = (f) => requestAnimationFrame(f), caf = (h) => cancelAnimationFrame(h) } = {}) {
-    let handle = 0, alive = true;
-    const poll = () => {
-      if (!alive) return;
-      let mask = 0;
-      for (const pad of getGamepads()) if (pad && pad.connected !== false && pad.mapping === "standard") mask |= gamepadToMask(pad, { map, threshold });
-      this.setGamepadMask(mask);
-      handle = raf(poll);
+  attachGamepad({ map = DEFAULT_PADMAP, threshold = GAMEPAD_STICK_THRESHOLD, getGamepads = () => globalThis.navigator?.getGamepads?.() ?? [], raf = (f) => requestAnimationFrame(f), caf = (h) => cancelAnimationFrame(h), onStatus = () => {} } = {}) {
+    let handle = null, alive = true, focused = true, lastCount = -1;
+    const reportCount = (count) => {
+      if (count !== lastCount) { lastCount = count; onStatus(count); }
     };
-    handle = raf(poll);
-    return () => { alive = false; caf(handle); this.setGamepadMask(0); };
+    const release = () => { this.setGamepadMask(0); reportCount(0); };
+    const pollGamepads = () => {
+      if (!alive) return;
+      if (!focused || globalThis.document?.hidden) { release(); return; }
+      let pads = [];
+      try { pads = getGamepads() ?? []; } catch { pads = []; }
+      let mask = 0, count = 0;
+      for (const pad of pads) {
+        if (!pad || pad.connected === false || pad.mapping !== "standard") continue;
+        count += 1;
+        mask |= gamepadToMask(pad, { map, threshold });
+      }
+      this.setGamepadMask(mask);
+      reportCount(count);
+    };
+    const schedule = () => {
+      if (alive && focused && !globalThis.document?.hidden && handle === null) handle = raf(tick);
+    };
+    const tick = () => { handle = null; pollGamepads(); schedule(); };
+    const refresh = () => { pollGamepads(); schedule(); };
+    const onBlur = () => { focused = false; release(); };
+    const onFocus = () => { focused = true; refresh(); };
+    const onVisibilityChange = () => {
+      if (globalThis.document?.hidden) {
+        if (handle !== null) caf(handle);
+        handle = null;
+        release();
+      } else {
+        refresh();
+      }
+    };
+    globalThis.addEventListener?.("blur", onBlur);
+    globalThis.addEventListener?.("focus", onFocus);
+    globalThis.addEventListener?.("gamepadconnected", refresh);
+    globalThis.addEventListener?.("gamepaddisconnected", refresh);
+    globalThis.document?.addEventListener("visibilitychange", onVisibilityChange);
+    refresh();
+    return () => {
+      alive = false;
+      if (handle !== null) caf(handle);
+      globalThis.removeEventListener?.("blur", onBlur);
+      globalThis.removeEventListener?.("focus", onFocus);
+      globalThis.removeEventListener?.("gamepadconnected", refresh);
+      globalThis.removeEventListener?.("gamepaddisconnected", refresh);
+      globalThis.document?.removeEventListener("visibilitychange", onVisibilityChange);
+      release();
+    };
   }
 
   /**
