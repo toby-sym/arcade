@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#15111e" />
+    <title>Nintendo DS cabinet · Arcade</title>
+    <link rel="icon" href="/arcade-icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./app.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to player</a>
+    <div class="nds-shell">
+      <header class="nds-header">
+        <a class="brand" href="/" aria-label="Back to Arcade home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span>ARCADE</span>
+        </a>
+        <span class="header-note">LOCAL PLAY · NINTENDO DS</span>
+        <a class="back-link" href="/">← Arcade floor</a>
+      </header>
+
+      <main id="main">
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> YOUR FILES · YOUR DEVICE</p>
+          <h1 id="page-title">Nintendo DS<span class="title-period">.</span></h1>
+          <p>Open a game file from this device. The ROM stays in this tab and is never uploaded.</p>
+        </section>
+
+        <div class="player-layout">
+          <section class="cabinet" aria-labelledby="cabinet-title">
+            <div class="cabinet-bar">
+              <h2 id="cabinet-title">ARCADE / DS</h2>
+              <span id="game-status" class="status-pill" role="status" aria-live="polite">NO GAME</span>
+            </div>
+            <div class="bezel">
+              <div id="stage" class="screen-stage">
+                <canvas id="screen" width="256" height="384" aria-label="Nintendo DS screens. Choose a game file to begin."></canvas>
+                <div id="screen-empty" class="screen-empty">
+                  <span class="screen-mark" aria-hidden="true"><i></i><i></i></span>
+                  <strong>INSERT YOUR GAME</strong>
+                  <small>Choose an .nds file from this device</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="cabinet-actions" aria-label="Playback controls">
+              <button id="pause-button" class="button button-primary" type="button" disabled>Pause game</button>
+              <button id="restart-button" class="button button-quiet" type="button" disabled>Restart</button>
+              <button id="fullscreen-button" class="button button-quiet" type="button">Fullscreen</button>
+              <button id="sound-button" class="button button-quiet" type="button" aria-pressed="false" disabled>Sound off</button>
+            </div>
+
+            <div class="touch-deck" aria-label="Nintendo DS touch controls">
+              <div class="touch-pad">
+                <span class="touch-label">D-PAD</span>
+                <div class="dpad" role="group" aria-label="Direction buttons">
+                  <span aria-hidden="true"></span>
+                  <button type="button" data-button="UP" aria-label="Up" disabled>↑</button>
+                  <span aria-hidden="true"></span>
+                  <button type="button" data-button="LEFT" aria-label="Left" disabled>←</button>
+                  <span class="dpad-center" aria-hidden="true"></span>
+                  <button type="button" data-button="RIGHT" aria-label="Right" disabled>→</button>
+                  <span aria-hidden="true"></span>
+                  <button type="button" data-button="DOWN" aria-label="Down" disabled>↓</button>
+                  <span aria-hidden="true"></span>
+                </div>
+              </div>
+              <div class="touch-pad face-pad">
+                <span class="touch-label">BUTTONS</span>
+                <div class="face-buttons" role="group" aria-label="Action buttons">
+                  <button type="button" data-button="X" aria-label="X" disabled>X</button>
+                  <button type="button" data-button="Y" aria-label="Y" disabled>Y</button>
+                  <button type="button" data-button="A" aria-label="A" disabled>A</button>
+                  <button type="button" data-button="B" aria-label="B" disabled>B</button>
+                </div>
+              </div>
+              <div class="system-pad">
+                <button type="button" data-button="L" aria-label="L shoulder" disabled>L</button>
+                <button type="button" data-button="R" aria-label="R shoulder" disabled>R</button>
+                <button type="button" data-button="SELECT" aria-label="Select" disabled>SELECT</button>
+                <button type="button" data-button="START" aria-label="Start" disabled>START</button>
+              </div>
+            </div>
+            <p class="key-hint">Keyboard: arrows · Z A · X B · A X · S Y · Q / E shoulders · V Select · Enter Start</p>
+            <p id="message" class="message" role="status" aria-live="polite">Choose a game file to start. Touch the lower screen to use the stylus.</p>
+          </section>
+
+          <aside class="side-panel" aria-label="Game and save tools">
+            <section class="panel-section open-game">
+              <p class="eyebrow">LOAD A CARTRIDGE</p>
+              <label class="file-button" for="rom-input">Choose a .nds file <span aria-hidden="true">↗</span></label>
+              <input id="rom-input" class="sr-only" type="file" accept=".nds,.srl,application/octet-stream" />
+              <p class="file-name" id="file-name">No file selected</p>
+              <p class="small-note">Games can use significant memory. Close other tabs before loading a large cartridge.</p>
+            </section>
+
+            <section class="panel-section">
+              <div class="panel-heading">
+                <div><p class="eyebrow">ON THIS BROWSER</p><h2>Save states</h2></div>
+                <span class="slot-count" id="state-count">0 / 3</span>
+              </div>
+              <p class="small-note">Battery saves store automatically in this browser. They do not sync.</p>
+              <div class="save-actions">
+                <button id="save-state-button" class="button button-primary" type="button" disabled>Save checkpoint</button>
+                <button id="export-save-button" class="button button-quiet" type="button" disabled>Export .sav</button>
+                <label id="import-save-label" class="button button-quiet disabled" for="save-input">Import .sav</label>
+                <input id="save-input" class="sr-only" type="file" accept=".sav,.dsv,.bin,application/octet-stream" disabled />
+                <label id="import-state-label" class="button button-quiet disabled" for="state-input">Import checkpoint</label>
+                <input id="state-input" class="sr-only" type="file" accept=".mdsstate,application/octet-stream" disabled />
+              </div>
+              <ul id="state-list" class="state-list" aria-label="Saved checkpoints">
+                <li class="empty-states">No checkpoints saved in this browser yet.</li>
+              </ul>
+              <p class="small-note">Keep checkpoints for this game in local browser storage. Export one to move it to another browser.</p>
+            </section>
+
+            <details class="panel-section settings-section">
+              <summary>Picture and sound</summary>
+              <label class="setting-row" for="layout-select"><span>Screen layout</span>
+                <select id="layout-select">
+                  <option>Top/Bottom</option>
+                  <option>Bottom/Top</option>
+                  <option>Left/Right</option>
+                  <option>Right/Left</option>
+                  <option>Top Only</option>
+                  <option>Bottom Only</option>
+                  <option>Large Screen (Focus Top)</option>
+                  <option>Large Screen (Focus Bottom)</option>
+                  <option>Hybrid (Focus Top)</option>
+                  <option>Hybrid (Focus Bottom)</option>
+                </select>
+              </label>
+              <label class="setting-row" for="volume-range"><span>Volume</span><input id="volume-range" type="range" min="0" max="100" value="70" /></label>
+              <p class="small-note">The browser may ask for a tap before sound can start.</p>
+            </details>
+
+            <section class="legal-note">
+              <p>Use games you have the right to play. Arcade does not provide game files, downloads, or Nintendo BIOS files.</p>
+              <p>Emulator: melonDS DS 1.4.0, GPL-3.0. <a href="./LICENSE">License</a> · <a href="./THIRD_PARTY_NOTICES.md">Notices</a> · <a href="./UPSTREAM.txt">Source</a>.</p>
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

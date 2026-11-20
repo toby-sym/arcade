@@ -30,3 +30,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## Nintendo DS cabinet
+
+The standalone player at `/nds/` uses melonDS DS 1.4.0 compiled to WebAssembly by the melonDS Web project. This component is distributed under GPL-3.0; its full license is available at [`public/nds/LICENSE`](public/nds/LICENSE), and its linked-component licenses and build provenance are in [`public/nds/THIRD_PARTY.md`](public/nds/THIRD_PARTY.md).
+
+The corresponding melonDS Web source is pinned to commit `37949881cd6fb6240d69818d4fa899dd812b9cf5`, with melonDS DS submodule commit `f394adbacb5722ee97c1b37c8064da9a25818310`. Source and build instructions are available at [that upstream revision](https://github.com/soyangelromero/melonds-wasm/tree/37949881cd6fb6240d69818d4fa899dd812b9cf5). The Arcade player UI and integration source are in [`public/nds`](public/nds/).
+
+This component-specific notice does not change the license status of Arcade's own source code. No root GPL-3.0 license has been added to Arcade.

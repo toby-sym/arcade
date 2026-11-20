@@ -177,8 +177,12 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .local-play-copy .eyebrow { margin: 0 0 5px; color: #caff40; font-size: .58rem; }
 .local-play-copy h2 { margin: 0; color: #fff6df; font-size: 1.35rem; letter-spacing: -.045em; }
 .local-play-copy p:last-child { max-width: 650px; margin: 5px 0 0; color: #c9bed6; font-size: .78rem; line-height: 1.5; }
+.local-play-actions { display: flex; flex-wrap: wrap; justify-content: end; gap: 8px; }
 .local-play-button { min-height: 44px; border: 1px solid #ff90a2; border-radius: 4px; padding: 0 14px; display: inline-flex; gap: 15px; align-items: center; color: #17101c; background: #ff6682; box-shadow: 0 3px 0 #9d3852; font: 800 .68rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; cursor: pointer; }
 .local-play-button:hover { background: #ff8295; }
+.local-play-button { text-decoration: none; white-space: nowrap; }
+.local-play-button-secondary { border-color: #82e6f0; color: #11151a; background: #4edcf0; box-shadow: 0 3px 0 #287a8c; }
+.local-play-button-secondary:hover { background: #79e8f3; }
 
 .gba-view { padding: 25px 0 64px; }
 .gba-heading { margin: 20px 0 15px; display: flex; justify-content: space-between; align-items: end; gap: 24px; }
@@ -268,6 +272,7 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 @media (max-width: 760px) {
   .local-play-section { grid-template-columns: 42px minmax(0, 1fr); gap: 13px; padding: 17px; }
   .local-play-mark { width: 40px; height: 40px; }
+  .local-play-actions { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .local-play-button { grid-column: 1 / -1; justify-content: center; }
   .gba-heading { align-items: start; flex-direction: column; }
   .gba-layout { grid-template-columns: 1fr; }
@@ -278,6 +283,7 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 }
 
 @media (max-width: 380px) {
+  .local-play-actions { grid-template-columns: 1fr; }
   .gba-cabinet { padding: 11px; }
   .gba-controls { min-height: 136px; gap: 5px; }
   .gba-dpad { width: 105px; height: 105px; }

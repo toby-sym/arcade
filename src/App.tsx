@@ -1527,9 +1527,12 @@ function Home({
         <div className="local-play-copy">
           <p className="eyebrow">YOUR FILES · YOUR DEVICE</p>
           <h2 id="local-play-title">Bring your own game</h2>
-          <p>Play a Game Boy Advance game from a local .gba file. The file stays in your browser and is never uploaded.</p>
+          <p>Open a Game Boy Advance or Nintendo DS game from this device. ROM files stay in your browser and are never uploaded.</p>
         </div>
-        <button className="local-play-button" type="button" onClick={onPlayEmulator}>Open GBA cabinet <span className="arrow-mark" aria-hidden="true" /></button>
+        <div className="local-play-actions">
+          <button className="local-play-button" type="button" onClick={onPlayEmulator}>Open GBA cabinet <span className="arrow-mark" aria-hidden="true" /></button>
+          <a className="local-play-button local-play-button-secondary" href="/nds/">Open Nintendo DS cabinet <span className="arrow-mark" aria-hidden="true" /></a>
+        </div>
       </section>
 
       <section className="game-section" aria-labelledby="games-title">
