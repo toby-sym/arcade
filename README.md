@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, and Beat Beacon are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, and Tuning Fork are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the thirty-seven games from the game floor.
+Vite prints the local URL after startup. Choose any of the thirty-eight games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -274,6 +274,14 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - A hit within 45 ms earns **Perfect**, within 105 ms earns **Good**, and within 180 ms earns **Close**. Wrong pads and missed beats score zero.
 - **Pause set** or **Escape** pauses the set; the browser also pauses it when the tab is hidden. **Restart** begins a fresh four-pattern set.
 - The highest timing score is saved as a local personal best. Optional synthesized beat cues use Arcade sounds; the cues are also shown visually.
+
+## Tuning Fork controls
+
+- Select **Start listening**. Each pair plays two locally synthesized notes and shows the pitch contour between them.
+- Choose whether the target note moved **up** or **down** by a **step** or a **leap**. Use **1–4** or tap one of the four choices; **Play pair again** repeats the current cue.
+- Complete eight original pairs. Each correct interval earns 100 points; a missed choice advances to the next pair and reveals its direction and size.
+- **Pause set** or **Escape** holds the current pair. **Restart** clears the run.
+- Your highest score stays saved in this browser and does not sync. Audio is optional; the visual pitch contour remains available when Arcade sounds are off.
 
 ## Local records and preferences
 
