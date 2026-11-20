@@ -4,6 +4,14 @@ Arcade games use original names, presentation, rules, and puzzle content. Daily 
 
 The home floor includes a browser-local shelf for up to eight favourites. The shortlist can launch games directly, is included in backups, and does not sync.
 
+## Emulator-first roadmap
+
+1. **v0.5.0 — Local GBA and Nintendo DS cabinets.** Let players select their own `.gba` and `.nds` files, keep ROMs on the device, and provide usable keyboard and touch controls with per-game local save states. Publish only after both systems and their licensing are settled.
+2. **Curated web games.** Add a clearly separate area for web games that are open source, public domain, or explicitly permitted to embed. Investigate Club Penguin Rewritten under its current terms; omit it if it is unavailable or does not permit embedding. Respect iframe restrictions and never proxy a site to get around them.
+3. **A useful local library.** Improve browsing and returning to games with clear categories, favourites, recently played, and history only where the game provides real results. Keep ROM bytes, records, and preferences local; add no accounts, public leaderboards, or multiplayer without an agreed data design.
+
+Keep existing Arcade games playable throughout these milestones. Avoid paid APIs, analytics, and external game services.
+
 ## Shipped catalogue
 
 | Game | Main mechanic |

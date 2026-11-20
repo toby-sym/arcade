@@ -2,6 +2,8 @@
 
 A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, Deckhand, Latchkey, Fathom, Fourfold, Pegline, Tally Market, Keytrace, Pixel Mosaic, Minute Hand, and Pocket Orbit are ready for free play.
 
+Arcade also includes a local Game Boy Advance cabinet for game files you provide yourself. The emulator roadmap is in [docs/game-roadmap.md](docs/game-roadmap.md).
+
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
 ## Local development
@@ -13,7 +15,18 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the fifty-two games from the game floor.
+## Game Boy Advance cabinet
+
+- Choose a `.gba` game file from your device. Arcade accepts files up to 32 MB and keeps the ROM only in memory while it is open. It does not upload or save the ROM.
+- Use the **arrow keys** for directions, **Z** for A, **X** for B, **A / S** for R / L, **Enter** for Start, and **Backspace** for Select. Focus the screen after loading to use a keyboard. On touch screens, press and hold the on-screen controls.
+- **Start / resume** and **Pause game** control playback; **Escape** pauses; **Restart** asks before clearing unsaved progress. Sound is opt-in.
+- Select **Save state** to create a local checkpoint; the emulator pauses when it takes the snapshot. Resume, rename, export, or delete checkpoints from the Save states panel. Arcade keeps up to ten checkpoints for each ROM in this browser’s IndexedDB and asks before removing the oldest one when the limit is reached. State exports are portable JSON files and can only be imported after choosing the same ROM.
+- Recent history keeps only the file name, its full-file SHA-256 fingerprint, and the last-played time in local storage. **Clear history** removes that metadata; saved states are managed separately. Nothing syncs to another browser or device.
+- Use only games you have the right to use. Arcade does not bundle or link to game files, copyrighted ROM downloads, BIOS files, or unauthorized copies.
+
+The GBA runtime is provided by `@gba-kit/gba-browser` 0.9.0 and its `@gba-kit` dependencies, a browser-based TypeScript emulator released under MIT. See [third-party notices](THIRD_PARTY_NOTICES.md).
+
+Vite prints the local URL after startup. Choose from the available games on the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
