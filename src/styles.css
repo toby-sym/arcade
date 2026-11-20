@@ -3821,3 +3821,92 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .pin-parade-view *, .pin-parade-adjust, .pin-parade-action { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .pin-parade-aim-guide { filter: none !important; }
 }
+
+.deckhand-layout { grid-template-columns: minmax(260px, .82fr) minmax(0, 1.18fr); align-items: start; gap: clamp(24px, 5vw, 64px); }
+.deckhand-copy h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+.deckhand-score { gap: 14px; }
+.deckhand-score .score-value { font-size: clamp(1.55rem, 3vw, 2.1rem); font-variant-numeric: tabular-nums; }
+.deckhand-score .score-unit { max-width: 220px; }
+.deckhand-score .local-best-readout strong { font-size: clamp(.9rem, 1.7vw, 1.15rem); font-variant-numeric: tabular-nums; }
+.deckhand-local-note { margin: 9px 0 0; color: #a99eb4; font-size: .66rem; line-height: 1.55; }
+.deckhand-play-column { width: 100%; max-width: 790px; justify-self: end; }
+.deckhand-console { --deckhand-green: #175147; --deckhand-felt: #0e332f; --deckhand-cream: #fff6e6; padding: 13px; border: 3px solid #4d635b; border-radius: 15px; color: #eee9d8; background: linear-gradient(145deg, #26352e, #111a1a 72%); box-shadow: 0 5px 0 #080b0b, 0 10px 25px rgb(0 0 0 / 40%), inset 0 0 0 1px rgb(215 191 117 / 10%); }
+.deckhand-console .frame-topline { min-height: 23px; padding: 0 3px 9px; }
+.deckhand-table-top { width: min(100%, 660px); margin: 2px auto 12px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(4px, 1vw, 9px); }
+.deckhand-slot { min-width: 0; min-height: 0; padding: 0; display: grid; grid-template-rows: auto 12px; justify-items: stretch; gap: 4px; border: 0; color: #a9bbb1; background: transparent; cursor: pointer; font: inherit; touch-action: manipulation; }
+.deckhand-slot:disabled { cursor: default; }
+.deckhand-slot:focus-visible, .deckhand-card:focus-visible { outline: 3px solid #73d9d1; outline-offset: 2px; z-index: 20 !important; }
+.deckhand-slot small { overflow: hidden; color: #b6c8ba; font: 800 .38rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .05em; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.deckhand-foundations { grid-column: span 4; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(4px, 1vw, 9px); }
+.deckhand-stock, .deckhand-waste, .deckhand-foundation { position: relative; }
+.deckhand-card-back, .deckhand-slot-mark, .deckhand-foundation-mark, .deckhand-recycle { width: 100%; min-width: 0; aspect-ratio: .7; display: grid; place-items: center; border: 1px solid #8ba18e; border-radius: 6px; color: #dcebd6; background: repeating-linear-gradient(135deg, #1d6a5c 0 5px, #195448 5px 10px); box-shadow: 0 3px 0 #091b19, inset 0 0 0 3px rgb(227 239 213 / 10%); }
+.deckhand-card-back i { color: #e2d59f; font-size: clamp(.8rem, 2vw, 1.5rem); font-style: normal; }
+.deckhand-card-back b { align-self: end; margin-bottom: 7px; color: #d6e4cd; font: 900 .32rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; }
+.deckhand-slot-mark { border: 1px dashed #5b7971; color: #61847a; background: rgb(8 26 24 / 36%); box-shadow: none; font: 900 1.3rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.deckhand-foundation-mark { border-style: dashed; border-color: #71867c; color: #b8caba; background: rgb(8 26 24 / 24%); box-shadow: none; font-size: clamp(1rem, 2.4vw, 1.7rem); }
+.deckhand-foundation-mark.suit-hearts, .deckhand-foundation-mark.suit-diamonds { color: #de8290; }
+.deckhand-recycle { border-style: dashed; color: #e2d59f; background: rgb(8 26 24 / 30%); box-shadow: none; font-size: clamp(1.3rem, 3vw, 2rem); }
+.deckhand-card-face { position: relative; width: 100%; height: auto; min-height: 0; aspect-ratio: .7; padding: 5px 4px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #e0d7c7; border-radius: 6px; color: #252626; background: linear-gradient(145deg, #fff8e9, #e9e1d4); box-shadow: 0 3px 0 #071614, inset 0 0 0 1px rgb(255 255 255 / 75%); }
+.deckhand-card-face.is-compact { min-height: 0; padding: 4px 3px; }
+.deckhand-card-corner { align-self: flex-start; display: grid; justify-items: center; color: #202b2b; font: 900 clamp(.47rem, 1vw, .79rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1; }
+.deckhand-card-corner i { font-size: .83em; font-style: normal; }
+.deckhand-card-corner.is-inverted { align-self: flex-end; transform: rotate(180deg); }
+.deckhand-card-center { flex: 1; color: currentColor; font-size: clamp(.72rem, 1.4vw, 1.2rem); text-align: center; }
+.deckhand-card.suit-hearts .deckhand-card-face, .deckhand-card.suit-diamonds .deckhand-card-face { color: #a33147; }
+.deckhand-card.suit-clubs .deckhand-card-face, .deckhand-card.suit-spades .deckhand-card-face { color: #203339; }
+.deckhand-tableau { min-height: 320px; padding: 11px 8px 14px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); align-items: start; gap: clamp(3px, .7vw, 7px); border: 1px solid #526b5e; border-radius: 9px; background: radial-gradient(ellipse at 50% 28%, #19594d, var(--deckhand-felt) 72%); box-shadow: inset 0 0 0 4px rgb(199 226 188 / 4%), inset 0 8px 16px rgb(0 0 0 / 20%); }
+.deckhand-column { position: relative; min-width: 0; min-height: 292px; border-radius: 5px; cursor: pointer; }
+.deckhand-column.is-empty { border: 1px dashed rgb(172 204 181 / 34%); }
+.deckhand-empty-column { position: absolute; inset: 0; display: grid; place-items: start center; padding-top: 5px; color: rgb(215 223 195 / 65%); font: 900 .7rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.deckhand-tableau-back, .deckhand-tableau-card { position: absolute; inset-inline: 0; width: 100%; }
+.deckhand-tableau-back { height: auto; pointer-events: none; }
+.deckhand-tableau-card { min-width: 0; aspect-ratio: .7; padding: 0; border: 0; border-radius: 6px; cursor: pointer; }
+.deckhand-tableau-card:hover:not(:disabled) { filter: brightness(1.04); }
+.deckhand-card.is-selected .deckhand-card-face, .deckhand-slot.is-selected .deckhand-card-face { outline: 3px solid #e3d36e; outline-offset: 1px; box-shadow: 0 0 0 5px rgb(227 211 110 / 22%), 0 3px 0 #071614; }
+.deckhand-status { min-height: 40px; margin: 10px 1px; padding: 9px 12px; border-left: 3px solid #d4cb78; color: #d6ded0; background: #142521; font-size: .65rem; line-height: 1.45; text-align: center; }
+.deckhand-actions { width: min(100%, 660px); margin: 10px auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 7px; }
+.deckhand-action { min-height: 44px; padding: 7px 9px; display: flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #59685e; border-radius: 5px; color: #e8ead8; background: linear-gradient(#30443b, #22322c); box-shadow: 0 3px 0 #0a1110; cursor: pointer; font: 900 .49rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .03em; text-transform: uppercase; touch-action: manipulation; }
+.deckhand-action-primary { color: #20231b; border-color: #a9a261; background: linear-gradient(#e5df96, #b9ba68); box-shadow: 0 3px 0 #5e6036; }
+.deckhand-action-pause { color: #17241e; border-color: #89c6a9; background: linear-gradient(#a8e4bd, #6ec39a); box-shadow: 0 3px 0 #34664d; }
+.deckhand-action:disabled { opacity: .46; cursor: default; }
+.deckhand-action kbd { color: inherit; font: 800 .36rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; opacity: .72; }
+.deckhand-action:focus-visible { outline: 3px solid #73d9d1; outline-offset: 2px; }
+.deckhand-console-footer { min-height: 19px; padding: 9px 3px 0; display: flex; justify-content: space-between; gap: 8px; color: #a8bdb1; font: 800 .35rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .025em; }
+.deckhand-footnote { margin: 8px 2px; color: #a99eb4; font-size: .64rem; line-height: 1.5; text-align: center; }
+.deckhand-card-art { overflow: hidden; background: radial-gradient(ellipse at 50% 50%, #225747, #111a19 78%); }
+.deckhand-card-mini { position: absolute; width: 42px; height: 59px; padding: 5px; display: grid; align-content: start; border: 1px solid #f4e8d3; border-radius: 4px; color: #263635; background: #fff6e7; box-shadow: 0 3px 6px rgb(0 0 0 / 40%); font: 900 .7rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.deckhand-card-mini span { font-size: .9rem; }
+.deckhand-card-mini.mini-one { top: 24%; left: 22%; transform: rotate(-9deg); }
+.deckhand-card-mini.mini-two { top: 28%; left: 37%; transform: rotate(3deg); color: #a33147; }
+.deckhand-card-mini.mini-three { top: 22%; left: 52%; transform: rotate(8deg); }
+.deckhand-card-mini.mini-four { top: 31%; left: 67%; transform: rotate(15deg); color: #a33147; }
+
+@media (max-width: 760px) {
+  .deckhand-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .deckhand-copy h1 { font-size: clamp(2.1rem, 8vw, 2.8rem); }
+  .deckhand-play-column { max-width: 690px; justify-self: center; }
+  .deckhand-console { padding: 9px; border-width: 2px; border-radius: 10px; }
+  .deckhand-tableau { min-height: 250px; padding-inline: 5px; }
+  .deckhand-column { min-height: 223px; }
+}
+
+@media (max-width: 380px) {
+  .deckhand-score { padding: 11px; gap: 8px; }
+  .deckhand-score .score-unit { font-size: .55rem; }
+  .deckhand-console .frame-topline { font-size: .38rem; }
+  .deckhand-table-top { gap: 4px; }
+  .deckhand-slot { grid-template-rows: auto 10px; }
+  .deckhand-slot small { font-size: .31rem; letter-spacing: .01em; }
+  .deckhand-card-face { padding: 3px 2px; border-radius: 4px; }
+  .deckhand-tableau { min-height: 224px; padding: 8px 4px 10px; gap: 3px; }
+  .deckhand-column { min-height: 197px; }
+  .deckhand-card-corner { font-size: .43rem; }
+  .deckhand-card-center { font-size: .66rem; }
+  .deckhand-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
+  .deckhand-action { min-height: 42px; padding-inline: 4px; font-size: .4rem; }
+  .deckhand-console-footer { font-size: .29rem; letter-spacing: .01em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deckhand-view *, .deckhand-action, .deckhand-card { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
