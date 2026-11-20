@@ -55,6 +55,7 @@ import { createGravityLoomState, type GravityLoomProgress } from './games/gravit
 const TideglassGame = lazy(() => import('./games/TideglassGame').then(({ TideglassGame }) => ({ default: TideglassGame })))
 import { createTideglassState, type TideglassProgress } from './games/tideglass'
 const SkyhookGame = lazy(() => import('./games/SkyhookGame').then(({ SkyhookGame }) => ({ default: SkyhookGame })))
+const PocketPinballGame = lazy(() => import('./games/PocketPinballGame').then(({ PocketPinballGame }) => ({ default: PocketPinballGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -100,6 +101,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'gravityloom', title: 'Gravity Loom', categories: ['daily'], terms: 'gravity tilt portals spark receiver daily puzzle physics' },
   { id: 'tideglass', title: 'Tideglass', categories: ['daily'], terms: 'harbor route buoys currents sluices water daily puzzle' },
   { id: 'skyhook', title: 'Skyhook', categories: ['arcade'], terms: 'space grapple swing tether anchor beacon flight' },
+  { id: 'pocketpinball', title: 'Pocket Pinball', categories: ['arcade'], terms: 'pinball flippers bumpers targets nudge table' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -123,7 +125,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -522,6 +524,7 @@ function App() {
   const openGravityLoom = () => setScreen('gravityloom')
   const openTideglass = () => setScreen('tideglass')
   const openSkyhook = () => setScreen('skyhook')
+  const openPocketPinball = () => setScreen('pocketpinball')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -601,6 +604,7 @@ function App() {
             onPlayGravityLoom={openGravityLoom}
             onPlayTideglass={openTideglass}
             onPlaySkyhook={openSkyhook}
+            onPlayPocketPinball={openPocketPinball}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -836,6 +840,13 @@ function App() {
             onRecordScore={(score) => recordBest('skyhook', score)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'pocketpinball' ? (
+          <PocketPinballGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.pocketPinball}
+            onRecordScore={(score) => recordBest('pocketPinball', score)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -987,6 +998,7 @@ function Home({
   onPlayGravityLoom,
   onPlayTideglass,
   onPlaySkyhook,
+  onPlayPocketPinball,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1035,6 +1047,7 @@ function Home({
   onPlayGravityLoom: () => void
   onPlayTideglass: () => void
   onPlaySkyhook: () => void
+  onPlayPocketPinball: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1565,6 +1578,23 @@ function Home({
               <h3>Skyhook</h3>
               <p>Pump a tether swing, sling through the beacon route, and dock before your hull runs out.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · W-A-S-D · SPACE</span><button className="play-card-button" type="button" onClick={onPlaySkyhook}>Play Skyhook <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-pocketpinball" hidden={!visibleGameIds.has('pocketpinball')}>
+            <div className="card-art pocketpinball-card-art" aria-hidden="true">
+              <span className="pinball-card-bumper pinball-card-bumper-one" />
+              <span className="pinball-card-bumper pinball-card-bumper-two" />
+              <span className="pinball-card-bumper pinball-card-bumper-three" />
+              <span className="pinball-card-ball" />
+              <span className="pinball-card-flipper pinball-card-flipper-left" />
+              <span className="pinball-card-flipper pinball-card-flipper-right" />
+              <span className="card-art-index">34</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">34</span><span className="game-category">ARCADE TABLE</span></div>
+              <h3>Pocket Pinball</h3>
+              <p>Work both flippers, light the upper targets, and nudge the ball back from the drain.</p>
+              <div className="card-bottom"><span className="controls-label">LEFT / A · RIGHT / D</span><button className="play-card-button" type="button" onClick={onPlayPocketPinball}>Play Pocket Pinball <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
