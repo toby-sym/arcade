@@ -70,7 +70,6 @@ export type PocketOrbitAction =
 const FRAME_MS = 1000 / 60
 const MAX_FRAME_MS = 50
 const SHIP_RADIUS = 9
-const ORBIT_STEPS = 90
 const ORBIT_PREVIEW_MS = 7200
 
 export function pocketOrbitCourseForDate(date: string): PocketOrbitCourse {

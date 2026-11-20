@@ -74,6 +74,7 @@ const TallyMarketGame = lazy(() => import('./games/TallyMarketGame').then(({ Tal
 const KeytraceGame = lazy(() => import('./games/KeytraceGame').then(({ KeytraceGame }) => ({ default: KeytraceGame })))
 const PixelMosaicGame = lazy(() => import('./games/PixelMosaicGame').then(({ PixelMosaicGame }) => ({ default: PixelMosaicGame })))
 const MinuteHandGame = lazy(() => import('./games/MinuteHandGame').then(({ MinuteHandGame }) => ({ default: MinuteHandGame })))
+const PocketOrbitGame = lazy(() => import('./games/PocketOrbitGame').then(({ PocketOrbitGame }) => ({ default: PocketOrbitGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { createTallyMarketState, type TallyMarketProgress } from './games/tallyMarket'
 import { createPixelMosaicState, type PixelMosaicProgress } from './games/pixelMosaic'
@@ -141,6 +142,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'keytrace', title: 'Keytrace', categories: ['daily'], terms: 'typing words keyboard speed accuracy daily challenge' },
   { id: 'pixelmosaic', title: 'Pixel Mosaic', categories: ['daily'], terms: 'picture logic nonogram pixel runs grid numbers daily puzzle' },
   { id: 'minutehand', title: 'Minute Hand', categories: ['daily'], terms: 'clock time hands clues analog daily puzzle' },
+  { id: 'pocketorbit', title: 'Pocket Orbit', categories: ['daily'], terms: 'space gravity satellite flight orbital physics beacons daily puzzle' },
 ] as const satisfies ReadonlyArray<{ id: string; title: string; categories: readonly GameFloorCategory[]; terms: string }>
 
 type GameFloorId = (typeof GAME_FLOOR_ITEMS)[number]['id']
@@ -171,7 +173,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline' | 'tallymarket' | 'keytrace' | 'pixelmosaic' | 'minutehand'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline' | 'tallymarket' | 'keytrace' | 'pixelmosaic' | 'minutehand' | 'pocketorbit'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -633,6 +635,7 @@ function App() {
   const openKeytrace = () => setScreen('keytrace')
   const openPixelMosaic = () => setScreen('pixelmosaic')
   const openMinuteHand = () => setScreen('minutehand')
+  const openPocketOrbit = () => setScreen('pocketorbit')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -731,6 +734,7 @@ function App() {
             onPlayKeytrace={openKeytrace}
             onPlayPixelMosaic={openPixelMosaic}
             onPlayMinuteHand={openMinuteHand}
+            onPlayPocketOrbit={openPocketOrbit}
             favouriteGameIds={arcadeData.preferences.favouriteGameIds.filter(isGameFloorId)}
             onToggleFavourite={toggleFavourite}
             reduceMotion={arcadeData.preferences.reduceMotion}
@@ -1104,6 +1108,13 @@ function App() {
             onSaveProgress={saveDailyMinuteHandGame}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'pocketorbit' ? (
+          <PocketOrbitGame
+            onBack={() => setScreen('home')}
+            bestLaunches={arcadeData.bests.pocketOrbit}
+            onRecordLaunches={(launches) => recordBest('pocketOrbit', launches)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1274,6 +1285,7 @@ function Home({
   onPlayKeytrace,
   onPlayPixelMosaic,
   onPlayMinuteHand,
+  onPlayPocketOrbit,
   favouriteGameIds,
   onToggleFavourite,
   reduceMotion,
@@ -1343,6 +1355,7 @@ function Home({
   onPlayKeytrace: () => void
   onPlayPixelMosaic: () => void
   onPlayMinuteHand: () => void
+  onPlayPocketOrbit: () => void
   favouriteGameIds: GameFloorId[]
   onToggleFavourite: (gameId: GameFloorId) => void
   reduceMotion: boolean
@@ -1425,6 +1438,7 @@ function Home({
     keytrace: onPlayKeytrace,
     pixelmosaic: onPlayPixelMosaic,
     minutehand: onPlayMinuteHand,
+    pocketorbit: onPlayPocketOrbit,
   } satisfies Record<GameFloorId, () => void>
   const favouriteGames = favouriteGameIds.flatMap((gameId) => {
     const game = GAME_FLOOR_ITEMS.find((candidate) => candidate.id === gameId)
@@ -2274,6 +2288,25 @@ function Home({
               <h3>Minute Hand</h3>
               <p>Read five time clues, set the hands, and ring the bell with as few adjustments as you can.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · TOUCH · ENTER</span><button className="play-card-button" type="button" onClick={onPlayMinuteHand}>Play Minute Hand <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-pocketorbit" hidden={!visibleGameIds.has('pocketorbit')}>
+            <div className="card-art pocketorbit-card-art" aria-hidden="true">
+              <span className="pocketorbit-card-orbit orbit-one" />
+              <span className="pocketorbit-card-orbit orbit-two" />
+              <span className="pocketorbit-card-well" />
+              <span className="pocketorbit-card-moon" />
+              <span className="pocketorbit-card-ship" />
+              <span className="pocketorbit-card-beacon beacon-one" />
+              <span className="pocketorbit-card-beacon beacon-two" />
+              <span className="pocketorbit-card-beacon beacon-three" />
+              <span className="card-art-index">53</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">53</span><span className="game-category">DAILY SPACE FLIGHT</span></div>
+              <h3>Pocket Orbit</h3>
+              <p>Bend a satellite’s path around the wells, sweep up three beacons, and dock safely.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · SPACE · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayPocketOrbit}>Play Pocket Orbit <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>

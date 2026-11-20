@@ -89,6 +89,7 @@ describe('browser-local Arcade data', () => {
     delete (previousVersionBackup.bests as Record<string, unknown>).keytrace
     delete (previousVersionBackup.bests as Record<string, unknown>).pixelMosaic
     delete (previousVersionBackup.bests as Record<string, unknown>).minuteHand
+    delete (previousVersionBackup.bests as Record<string, unknown>).pocketOrbit
     const parsedPreviousVersion = parseArcadeDataBackup(JSON.stringify(previousVersionBackup))
     expect(parsedPreviousVersion?.dailyMinesweeperGame).toBeNull()
     expect(parsedPreviousVersion?.bests.minesweeper).toBeNull()
@@ -101,6 +102,7 @@ describe('browser-local Arcade data', () => {
     expect(parsedPreviousVersion?.dailyMinuteHandGame).toBeNull()
     expect(parsedPreviousVersion?.bests.pixelMosaic).toBeNull()
     expect(parsedPreviousVersion?.bests.minuteHand).toBeNull()
+    expect(parsedPreviousVersion?.bests.pocketOrbit).toBeNull()
     expect(parsedPreviousVersion?.dailyColorConduitGame).toBeNull()
     expect(parsedPreviousVersion?.dailyGravityLoomGame).toBeNull()
     expect(parsedPreviousVersion?.bests.colorConduit).toBeNull()
@@ -167,7 +169,7 @@ describe('browser-local Arcade data', () => {
       dailyTallyMarketGame: null,
       dailyPixelMosaicGame: null,
       dailyMinuteHandGame: null,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null, pixelMosaic: null, minuteHand: null },
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null, pixelMosaic: null, minuteHand: null, pocketOrbit: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const, favouriteGameIds: ['snake', 'tallymarket'] },
     }
 
@@ -204,6 +206,10 @@ describe('browser-local Arcade data', () => {
     expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, cipherCircuit: 3 } }, 'cipherCircuit', 4)).toBeNull()
     expect(withImprovedBest(reactionRecord!, 'orbitCourier', 2200)?.bests.orbitCourier).toBe(2200)
     expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, orbitCourier: 2200 } }, 'orbitCourier', 2100)).toBeNull()
+    expect(withImprovedBest(reactionRecord!, 'pocketOrbit', 2)?.bests.pocketOrbit).toBe(2)
+    expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, pocketOrbit: 2 } }, 'pocketOrbit', 1)?.bests.pocketOrbit).toBe(1)
+    expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, pocketOrbit: 2 } }, 'pocketOrbit', 3)).toBeNull()
+    expect(withImprovedBest(reactionRecord!, 'pocketOrbit', 0)).toBeNull()
     expect(withImprovedBest(reactionRecord!, 'wordPuzzle', 4)?.bests.wordPuzzle).toBe(4)
     expect(withImprovedBest({ ...reactionRecord!, bests: { ...reactionRecord!.bests, wordPuzzle: 3 } }, 'wordPuzzle', 4)).toBeNull()
     expect(withImprovedBest(reactionRecord!, 'switchyard', 1450)?.bests.switchyard).toBe(1450)
@@ -365,7 +371,7 @@ describe('browser-local Arcade data', () => {
       dailyTallyMarketGame: null,
       dailyPixelMosaicGame: null,
       dailyMinuteHandGame: null,
-      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: 61, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null, pixelMosaic: null, minuteHand: null },
+      bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: 61, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null, pixelMosaic: null, minuteHand: null, pocketOrbit: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const, favouriteGameIds: ['snake', 'tallymarket'] },
     }
     expect(clearArcadeBests(initial)).toEqual({
@@ -392,7 +398,7 @@ describe('browser-local Arcade data', () => {
       dailyTallyMarketGame: null,
       dailyPixelMosaicGame: null,
       dailyMinuteHandGame: null,
-      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null, pixelMosaic: null, minuteHand: null },
+      bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null, pixelMosaic: null, minuteHand: null, pocketOrbit: null },
       preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick', favouriteGameIds: ['snake', 'tallymarket'] },
     })
     expect(initial.bests.snake).toBe(12)
@@ -435,7 +441,7 @@ describe('browser-local Arcade data', () => {
       dailyTallyMarketGame: null,
       dailyPixelMosaicGame: null,
       dailyMinuteHandGame: null,
-      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null, pixelMosaic: null, minuteHand: null },
+      bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null, pixelMosaic: null, minuteHand: null, pocketOrbit: null },
       preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady', favouriteGameIds: [] },
     })
 

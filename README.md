@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, Deckhand, Latchkey, Fathom, Fourfold, Pegline, Tally Market, Keytrace, Pixel Mosaic, and Minute Hand are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, Deckhand, Latchkey, Fathom, Fourfold, Pegline, Tally Market, Keytrace, Pixel Mosaic, Minute Hand, and Pocket Orbit are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -410,3 +410,10 @@ Coolify deploys from the `release` branch through the existing push webhook. Arc
 - **Left / Right** or the matching buttons move the minute hand by five minutes. **Up / Down** or their buttons move the hour hand by one hour. You can also use the controls by touch.
 - **Escape** pauses or resumes; **R** restarts today’s set. The puzzle pauses when the browser tab is hidden.
 - The fewest-adjustment clear stays saved in this browser and does not sync.
+
+## Pocket Orbit controls
+
+- Read the orbit path and adjust the launch direction and power to collect three beacons, then reach the dock. Gravity from the well and the smaller moon bends the satellite’s flight.
+- Use **Left / Right** to turn by two degrees, **Up / Down** to change launch power, and **Space** to launch. Touch players can use the on-screen launch controls.
+- **Escape** pauses or resumes; **R** restarts today’s course. Leaving the page or hiding the tab pauses an active flight.
+- The fewest-launch clear stays saved in this browser and does not sync. The daily course is generated locally and works offline.
