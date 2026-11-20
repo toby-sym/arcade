@@ -38,11 +38,12 @@ Arcade games use original names, presentation, rules, and puzzle content. Daily 
 | Prism Dash | Change lanes to catch light shards and dodge gates in a daily reflex run |
 | Gravity Loom | Tilt a chamber to roll a spark through paired portals into daily receivers |
 | Tideglass | Route three colored buoys through switchable sluices to matching daily berths |
+| Skyhook | Carry a capsule's momentum between tether anchors, collect beacons, and dock |
 
 ## Next candidates
 
 These ideas are ordered to add mechanics Arcade does not already have. Recheck the shipped catalogue before starting each game.
 
-1. **Skyhook** — swing a tethered capsule between anchor points to collect beacons and reach a safe dock.
+1. **Pocket Pinball** — keep an original table alive with responsive left and right flippers, bank shots off bumpers, and aim for a local high score.
 
 Ideas can change as the catalogue grows. Keep each game self-contained, accessible, responsive, and playable offline; save personal bests in this browser.
