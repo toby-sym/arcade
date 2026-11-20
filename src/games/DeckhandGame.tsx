@@ -214,10 +214,10 @@ export function DeckhandGame({
                 {column.cards.length === 0 && <span className="deckhand-empty-column" aria-hidden="true">K</span>}
                 {column.cards.map((card, cardIndex) => {
                   const faceUp = cardIndex >= column.faceUpFrom
-                  if (!faceUp) return <span key={card.id} className="deckhand-card-back deckhand-tableau-back" style={{ top: `${(column.cards.length - 1 - cardIndex) * 15}px`, zIndex: column.cards.length - cardIndex }} aria-hidden="true"><i>✦</i></span>
+                  if (!faceUp) return <span key={card.id} className="deckhand-card-back deckhand-tableau-back" style={{ top: `${(column.cards.length - 1 - cardIndex) * 15}px`, zIndex: cardIndex }} aria-hidden="true"><i>✦</i></span>
                   const source = { kind: 'tableau', column: columnIndex, cardIndex } as const
                   const top = (column.cards.length - 1 - cardIndex) * 27
-                  return <button key={card.id} type="button" className={`deckhand-card deckhand-tableau-card suit-${card.suit}${selected(state.selection, source) ? ' is-selected' : ''}`} style={{ top: `${top}px`, zIndex: column.cards.length - cardIndex }} disabled={state.phase !== 'playing'} onClick={(event) => { event.stopPropagation(); handleTableauClick(columnIndex, cardIndex) }} aria-pressed={selected(state.selection, source)} aria-label={`${describeCard(card)}${cardIndex < column.cards.length - 1 ? ` with ${column.cards.length - cardIndex - 1} cards above` : ''}. Select card run.`}>
+                  return <button key={card.id} type="button" className={`deckhand-card deckhand-tableau-card suit-${card.suit}${selected(state.selection, source) ? ' is-selected' : ''}`} style={{ top: `${top}px`, zIndex: cardIndex }} disabled={state.phase !== 'playing'} onClick={(event) => { event.stopPropagation(); handleTableauClick(columnIndex, cardIndex) }} aria-pressed={selected(state.selection, source)} aria-label={`${describeCard(card)}${cardIndex < column.cards.length - 1 ? ` with ${column.cards.length - cardIndex - 1} cards above` : ''}. Select card run.`}>
                     <CardFace card={card} />
                   </button>
                 })}

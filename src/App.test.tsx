@@ -1505,6 +1505,10 @@ describe('Arcade navigation and game controls', () => {
     await expectLazyGame('Deckhand')
     const game = screen.getByRole('region', { name: /deckhand/i })
     fireEvent.click(screen.getByRole('button', { name: 'Start deal' }))
+    const two = screen.getByRole('button', { name: /^2 of (clubs|diamonds|hearts|spades)\. Select card run/ })
+    fireEvent.click(two)
+    expect(two).toHaveAttribute('aria-pressed', 'true')
+    fireEvent.click(two)
     const ace = screen.getByRole('button', { name: /Ace of (clubs|diamonds|hearts|spades)\. Select card run/ })
     const suit = ace.getAttribute('aria-label')?.match(/Ace of (clubs|diamonds|hearts|spades)/)?.[1]
     expect(suit).toBeTruthy()
