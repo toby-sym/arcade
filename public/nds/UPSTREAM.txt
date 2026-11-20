@@ -1,0 +1,5 @@
+melonDS Web source revision: 37949881cd6fb6240d69818d4fa899dd812b9cf5
+melonDS DS submodule revision: f394adbacb5722ee97c1b37c8064da9a25818310
+The separately served DS player is GPL-3.0. Its corresponding source and build instructions are available at:
+https://github.com/soyangelromero/melonds-wasm/tree/37949881cd6fb6240d69818d4fa899dd812b9cf5
+See THIRD_PARTY.md for linked components, licenses, and build provenance.

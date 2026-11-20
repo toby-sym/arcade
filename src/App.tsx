@@ -75,6 +75,7 @@ const KeytraceGame = lazy(() => import('./games/KeytraceGame').then(({ KeytraceG
 const PixelMosaicGame = lazy(() => import('./games/PixelMosaicGame').then(({ PixelMosaicGame }) => ({ default: PixelMosaicGame })))
 const MinuteHandGame = lazy(() => import('./games/MinuteHandGame').then(({ MinuteHandGame }) => ({ default: MinuteHandGame })))
 const PocketOrbitGame = lazy(() => import('./games/PocketOrbitGame').then(({ PocketOrbitGame }) => ({ default: PocketOrbitGame })))
+const GbaConsole = lazy(() => import('./emulator/GbaConsole').then(({ GbaConsole }) => ({ default: GbaConsole })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { createTallyMarketState, type TallyMarketProgress } from './games/tallyMarket'
 import { createPixelMosaicState, type PixelMosaicProgress } from './games/pixelMosaic'
@@ -173,7 +174,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline' | 'tallymarket' | 'keytrace' | 'pixelmosaic' | 'minutehand' | 'pocketorbit'>('home')
+  const [screen, setScreen] = useState<'home' | 'gba' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline' | 'tallymarket' | 'keytrace' | 'pixelmosaic' | 'minutehand' | 'pocketorbit'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -682,6 +683,7 @@ function App() {
         <Suspense fallback={<div className="game-loading" role="status">Loading game<span aria-hidden="true">…</span></div>}>
         {screen === 'home' ? (
           <Home
+            onPlayEmulator={() => setScreen('gba')}
             onPlaySnake={openSnake}
             onPlayReaction={openReaction}
             onPlayPattern={openPattern}
@@ -752,6 +754,8 @@ function App() {
             installAvailable={installPrompt !== null}
             onInstall={installArcade}
           />
+        ) : screen === 'gba' ? (
+          <GbaConsole onBack={() => setScreen('home')} />
         ) : screen === 'reaction' ? (
           <ReactionGame
             onBack={() => setScreen('home')}
@@ -1233,6 +1237,7 @@ function App() {
 }
 
 function Home({
+  onPlayEmulator,
   onPlaySnake,
   onPlayReaction,
   onPlayPattern,
@@ -1303,6 +1308,7 @@ function Home({
   installAvailable,
   onInstall,
 }: {
+  onPlayEmulator: () => void
   onPlaySnake: () => void
   onPlayReaction: () => void
   onPlayPattern: () => void
@@ -1514,6 +1520,19 @@ function Home({
             </div>
           </div>
         </details>
+      </section>
+
+      <section className="local-play-section" aria-labelledby="local-play-title">
+        <div className="local-play-mark" aria-hidden="true"><span /><span /><span /><span /><span /><span /></div>
+        <div className="local-play-copy">
+          <p className="eyebrow">YOUR FILES · YOUR DEVICE</p>
+          <h2 id="local-play-title">Bring your own game</h2>
+          <p>Open a Game Boy Advance or Nintendo DS game from this device. ROM files stay in your browser and are never uploaded.</p>
+        </div>
+        <div className="local-play-actions">
+          <button className="local-play-button" type="button" onClick={onPlayEmulator}>Open GBA cabinet <span className="arrow-mark" aria-hidden="true" /></button>
+          <a className="local-play-button local-play-button-secondary" href="/nds/">Open Nintendo DS cabinet <span className="arrow-mark" aria-hidden="true" /></a>
+        </div>
       </section>
 
       <section className="game-section" aria-labelledby="games-title">
