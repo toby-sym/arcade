@@ -4110,6 +4110,79 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
 @media (prefers-reduced-motion: reduce) {
   .latchkey-key-glyph, .latchkey-runner.is-celebrating { animation: none; }
 }
+
+/* Pegline: a quiet pegboard with a clear center target */
+.pegline-layout { grid-template-columns: minmax(260px, .82fr) minmax(0, 1.18fr); align-items: start; gap: clamp(24px, 5vw, 64px); }
+.pegline-copy h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+.pegline-score { gap: 14px; }
+.pegline-score .score-value { font-size: clamp(1.55rem, 3vw, 2.1rem); font-variant-numeric: tabular-nums; }
+.pegline-score .score-unit { max-width: 220px; }
+.pegline-score .local-best-readout strong { font-size: clamp(.9rem, 1.7vw, 1.15rem); font-variant-numeric: tabular-nums; }
+.pegline-local-note { margin: 9px 0 0; color: #a99eb4; font-size: .66rem; line-height: 1.55; }
+.pegline-play-column { width: 100%; max-width: 720px; justify-self: end; }
+.pegline-console { --pegline-board: #473350; --pegline-well: #211a2b; padding: 13px; border: 3px solid #625478; border-radius: 15px; color: #f0ebdb; background: linear-gradient(145deg, #342b42, #171522 73%); box-shadow: 0 5px 0 #080711, 0 10px 25px rgb(0 0 0 / 40%), inset 0 0 0 1px rgb(207 217 255 / 9%); }
+.pegline-console .frame-topline { min-height: 23px; padding: 0 3px 9px; }
+.pegline-roundline { min-height: 52px; padding: 8px 11px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #5a4a66; border-radius: 7px; background: rgb(11 10 21 / 48%); }
+.pegline-roundline > div { display: grid; gap: 3px; }
+.pegline-roundline > div span { color: #b2a5bf; font: 800 .39rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.pegline-roundline > div strong { color: #fff3d9; font-size: .73rem; }
+.pegline-roundline > b { color: #d5fa58; font: 900 .9rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.pegline-roundline > b small { color: #a99eb4; font-size: .39rem; }
+.pegline-progress { width: min(100%, 540px); margin: 11px auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.pegline-progress span { height: 4px; border-radius: 5px; background: #3a3345; }
+.pegline-progress span.is-current { background: #f0bd57; box-shadow: 0 0 8px rgb(240 189 87 / 35%); }
+.pegline-progress span.is-clear { background: #d5fa58; }
+.pegline-board-frame { position: relative; overflow: hidden; width: min(100%, 540px); margin: 0 auto; padding: clamp(9px, 2vw, 15px); border: 1px solid #685576; border-radius: 10px; background: radial-gradient(ellipse at 50% 35%, #453751, #292238 78%); box-shadow: inset 0 0 0 4px rgb(10 12 23 / 30%); }
+.pegline-board { width: 100%; aspect-ratio: 1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-template-rows: repeat(5, minmax(0, 1fr)); gap: clamp(3px, .9vw, 8px); }
+.pegline-outside { display: block; }
+.pegline-socket { min-width: 0; min-height: 0; width: 100%; height: 100%; padding: 0; display: grid; place-items: center; border: 1px solid #6e5d7d; border-radius: 50%; background: radial-gradient(circle, #241d30 0 45%, #3b3049 47% 67%, #6c5a75 69% 73%, #32283f 75%); cursor: pointer; touch-action: manipulation; transition: transform 120ms ease, border-color 120ms ease, filter 120ms ease; }
+.pegline-marble { width: 65%; aspect-ratio: 1; display: grid; place-items: center; border: 2px solid #dcaa62; border-radius: 50%; color: #fff0cf; background: radial-gradient(circle at 35% 30%, #ffe7a5, #d49748 64%, #8b593d); box-shadow: inset 0 -4px 0 rgb(74 39 37 / 30%), 0 3px 8px rgb(0 0 0 / 34%); font-size: clamp(.75rem, 2vw, 1.5rem); line-height: 1; }
+.pegline-socket.is-empty .pegline-marble { border-color: transparent; background: radial-gradient(circle, #15131d 0 52%, #544460 56% 66%, #251f30 70%); box-shadow: inset 0 3px 6px rgb(0 0 0 / 55%); }
+.pegline-socket.is-goal .pegline-marble { outline: 2px solid #68d9eb; outline-offset: 3px; }
+.pegline-socket.is-target:not(:disabled) { border-color: #d5fa58; filter: brightness(1.2); }
+.pegline-socket.is-target:not(:disabled) .pegline-marble { box-shadow: inset 0 3px 6px rgb(0 0 0 / 55%), 0 0 0 3px rgb(213 250 88 / 28%); }
+.pegline-socket.is-selected:not(:disabled) { transform: translateY(-2px); border-color: #ff6388; box-shadow: 0 0 0 3px rgb(255 99 136 / 32%), 0 4px 10px rgb(255 99 136 / 24%); }
+.pegline-socket:disabled { cursor: default; }
+.pegline-socket:focus-visible, .pegline-action:focus-visible { outline: 3px solid #58def3; outline-offset: 3px; z-index: 1; }
+.pegline-overlay { position: absolute; z-index: 2; inset: 0; display: grid; place-items: center; padding: 14px; background: rgb(12 12 24 / 80%); backdrop-filter: blur(2px); text-align: center; }
+.pegline-overlay > div { max-width: 270px; }
+.pegline-overlay span { display: block; margin-bottom: 7px; color: #d5fa58; font: 900 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .15em; }
+.pegline-overlay strong { color: #fff3d9; font-size: clamp(1rem, 3vw, 1.55rem); }
+.pegline-overlay p { margin: 7px 0 0; color: #c8bfd4; font-size: .58rem; line-height: 1.5; }
+.pegline-status { min-height: 37px; margin: 10px 1px 2px; padding: 9px 12px; border-left: 3px solid #f0bd57; color: #e2d9ea; background: #211b2d; font-size: .61rem; line-height: 1.45; text-align: center; }
+.pegline-legend { display: flex; justify-content: center; align-items: center; gap: clamp(10px, 2vw, 20px); padding: 10px 2px; color: #aaa3b9; font: 800 .37rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .07em; }
+.pegline-legend span { display: flex; align-items: center; gap: 5px; }
+.pegline-legend i { width: 8px; height: 8px; border-radius: 50%; }
+.pegline-legend .legend-marble { background: #e6ad58; box-shadow: 0 0 5px rgb(230 173 88 / 55%); }
+.pegline-legend .legend-target { border: 1px solid #58d9ec; }
+.pegline-actions { width: min(100%, 520px); margin: 3px auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 7px; }
+.pegline-action { min-height: 44px; padding: 7px 8px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #5b5671; border-radius: 5px; color: #f1eaf4; background: linear-gradient(#3b3652, #2a273f); box-shadow: 0 3px 0 #0c0b14; cursor: pointer; font: 900 .45rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .04em; text-transform: uppercase; touch-action: manipulation; }
+.pegline-action-primary { color: #292318; border-color: #c69b53; background: linear-gradient(#f2d387, #d2a852); box-shadow: 0 3px 0 #71502b; }
+.pegline-action-pause { color: #19241e; border-color: #8ac9ad; background: linear-gradient(#a9dfc4, #71bd9b); box-shadow: 0 3px 0 #34664d; }
+.pegline-action kbd { color: inherit; font: 800 .35rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; opacity: .72; }
+.pegline-footnote { margin: 8px 2px; color: #a99eb4; font-size: .64rem; line-height: 1.5; text-align: center; }
+.pegline-card-art { overflow: hidden; background: linear-gradient(145deg, #4a394f, #241d31); }
+.pegline-card-hole { position: absolute; top: 50%; width: 25px; height: 25px; margin-top: -13px; border: 2px solid #806d89; border-radius: 50%; background: radial-gradient(circle, #17141e 0 55%, #453850 60%); }
+.pegline-card-hole.hole-one { left: 37%; }
+.pegline-card-hole.hole-two { left: 49%; }
+.pegline-card-hole.hole-three { left: 61%; }
+.pegline-card-peg { position: absolute; top: calc(50% - 9px); width: 17px; height: 17px; border: 2px solid #ffdc9c; border-radius: 50%; background: #d49a4d; box-shadow: 0 0 8px rgb(240 189 87 / 40%); }
+.pegline-card-peg.peg-one { left: calc(37% + 4px); }
+.pegline-card-peg.peg-two { left: calc(49% + 4px); }
+.pegline-card-target { position: absolute; top: calc(50% - 18px); left: calc(61% - 5px); width: 36px; height: 36px; border: 1px solid #58d9ec; border-radius: 50%; box-shadow: 0 0 10px rgb(88 217 236 / 50%); }
+@media (max-width: 760px) {
+  .pegline-layout { grid-template-columns: 1fr; gap: 22px; }
+  .pegline-play-column { max-width: 620px; justify-self: center; }
+}
+@media (max-width: 420px) {
+  .pegline-console { padding: 9px; }
+  .pegline-roundline { min-height: 46px; padding: 6px 8px; }
+  .pegline-board-frame { padding: 8px; }
+  .pegline-legend { gap: 9px; font-size: .33rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pegline-socket { transition: none; }
+}
 .deckhand-card-mini.mini-one { top: 24%; left: 22%; transform: rotate(-9deg); }
 .deckhand-card-mini.mini-two { top: 28%; left: 37%; transform: rotate(3deg); color: #a33147; }
 .deckhand-card-mini.mini-three { top: 22%; left: 52%; transform: rotate(8deg); }
