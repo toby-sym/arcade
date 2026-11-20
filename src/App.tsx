@@ -57,6 +57,7 @@ import { createTideglassState, type TideglassProgress } from './games/tideglass'
 const SkyhookGame = lazy(() => import('./games/SkyhookGame').then(({ SkyhookGame }) => ({ default: SkyhookGame })))
 const PocketPinballGame = lazy(() => import('./games/PocketPinballGame').then(({ PocketPinballGame }) => ({ default: PocketPinballGame })))
 const NeonRallyGame = lazy(() => import('./games/NeonRallyGame').then(({ NeonRallyGame }) => ({ default: NeonRallyGame })))
+const MoonshotGame = lazy(() => import('./games/MoonshotGame').then(({ MoonshotGame }) => ({ default: MoonshotGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -104,6 +105,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'skyhook', title: 'Skyhook', categories: ['arcade'], terms: 'space grapple swing tether anchor beacon flight' },
   { id: 'pocketpinball', title: 'Pocket Pinball', categories: ['arcade'], terms: 'pinball flippers bumpers targets nudge table' },
   { id: 'neonrally', title: 'Neon Rally', categories: ['arcade'], terms: 'race circuit car driving steering acceleration lap time' },
+  { id: 'moonshot', title: 'Moonshot Mini Golf', categories: ['arcade'], terms: 'golf putt aim power walls craters strokes sport' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -127,7 +129,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -528,6 +530,7 @@ function App() {
   const openSkyhook = () => setScreen('skyhook')
   const openPocketPinball = () => setScreen('pocketpinball')
   const openNeonRally = () => setScreen('neonrally')
+  const openMoonshot = () => setScreen('moonshot')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -609,6 +612,7 @@ function App() {
             onPlaySkyhook={openSkyhook}
             onPlayPocketPinball={openPocketPinball}
             onPlayNeonRally={openNeonRally}
+            onPlayMoonshot={openMoonshot}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -858,6 +862,13 @@ function App() {
             onRecordTime={(timeMs) => recordBest('neonRally', timeMs)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'moonshot' ? (
+          <MoonshotGame
+            onBack={() => setScreen('home')}
+            bestStrokes={arcadeData.bests.moonshot}
+            onRecordStrokes={(strokes) => recordBest('moonshot', strokes)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1011,6 +1022,7 @@ function Home({
   onPlaySkyhook,
   onPlayPocketPinball,
   onPlayNeonRally,
+  onPlayMoonshot,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1061,6 +1073,7 @@ function Home({
   onPlaySkyhook: () => void
   onPlayPocketPinball: () => void
   onPlayNeonRally: () => void
+  onPlayMoonshot: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1622,6 +1635,21 @@ function Home({
               <h3>Neon Rally</h3>
               <p>Thread every gate, hold the racing line, and set a clean three-lap time.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS / WASD · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayNeonRally}>Play Neon Rally <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-moonshot" hidden={!visibleGameIds.has('moonshot')}>
+            <div className="card-art moonshot-card-art" aria-hidden="true">
+              <span className="moonshot-card-green" />
+              <span className="moonshot-card-cup" />
+              <span className="moonshot-card-ball" />
+              <span className="moonshot-card-rail" />
+              <span className="card-art-index">36</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">36</span><span className="game-category">ARCADE SPORT</span></div>
+              <h3>Moonshot Mini Golf</h3>
+              <p>Bank five lunar greens, read the craters, and finish in fewer strokes than par.</p>
+              <div className="card-bottom"><span className="controls-label">DRAG · ARROWS · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayMoonshot}>Play Moonshot Mini Golf <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
