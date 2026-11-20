@@ -508,6 +508,87 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 
+.minutehand-layout { grid-template-columns: minmax(260px, .78fr) minmax(0, 1.22fr); align-items: start; gap: clamp(24px, 4vw, 54px); }
+.minutehand-view .minutehand-copy h1 { font-size: clamp(2.35rem, 4.2vw, 3.35rem); }
+.minutehand-score { width: 100%; max-width: 410px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 11px; }
+.minutehand-score > div:first-child, .minutehand-run-stat { min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 7px; }
+.minutehand-score .score-caption, .minutehand-score .score-unit { grid-column: 1 / -1; }
+.minutehand-score .score-value { font-size: clamp(1.15rem, 2.3vw, 1.65rem); font-variant-numeric: tabular-nums; }
+.minutehand-score .score-value small { color: #a99eb4; font-size: .65rem; }
+.minutehand-score .score-unit { font-size: .53rem; }
+.minutehand-run-stat { padding-left: 11px; border-left: 1px solid var(--line); }
+.minutehand-mistakes { margin-top: 5px; color: #ff7994; font: 900 .62rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.minutehand-mistakes small { color: #a99eb4; font-size: .36rem; letter-spacing: .08em; }
+.minutehand-score .local-best-readout { min-width: 0; grid-column: 1 / -1; margin: 0; padding-top: 8px; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 7px; border-top: 1px solid var(--line); }
+.minutehand-score .local-best-readout .score-caption, .minutehand-score .local-best-readout .score-unit { grid-column: 1 / -1; }
+.minutehand-local-note { margin: 9px 0 0; color: #a99eb4; font-size: .65rem; line-height: 1.55; }
+.minutehand-play-column { width: 100%; max-width: 660px; justify-self: end; }
+.minutehand-console { position: relative; overflow: hidden; padding: 13px; border: 3px solid #615572; border-radius: 15px; color: #f1efdc; background: linear-gradient(145deg, #2a233a, #181621 73%); box-shadow: 0 5px 0 #080711, 0 10px 25px rgb(0 0 0 / 40%), inset 0 0 0 1px rgb(207 217 255 / 9%); }
+.minutehand-console .frame-topline { min-height: 23px; padding: 0 3px 9px; }
+.minutehand-roundline { min-height: 52px; padding: 8px 11px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #55486d; border-radius: 7px; background: rgb(11 10 21 / 48%); }
+.minutehand-roundline > div { display: grid; gap: 3px; }
+.minutehand-roundline > div span { color: #b7a9c9; font: 800 .4rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.minutehand-roundline > div strong { color: #fff3d9; font-size: .7rem; }
+.minutehand-roundline > b { color: #d5fa58; font: 900 .9rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+.minutehand-roundline > b small { color: #a99eb4; font-size: .39rem; }
+.minutehand-instrument { position: relative; min-height: 445px; margin-top: 10px; padding: 14px; display: grid; justify-items: center; align-content: center; gap: 10px; border: 1px solid #514568; border-radius: 9px; background: radial-gradient(ellipse at 50% 42%, rgb(84 68 106 / 36%), transparent 64%), #14111e; }
+.minutehand-clue { width: min(100%, 420px); min-height: 62px; padding: 10px 13px; display: grid; align-content: center; gap: 5px; border: 1px solid #5b4d6e; border-left: 3px solid #d5fa58; border-radius: 6px; background: #211c2d; text-align: center; }
+.minutehand-clue span { color: #d5fa58; font: 900 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .15em; }
+.minutehand-clue strong { color: #fff3d9; font-size: clamp(.87rem, 2.1vw, 1.05rem); line-height: 1.35; }
+.minutehand-clock { width: clamp(205px, 26vw, 260px); margin: 0; display: grid; justify-items: center; gap: 2px; }
+.minutehand-clock svg { display: block; width: 100%; overflow: visible; filter: drop-shadow(0 8px 15px rgb(0 0 0 / 35%)); }
+.minutehand-clock-face { fill: #201b2b; stroke: #77678a; stroke-width: 3; }
+.minutehand-tick { stroke: #82758d; stroke-width: 1; }
+.minutehand-tick.is-hour { stroke: #d5fa58; stroke-width: 2.5; }
+.minutehand-number { fill: #e9e1cb; font: 800 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.minutehand-hour { stroke: #ff7695; stroke-width: 7; stroke-linecap: round; }
+.minutehand-minute { stroke: #55def2; stroke-width: 4; stroke-linecap: round; }
+.minutehand-pin { fill: #fff3d9; stroke: #211c2d; stroke-width: 2; }
+.minutehand-clock figcaption { color: #fff3d9; font: 900 1.1rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.minutehand-adjustments { width: min(100%, 420px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.minutehand-adjustments button { min-height: 43px; padding: 5px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: 1px solid #5b4d6e; border-radius: 5px; color: #fff3d9; background: linear-gradient(#302940, #211b2d); box-shadow: 0 3px 0 #0d0a13; cursor: pointer; font: 900 .52rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; touch-action: manipulation; }
+.minutehand-adjustments button:hover:not(:disabled), .minutehand-adjustments button:focus-visible { border-color: #d5fa58; color: #d5fa58; outline: 2px solid #d5fa58; outline-offset: 2px; }
+.minutehand-adjustments button:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #0d0a13; }
+.minutehand-adjustments button:disabled { opacity: .48; cursor: not-allowed; }
+.minutehand-adjustments kbd { color: #aaa0b5; font-size: .41rem; }
+.minutehand-status { min-height: 18px; margin: 1px 0 0; color: #b8afc3; font-size: .68rem; text-align: center; }
+.minutehand-overlay { position: absolute; z-index: 3; inset: 0; padding: 20px; display: grid; place-items: center; pointer-events: none; background: rgb(17 14 26 / 84%); backdrop-filter: blur(5px); }
+.minutehand-overlay > div { max-width: 340px; display: grid; justify-items: center; gap: 8px; text-align: center; }
+.minutehand-overlay span { color: #d5fa58; font: 900 .54rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .17em; }
+.minutehand-overlay strong { color: #fff3d9; font-size: clamp(1.02rem, 2.6vw, 1.35rem); }
+.minutehand-overlay p { margin: 0; color: #c4b7d2; font-size: .74rem; line-height: 1.5; }
+.minutehand-actions { margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.minutehand-action { min-height: 38px; padding: 0 11px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid #615572; border-radius: 5px; color: #e8def0; background: #211c2b; box-shadow: 0 3px 0 #0c0911; cursor: pointer; font: 900 .45rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .05em; text-transform: uppercase; touch-action: manipulation; }
+.minutehand-action:hover, .minutehand-action:focus-visible { border-color: #55def2; outline: 2px solid #55def2; outline-offset: 2px; }
+.minutehand-action-primary { border-color: #ff7695; color: #1c1521; background: linear-gradient(#ff8ba4, #fa5f83); box-shadow: 0 3px 0 #aa3454; }
+.minutehand-action-pause { border-color: #d5fa58; color: #d5fa58; }
+.minutehand-action kbd { font-size: .37rem; opacity: .72; }
+.minutehand-footnote { margin: 10px 3px 0; color: #a99eb4; font-size: .62rem; line-height: 1.45; text-align: center; }
+.minutehand-card-art { display: grid; place-items: center; background: radial-gradient(circle at 50% 45%, #443451, #171422 72%); }
+.minutehand-card-clock { position: relative; width: clamp(68px, 9vw, 112px); aspect-ratio: 1; display: block; border: 4px solid #d5fa58; border-radius: 50%; background: #211c2b; box-shadow: 0 0 0 7px rgb(213 250 88 / 12%), 0 0 26px rgb(213 250 88 / 20%); }
+.minutehand-card-clock::before, .minutehand-card-clock::after { position: absolute; left: 50%; bottom: 50%; content: ''; display: block; transform-origin: 50% 100%; border-radius: 9px; }
+.minutehand-card-clock::before { width: 3px; height: 29%; background: #55def2; transform: translateX(-50%) rotate(225deg); }
+.minutehand-card-clock::after { width: 5px; height: 22%; background: #ff7695; transform: translateX(-50%) rotate(112.5deg); }
+.minutehand-card-clock i { position: absolute; z-index: 1; left: 50%; top: 50%; width: 9px; height: 9px; border-radius: 50%; background: #fff3d9; transform: translate(-50%, -50%); }
+.minutehand-card-label { position: absolute; right: 13%; bottom: 12%; color: #d5fa58; font: 900 .6rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; }
+@media (max-width: 860px) {
+  .minutehand-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .minutehand-copy { min-width: 0; }
+  .minutehand-play-column { max-width: 660px; justify-self: center; }
+}
+@media (max-width: 520px) {
+  .minutehand-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .minutehand-roundline { min-height: 46px; padding: 6px 8px; }
+  .minutehand-instrument { min-height: 405px; margin-top: 7px; padding: 9px 6px; gap: 8px; }
+  .minutehand-clue { width: 100%; min-height: 59px; padding: 8px; }
+  .minutehand-clock { width: min(58vw, 230px); }
+  .minutehand-adjustments { gap: 4px; }
+  .minutehand-adjustments button { min-height: 42px; font-size: .45rem; }
+  .minutehand-actions { gap: 6px; }
+  .minutehand-action { flex: 1 1 auto; min-height: 42px; padding-inline: 6px; font-size: .4rem; }
+  .minutehand-overlay { padding: 12px; }
+  .minutehand-overlay p { max-width: 260px; }
+}
 /* Arcade cabinet overhaul */
 :root {
   color-scheme: dark;

@@ -73,12 +73,14 @@ const PeglineGame = lazy(() => import('./games/PeglineGame').then(({ PeglineGame
 const TallyMarketGame = lazy(() => import('./games/TallyMarketGame').then(({ TallyMarketGame }) => ({ default: TallyMarketGame })))
 const KeytraceGame = lazy(() => import('./games/KeytraceGame').then(({ KeytraceGame }) => ({ default: KeytraceGame })))
 const PixelMosaicGame = lazy(() => import('./games/PixelMosaicGame').then(({ PixelMosaicGame }) => ({ default: PixelMosaicGame })))
+const MinuteHandGame = lazy(() => import('./games/MinuteHandGame').then(({ MinuteHandGame }) => ({ default: MinuteHandGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { createTallyMarketState, type TallyMarketProgress } from './games/tallyMarket'
 import { createPixelMosaicState, type PixelMosaicProgress } from './games/pixelMosaic'
+import { createMinuteHandState, type MinuteHandProgress } from './games/minuteHand'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { ARCADE_BACKUP_MAX_BYTES, MAX_FAVOURITE_GAMES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyTideglassGame, withDailyTallyMarketGame, withDailyPixelMosaicGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withFavouriteGameIds, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, MAX_FAVOURITE_GAMES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyTideglassGame, withDailyTallyMarketGame, withDailyPixelMosaicGame, withDailyMinuteHandGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withFavouriteGameIds, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -138,6 +140,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'tallymarket', title: 'Tally Market', categories: ['daily'], terms: 'number tiles arithmetic sums targets baskets daily puzzle' },
   { id: 'keytrace', title: 'Keytrace', categories: ['daily'], terms: 'typing words keyboard speed accuracy daily challenge' },
   { id: 'pixelmosaic', title: 'Pixel Mosaic', categories: ['daily'], terms: 'picture logic nonogram pixel runs grid numbers daily puzzle' },
+  { id: 'minutehand', title: 'Minute Hand', categories: ['daily'], terms: 'clock time hands clues analog daily puzzle' },
 ] as const satisfies ReadonlyArray<{ id: string; title: string; categories: readonly GameFloorCategory[]; terms: string }>
 
 type GameFloorId = (typeof GAME_FLOOR_ITEMS)[number]['id']
@@ -168,7 +171,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline' | 'tallymarket' | 'keytrace' | 'pixelmosaic'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline' | 'tallymarket' | 'keytrace' | 'pixelmosaic' | 'minutehand'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -501,6 +504,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyMinuteHandGame = (progress: MinuteHandProgress | null) => {
+    const withProgress = withDailyMinuteHandGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = progress?.phase === 'complete' ? createMinuteHandState(progress.date, progress) : null
+    const next = completed?.phase === 'complete'
+      ? withImprovedBest(withProgress, 'minuteHand', completed.moves) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -618,6 +632,7 @@ function App() {
   const openTallyMarket = () => setScreen('tallymarket')
   const openKeytrace = () => setScreen('keytrace')
   const openPixelMosaic = () => setScreen('pixelmosaic')
+  const openMinuteHand = () => setScreen('minutehand')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -715,6 +730,7 @@ function App() {
             onPlayTallyMarket={openTallyMarket}
             onPlayKeytrace={openKeytrace}
             onPlayPixelMosaic={openPixelMosaic}
+            onPlayMinuteHand={openMinuteHand}
             favouriteGameIds={arcadeData.preferences.favouriteGameIds.filter(isGameFloorId)}
             onToggleFavourite={toggleFavourite}
             reduceMotion={arcadeData.preferences.reduceMotion}
@@ -1080,6 +1096,14 @@ function App() {
             onSaveProgress={saveDailyPixelMosaicGame}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'minutehand' ? (
+          <MinuteHandGame
+            onBack={() => setScreen('home')}
+            bestMoves={arcadeData.bests.minuteHand}
+            progress={arcadeData.dailyMinuteHandGame}
+            onSaveProgress={saveDailyMinuteHandGame}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1249,6 +1273,7 @@ function Home({
   onPlayTallyMarket,
   onPlayKeytrace,
   onPlayPixelMosaic,
+  onPlayMinuteHand,
   favouriteGameIds,
   onToggleFavourite,
   reduceMotion,
@@ -1317,6 +1342,7 @@ function Home({
   onPlayTallyMarket: () => void
   onPlayKeytrace: () => void
   onPlayPixelMosaic: () => void
+  onPlayMinuteHand: () => void
   favouriteGameIds: GameFloorId[]
   onToggleFavourite: (gameId: GameFloorId) => void
   reduceMotion: boolean
@@ -1398,6 +1424,7 @@ function Home({
     tallymarket: onPlayTallyMarket,
     keytrace: onPlayKeytrace,
     pixelmosaic: onPlayPixelMosaic,
+    minutehand: onPlayMinuteHand,
   } satisfies Record<GameFloorId, () => void>
   const favouriteGames = favouriteGameIds.flatMap((gameId) => {
     const game = GAME_FLOOR_ITEMS.find((candidate) => candidate.id === gameId)
@@ -2234,6 +2261,19 @@ function Home({
               <h3>Pixel Mosaic</h3>
               <p>Read the row and column runs to light today’s hidden pixel picture.</p>
               <div className="card-bottom"><span className="controls-label">TOUCH · ARROWS · SPACE · X</span><button className="play-card-button" type="button" onClick={onPlayPixelMosaic}>Play Pixel Mosaic <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-minutehand" hidden={!visibleGameIds.has('minutehand')}>
+            <div className="card-art minutehand-card-art" aria-hidden="true">
+              <span className="minutehand-card-clock"><i /></span>
+              <span className="minutehand-card-label">03:45</span>
+              <span className="card-art-index">52</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">52</span><span className="game-category">DAILY CLOCK LOGIC</span></div>
+              <h3>Minute Hand</h3>
+              <p>Read five time clues, set the hands, and ring the bell with as few adjustments as you can.</p>
+              <div className="card-bottom"><span className="controls-label">ARROWS · TOUCH · ENTER</span><button className="play-card-button" type="button" onClick={onPlayMinuteHand}>Play Minute Hand <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
