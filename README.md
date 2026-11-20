@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, Deckhand, Latchkey, Fathom, and Fourfold are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, Deckhand, Latchkey, Fathom, Fourfold, and Pegline are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the forty-seven games from the game floor.
+Vite prints the local URL after startup. Choose any of the forty-eight games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -330,6 +330,12 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Select a column button or use **Left / Right** or **A / D**, then press **Enter** to drop. On touch screens, tap a column button.
 - **Escape** pauses or resumes. **R** restarts the streak; after a round, choose **Next round** to keep playing.
 - Your longest win streak stays saved in this browser and does not sync. The opponent runs locally; no account or network match is involved.
+
+## Pegline controls
+
+- Clear three fixed pegboards. Select a peg, then choose a highlighted empty socket two spaces away in a straight line. The peg hops over its neighbor and removes it. Leave one peg on the center target to clear a board.
+- Tap or click the peg and destination. Keyboard users can use **Tab** or the **Arrow keys** to reach a socket, then press **Enter** or **Space**. **Escape** pauses and **R** restarts all three boards.
+- A blocked route can be retried; the route total keeps the moves already used. Your fewest moves to clear all three boards stays saved in this browser and does not sync.
 
 ## Local records and preferences
 

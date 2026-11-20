@@ -69,6 +69,7 @@ const DeckhandGame = lazy(() => import('./games/DeckhandGame').then(({ DeckhandG
 const LatchkeyGame = lazy(() => import('./games/LatchkeyGame').then(({ LatchkeyGame }) => ({ default: LatchkeyGame })))
 const FathomGame = lazy(() => import('./games/FathomGame').then(({ FathomGame }) => ({ default: FathomGame })))
 const FourfoldGame = lazy(() => import('./games/FourfoldGame').then(({ FourfoldGame }) => ({ default: FourfoldGame })))
+const PeglineGame = lazy(() => import('./games/PeglineGame').then(({ PeglineGame }) => ({ default: PeglineGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -128,6 +129,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'latchkey', title: 'Latchkey', categories: ['arcade'], terms: 'platform rooms key jumps ledges doors side view' },
   { id: 'fathom', title: 'Fathom', categories: ['arcade'], terms: 'sonar fleet ocean battleship ships search grid strategy' },
   { id: 'fourfold', title: 'Fourfold', categories: ['arcade'], terms: 'connect four in a row strategy local computer opponent board' },
+  { id: 'pegline', title: 'Pegline', categories: ['arcade'], terms: 'peg solitaire marble jump hop remove board logic puzzle' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -151,7 +153,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -564,6 +566,7 @@ function App() {
   const openLatchkey = () => setScreen('latchkey')
   const openFathom = () => setScreen('fathom')
   const openFourfold = () => setScreen('fourfold')
+  const openPegline = () => setScreen('pegline')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -657,6 +660,7 @@ function App() {
             onPlayLatchkey={openLatchkey}
             onPlayFathom={openFathom}
             onPlayFourfold={openFourfold}
+            onPlayPegline={openPegline}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -990,6 +994,13 @@ function App() {
             onRecordWins={(wins) => recordBest('fourfold', wins)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'pegline' ? (
+          <PeglineGame
+            onBack={() => setScreen('home')}
+            bestMoves={arcadeData.bests.pegline}
+            onRecordMoves={(moves) => recordBest('pegline', moves)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1155,6 +1166,7 @@ function Home({
   onPlayLatchkey,
   onPlayFathom,
   onPlayFourfold,
+  onPlayPegline,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1217,6 +1229,7 @@ function Home({
   onPlayLatchkey: () => void
   onPlayFathom: () => void
   onPlayFourfold: () => void
+  onPlayPegline: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1966,6 +1979,23 @@ function Home({
               <h3>Fourfold</h3>
               <p>Connect four in any direction. Build a win streak against a local opponent.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · ENTER · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayFourfold}>Play Fourfold <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-pegline" hidden={!visibleGameIds.has('pegline')}>
+            <div className="card-art pegline-card-art" aria-hidden="true">
+              <span className="pegline-card-hole hole-one" />
+              <span className="pegline-card-hole hole-two" />
+              <span className="pegline-card-hole hole-three" />
+              <span className="pegline-card-peg peg-one" />
+              <span className="pegline-card-peg peg-two" />
+              <span className="pegline-card-target" />
+              <span className="card-art-index">48</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">48</span><span className="game-category">PEG SOLITAIRE</span></div>
+              <h3>Pegline</h3>
+              <p>Hop pegs into open sockets. Clear three boards with one marble on each target.</p>
+              <div className="card-bottom"><span className="controls-label">TAP · CLICK · ARROWS</span><button className="play-card-button" type="button" onClick={onPlayPegline}>Play Pegline <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
