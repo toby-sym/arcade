@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, and Pocket Pinball are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, and Neon Rally are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the thirty-four games from the game floor.
+Vite prints the local URL after startup. Choose any of the thirty-five games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -252,6 +252,13 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Open **Pips** for the daily three-by-four domino board. Select a domino, then select an empty board cell. Use **Rotate** or press **R** to change direction; use **Flip** or press **F** to swap its ends.
 - Fill each colored region to match its rule: exact total, all equal, all different, under a target, or over a target. **Undo** or **Backspace** returns the last domino to the tray; **Restart** clears the placements for the same puzzle.
 - Your placements and fewest undos stay in this browser and do not sync. The puzzle changes each UTC day.
+
+## Neon Rally controls
+
+- Race three laps around the North Loop and pass every lit gate in order. A missed gate stays active until you cross it.
+- Hold **Up / W** to accelerate, **Down / S** to brake, and **Left / Right** or **A / D** to steer. Ease off before the bends; the grass slows the car.
+- On a phone, hold the four touch controls. **Escape** pauses, and **R** restarts the race.
+- The fastest three-lap time stays saved in this browser and does not sync.
 
 ## Local records and preferences
 
