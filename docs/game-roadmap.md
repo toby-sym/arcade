@@ -2,6 +2,8 @@
 
 Arcade games use original names, presentation, rules, and puzzle content. Daily boards are generated in the app or bundled with the app so play stays local and works offline.
 
+The home floor includes a browser-local shelf for up to eight favourites. The shortlist can launch games directly, is included in backups, and does not sync.
+
 ## Shipped catalogue
 
 | Game | Main mechanic |
@@ -61,6 +63,6 @@ Arcade games use original names, presentation, rules, and puzzle content. Daily 
 
 These ideas are ordered to add mechanics Arcade does not already have. Recheck the shipped catalogue before starting each game.
 
-1. **Local favourites** — pin and unpin games to a small home shelf so a large catalogue stays quick to browse; keep the shortlist in this browser.
+1. **Pixel Mosaic** — solve an original daily picture-logic grid from row and column run clues, then save the fastest clear in this browser.
 
 Ideas can change as the catalogue grows. Keep each game self-contained, accessible, responsive, and playable offline; save personal bests in this browser.
