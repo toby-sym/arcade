@@ -70,10 +70,12 @@ const LatchkeyGame = lazy(() => import('./games/LatchkeyGame').then(({ LatchkeyG
 const FathomGame = lazy(() => import('./games/FathomGame').then(({ FathomGame }) => ({ default: FathomGame })))
 const FourfoldGame = lazy(() => import('./games/FourfoldGame').then(({ FourfoldGame }) => ({ default: FourfoldGame })))
 const PeglineGame = lazy(() => import('./games/PeglineGame').then(({ PeglineGame }) => ({ default: PeglineGame })))
+const TallyMarketGame = lazy(() => import('./games/TallyMarketGame').then(({ TallyMarketGame }) => ({ default: TallyMarketGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
+import { createTallyMarketState, type TallyMarketProgress } from './games/tallyMarket'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyTideglassGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyTideglassGame, withDailyTallyMarketGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -130,6 +132,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'fathom', title: 'Fathom', categories: ['arcade'], terms: 'sonar fleet ocean battleship ships search grid strategy' },
   { id: 'fourfold', title: 'Fourfold', categories: ['arcade'], terms: 'connect four in a row strategy local computer opponent board' },
   { id: 'pegline', title: 'Pegline', categories: ['arcade'], terms: 'peg solitaire marble jump hop remove board logic puzzle' },
+  { id: 'tallymarket', title: 'Tally Market', categories: ['daily'], terms: 'number tiles arithmetic sums targets baskets daily puzzle' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -153,7 +156,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline' | 'tallymarket'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -453,6 +456,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyTallyMarketGame = (progress: TallyMarketProgress) => {
+    const withProgress = withDailyTallyMarketGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = createTallyMarketState(progress.date, progress)
+    const next = completed.phase === 'complete'
+      ? withImprovedBest(withProgress, 'tallyMarket', completed.actions) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -567,6 +581,7 @@ function App() {
   const openFathom = () => setScreen('fathom')
   const openFourfold = () => setScreen('fourfold')
   const openPegline = () => setScreen('pegline')
+  const openTallyMarket = () => setScreen('tallymarket')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -661,6 +676,7 @@ function App() {
             onPlayFathom={openFathom}
             onPlayFourfold={openFourfold}
             onPlayPegline={openPegline}
+            onPlayTallyMarket={openTallyMarket}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -1001,6 +1017,14 @@ function App() {
             onRecordMoves={(moves) => recordBest('pegline', moves)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'tallymarket' ? (
+          <TallyMarketGame
+            onBack={() => setScreen('home')}
+            bestActions={arcadeData.bests.tallyMarket}
+            progress={arcadeData.dailyTallyMarketGame}
+            onSaveProgress={saveDailyTallyMarketGame}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1167,6 +1191,7 @@ function Home({
   onPlayFathom,
   onPlayFourfold,
   onPlayPegline,
+  onPlayTallyMarket,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1230,6 +1255,7 @@ function Home({
   onPlayFathom: () => void
   onPlayFourfold: () => void
   onPlayPegline: () => void
+  onPlayTallyMarket: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1996,6 +2022,20 @@ function Home({
               <h3>Pegline</h3>
               <p>Hop pegs into open sockets. Clear three boards with one marble on each target.</p>
               <div className="card-bottom"><span className="controls-label">TAP · CLICK · ARROWS</span><button className="play-card-button" type="button" onClick={onPlayPegline}>Play Pegline <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-tallymarket" hidden={!visibleGameIds.has('tallymarket')}>
+            <div className="card-art tallymarket-card-art" aria-hidden="true">
+              <span className="tallymarket-card-basket basket-one"><i>12</i><i>07</i></span>
+              <span className="tallymarket-card-basket basket-two"><i>05</i><i>09</i></span>
+              <span className="tallymarket-card-basket basket-three"><i>03</i><i>08</i></span>
+              <span className="card-art-index">49</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">49</span><span className="game-category">DAILY SUM PUZZLE</span></div>
+              <h3>Tally Market</h3>
+              <p>Place number tags into three baskets. Reach each target without overshooting.</p>
+              <div className="card-bottom"><span className="controls-label">TAP · CLICK · KEYBOARD</span><button className="play-card-button" type="button" onClick={onPlayTallyMarket}>Play Tally Market <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
