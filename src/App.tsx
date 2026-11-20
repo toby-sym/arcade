@@ -62,6 +62,7 @@ const BeatBeaconGame = lazy(() => import('./games/BeatBeaconGame').then(({ BeatB
 const TuningForkGame = lazy(() => import('./games/TuningForkGame').then(({ TuningForkGame }) => ({ default: TuningForkGame })))
 const MagnetronGame = lazy(() => import('./games/MagnetronGame').then(({ MagnetronGame }) => ({ default: MagnetronGame })))
 const KeystoneGame = lazy(() => import('./games/KeystoneGame').then(({ KeystoneGame }) => ({ default: KeystoneGame })))
+const BeamworksGame = lazy(() => import('./games/BeamworksGame').then(({ BeamworksGame }) => ({ default: BeamworksGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -114,6 +115,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'tuningfork', title: 'Tuning Fork', categories: ['arcade'], terms: 'music pitch intervals higher lower tone notes ear training' },
   { id: 'magnetron', title: 'Magnetron', categories: ['arcade'], terms: 'magnetic polarity pull push puck physics field obstacle course' },
   { id: 'keystone', title: 'Keystone', categories: ['arcade'], terms: 'sokoban blocks crates push switches sockets doors tile logic puzzle' },
+  { id: 'beamworks', title: 'Beamworks', categories: ['arcade'], terms: 'laser light mirrors beam reflectors rotate optics puzzle routing' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -137,7 +139,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -543,6 +545,7 @@ function App() {
   const openTuningFork = () => setScreen('tuningfork')
   const openMagnetron = () => setScreen('magnetron')
   const openKeystone = () => setScreen('keystone')
+  const openBeamworks = () => setScreen('beamworks')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -629,6 +632,7 @@ function App() {
             onPlayTuningFork={openTuningFork}
             onPlayMagnetron={openMagnetron}
             onPlayKeystone={openKeystone}
+            onPlayBeamworks={openBeamworks}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -913,6 +917,13 @@ function App() {
             onRecordMoves={(moves) => recordBest('keystone', moves)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'beamworks' ? (
+          <BeamworksGame
+            onBack={() => setScreen('home')}
+            bestTurns={arcadeData.bests.beamworks}
+            onRecordTurns={(turns) => recordBest('beamworks', turns)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1071,6 +1082,7 @@ function Home({
   onPlayTuningFork,
   onPlayMagnetron,
   onPlayKeystone,
+  onPlayBeamworks,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1126,6 +1138,7 @@ function Home({
   onPlayTuningFork: () => void
   onPlayMagnetron: () => void
   onPlayKeystone: () => void
+  onPlayBeamworks: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1764,6 +1777,22 @@ function Home({
               <h3>Keystone</h3>
               <p>Push blocks onto sockets to power the locks and open four original chambers.</p>
               <div className="card-bottom"><span className="controls-label">ARROWS · W A S D · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayKeystone}>Play Keystone <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-beamworks" hidden={!visibleGameIds.has('beamworks')}>
+            <div className="card-art beamworks-card-art" aria-hidden="true">
+              <span className="beamworks-card-ray ray-one" />
+              <span className="beamworks-card-ray ray-two" />
+              <span className="beamworks-card-mirror mirror-one">/</span>
+              <span className="beamworks-card-mirror mirror-two">\</span>
+              <span className="beamworks-card-receiver" />
+              <span className="card-art-index">41</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">41</span><span className="game-category">OPTICS PUZZLE</span></div>
+              <h3>Beamworks</h3>
+              <p>Turn the mirrors, route the light, and connect four original receiver circuits.</p>
+              <div className="card-bottom"><span className="controls-label">1–4 · TOUCH · Z UNDO</span><button className="play-card-button" type="button" onClick={onPlayBeamworks}>Play Beamworks <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>

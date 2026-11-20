@@ -46,11 +46,12 @@ Arcade games use original names, presentation, rules, and puzzle content. Daily 
 | Tuning Fork | Identify eight original rising and falling pitch intervals by ear or visual contour, and save a local accuracy score |
 | Magnetron | Reverse field-post polarity to steer a puck through three obstacle courses and save a local best time |
 | Keystone | Push blocks onto sockets to power locks and open four original chambers, with a local fewest-moves record |
+| Beamworks | Rotate mirrors to route a beam into four receivers, with a local fewest-turns record |
 
 ## Next candidates
 
 These ideas are ordered to add mechanics Arcade does not already have. Recheck the shipped catalogue before starting each game.
 
-1. **Beamworks** — rotate mirrors to route a beam through four compact original chambers and light each receiver, with a local fewest-turns record.
+1. **Rack Run** — play a solo pool table across a short original rack: aim and set power, call a pocket, then use collision angles to clear the colors before sinking the eight ball. Save the fewest shots locally.
 
 Ideas can change as the catalogue grows. Keep each game self-contained, accessible, responsive, and playable offline; save personal bests in this browser.
