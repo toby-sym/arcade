@@ -349,6 +349,11 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Use the input and check button on touch screens. **Escape** pauses or resumes; **Restart run** gives you the same strip again. A clear needs at least 95% accuracy to qualify for your fastest-time record.
 - Your fastest accurate clear stays saved in this browser and does not sync.
 
+## Favourites
+
+- Open **Manage favourites** beneath the home-page introduction and pin up to eight games. Launch a game from the shelf or unpin it there; the manager also lets you change your shortlist.
+- Your shortlist stays in this browser, is included in a downloaded backup, and does not sync.
+
 ## Local records and preferences
 
 Arcade saves personal bests, current daily puzzle progress, and preferences in this browser. Arcade sounds are short synthesized beeps made locally in the browser and are off by default. Records and preferences do not sync. Use **Clear records** under Preferences to remove personal bests; daily progress and preferences stay saved. The system reduced-motion setting is always respected.

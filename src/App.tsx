@@ -76,7 +76,7 @@ import type { MinesweeperProgress } from './games/minesweeper'
 import { createTallyMarketState, type TallyMarketProgress } from './games/tallyMarket'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { ARCADE_BACKUP_MAX_BYTES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyTideglassGame, withDailyTallyMarketGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, MAX_FAVOURITE_GAMES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyTideglassGame, withDailyTallyMarketGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withFavouriteGameIds, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -135,7 +135,14 @@ const GAME_FLOOR_ITEMS = [
   { id: 'pegline', title: 'Pegline', categories: ['arcade'], terms: 'peg solitaire marble jump hop remove board logic puzzle' },
   { id: 'tallymarket', title: 'Tally Market', categories: ['daily'], terms: 'number tiles arithmetic sums targets baskets daily puzzle' },
   { id: 'keytrace', title: 'Keytrace', categories: ['daily'], terms: 'typing words keyboard speed accuracy daily challenge' },
-] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
+] as const satisfies ReadonlyArray<{ id: string; title: string; categories: readonly GameFloorCategory[]; terms: string }>
+
+type GameFloorId = (typeof GAME_FLOOR_ITEMS)[number]['id']
+const GAME_FLOOR_IDS = new Set<string>(GAME_FLOOR_ITEMS.map((game) => game.id))
+
+function isGameFloorId(value: string): value is GameFloorId {
+  return GAME_FLOOR_IDS.has(value)
+}
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>
@@ -191,6 +198,17 @@ function App() {
 
   const setPongDifficulty = (pongDifficulty: PongDifficulty) => {
     const next = { ...arcadeData, preferences: { ...arcadeData.preferences, pongDifficulty } }
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
+  const toggleFavourite = (gameId: GameFloorId) => {
+    const currentIds = arcadeData.preferences.favouriteGameIds.filter(isGameFloorId)
+    const nextIds = currentIds.includes(gameId)
+      ? currentIds.filter((id) => id !== gameId)
+      : currentIds.length < MAX_FAVOURITE_GAMES ? [...currentIds, gameId] : currentIds
+    const next = withFavouriteGameIds(arcadeData, nextIds)
+    if (next.preferences.favouriteGameIds.length === currentIds.length && currentIds.every((id, index) => id === next.preferences.favouriteGameIds[index])) return
     setArcadeData(next)
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
@@ -681,6 +699,8 @@ function App() {
             onPlayPegline={openPegline}
             onPlayTallyMarket={openTallyMarket}
             onPlayKeytrace={openKeytrace}
+            favouriteGameIds={arcadeData.preferences.favouriteGameIds.filter(isGameFloorId)}
+            onToggleFavourite={toggleFavourite}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -1204,6 +1224,8 @@ function Home({
   onPlayPegline,
   onPlayTallyMarket,
   onPlayKeytrace,
+  favouriteGameIds,
+  onToggleFavourite,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1269,6 +1291,8 @@ function Home({
   onPlayPegline: () => void
   onPlayTallyMarket: () => void
   onPlayKeytrace: () => void
+  favouriteGameIds: GameFloorId[]
+  onToggleFavourite: (gameId: GameFloorId) => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1290,12 +1314,68 @@ function Home({
   const [gameFilter, setGameFilter] = useState<GameFloorFilter>('all')
   const normalizedQuery = searchQuery.trim().toLocaleLowerCase()
   const visibleGames = GAME_FLOOR_ITEMS.filter((game) => {
-    const matchesCategory = gameFilter === 'all' || game.categories.includes(gameFilter)
+    const matchesCategory = gameFilter === 'all' || game.categories.some((category) => category === gameFilter)
     const matchesQuery = !normalizedQuery || `${game.title} ${game.terms}`.toLocaleLowerCase().includes(normalizedQuery)
     return matchesCategory && matchesQuery
   })
   const visibleGameIds = new Set(visibleGames.map((game) => game.id))
   const hasActiveGameFilters = gameFilter !== 'all' || normalizedQuery.length > 0
+  const favouritePlayActions = {
+    snake: onPlaySnake,
+    reaction: onPlayReaction,
+    pattern: onPlayPattern,
+    breakout: onPlayBreakout,
+    pong: onPlayPong,
+    invaders: onPlayInvaders,
+    asteroids: onPlayAsteroids,
+    missile: onPlayMissileCommand,
+    blockdrop: onPlayBlockDrop,
+    wordgame: onPlayWordGame,
+    connections: onPlayConnections,
+    spellingbee: onPlaySpellingBee,
+    strands: onPlayStrands,
+    sudoku: onPlaySudoku,
+    minicrossword: onPlayMiniCrossword,
+    letterboxed: onPlayLetterBoxed,
+    dominologic: onPlayDominoLogic,
+    glyphmatch: onPlayGlyphMatch,
+    vertex: onPlayVertex,
+    tiles: onPlayTiles,
+    pips: onPlayPips,
+    dailycrossword: onPlayCrossword,
+    minesweeper: onPlayMinesweeper,
+    mazedash: onPlayMazeDash,
+    skylineskip: onPlaySkylineSkip,
+    ciphercircuit: onPlayCipherCircuit,
+    orbitcourier: onPlayOrbitCourier,
+    colorconduit: onPlayColorConduit,
+    switchyard: onPlaySwitchyard,
+    prismdash: onPlayPrismDash,
+    gravityloom: onPlayGravityLoom,
+    tideglass: onPlayTideglass,
+    skyhook: onPlaySkyhook,
+    pocketpinball: onPlayPocketPinball,
+    neonrally: onPlayNeonRally,
+    moonshot: onPlayMoonshot,
+    beatbeacon: onPlayBeatBeacon,
+    tuningfork: onPlayTuningFork,
+    magnetron: onPlayMagnetron,
+    keystone: onPlayKeystone,
+    beamworks: onPlayBeamworks,
+    rackrun: onPlayRackRun,
+    pinparade: onPlayPinParade,
+    deckhand: onPlayDeckhand,
+    latchkey: onPlayLatchkey,
+    fathom: onPlayFathom,
+    fourfold: onPlayFourfold,
+    pegline: onPlayPegline,
+    tallymarket: onPlayTallyMarket,
+    keytrace: onPlayKeytrace,
+  } satisfies Record<GameFloorId, () => void>
+  const favouriteGames = favouriteGameIds.flatMap((gameId) => {
+    const game = GAME_FLOOR_ITEMS.find((candidate) => candidate.id === gameId)
+    return game ? [{ game, onPlay: favouritePlayActions[gameId] }] : []
+  })
   const handleBackupFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.[0]
     event.currentTarget.value = ''
@@ -1316,6 +1396,56 @@ function Home({
           <span className="hero-art-label">PRESS<br />PLAY</span>
           <span className="hero-art-index">A / 01</span>
         </div>
+      </section>
+
+      <section className="favourites-section" aria-labelledby="favourites-title">
+        <div className="favourites-heading">
+          <div>
+            <p className="eyebrow">YOUR SHORTLIST</p>
+            <h2 id="favourites-title">Your favourites</h2>
+          </div>
+          <span className="favourites-count" aria-live="polite">{favouriteGames.length} / {MAX_FAVOURITE_GAMES} PINNED</span>
+        </div>
+        {favouriteGames.length === 0 ? (
+          <p className="favourites-empty">Pin up to eight games to keep your own quick-play shelf here.</p>
+        ) : (
+          <div className="favourites-shelf">
+            {favouriteGames.map(({ game, onPlay }) => (
+              <article className="favourite-card" key={game.id}>
+                <button className="favourite-play" type="button" onClick={onPlay} aria-label={`Play ${game.title}`}>
+                  <span className="favourite-category">{game.categories.some((category) => category === 'daily') ? 'DAILY' : 'ARCADE'}</span>
+                  <strong>{game.title}</strong>
+                  <span className="favourite-play-label">PLAY <span className="arrow-mark" aria-hidden="true" /></span>
+                </button>
+                <button className="favourite-remove" type="button" onClick={() => onToggleFavourite(game.id)} aria-label={`Unpin ${game.title}`} title={`Unpin ${game.title}`}>
+                  <span aria-hidden="true">×</span>
+                </button>
+              </article>
+            ))}
+          </div>
+        )}
+        <details className="favourites-manager">
+          <summary>Manage favourites</summary>
+          <div className="favourites-manager-panel">
+            <p id="favourite-cap-note" className="favourites-manager-note">Choose up to eight games. This shortlist is saved only in this browser.</p>
+            <div className="favourites-picker-list">
+              {GAME_FLOOR_ITEMS.map((game) => {
+                const isFavourite = favouriteGameIds.includes(game.id)
+                return (
+                  <label className="favourite-picker-item" key={game.id}>
+                    <input
+                      type="checkbox"
+                      checked={isFavourite}
+                      disabled={!isFavourite && favouriteGames.length >= MAX_FAVOURITE_GAMES}
+                      onChange={() => onToggleFavourite(game.id)}
+                    />
+                    <span><strong>{game.title}</strong><small>{game.categories.some((category) => category === 'daily') ? 'Daily puzzle' : 'Arcade game'}</small></span>
+                  </label>
+                )
+              })}
+            </div>
+          </div>
+        </details>
       </section>
 
       <section className="game-section" aria-labelledby="games-title">
