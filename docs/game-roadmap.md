@@ -54,11 +54,12 @@ Arcade games use original names, presentation, rules, and puzzle content. Daily 
 | Fathom | Find four locally generated ships by plotting hits and using a limited supply of three-by-three sonar sweeps; save the fewest shots |
 | Fourfold | Connect four in a row against a local minimax opponent, keep a winning streak going, and save the best streak |
 | Pegline | Clear three fixed pegboards by hopping pegs into empty sockets, finish with one peg on each target, and save the fewest-move route |
+| Tally Market | Place one-use number tags into three daily baskets without overshooting, reach every exact target, and save the fewest-action clear |
 
 ## Next candidates
 
 These ideas are ordered to add mechanics Arcade does not already have. Recheck the shipped catalogue before starting each game.
 
-1. **Tally Market** — reach three target totals by placing each number tile once; plan a short route and save the fewest actions.
+1. **Keytrace** — type short runs of original words against a gentle countdown, keep a clean streak, and save the fastest accurate clear.
 
 Ideas can change as the catalogue grows. Keep each game self-contained, accessible, responsive, and playable offline; save personal bests in this browser.
