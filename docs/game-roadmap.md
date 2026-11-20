@@ -55,11 +55,12 @@ Arcade games use original names, presentation, rules, and puzzle content. Daily 
 | Fourfold | Connect four in a row against a local minimax opponent, keep a winning streak going, and save the best streak |
 | Pegline | Clear three fixed pegboards by hopping pegs into empty sockets, finish with one peg on each target, and save the fewest-move route |
 | Tally Market | Place one-use number tags into three daily baskets without overshooting, reach every exact target, and save the fewest-action clear |
+| Keytrace | Type a deterministic daily twelve-word strip, pause or restart the timed run, and save the fastest clear with at least 95% accuracy |
 
 ## Next candidates
 
 These ideas are ordered to add mechanics Arcade does not already have. Recheck the shipped catalogue before starting each game.
 
-1. **Keytrace** — type short runs of original words against a gentle countdown, keep a clean streak, and save the fastest accurate clear.
+1. **Local favourites** — pin and unpin games to a small home shelf so a large catalogue stays quick to browse; keep the shortlist in this browser.
 
 Ideas can change as the catalogue grows. Keep each game self-contained, accessible, responsive, and playable offline; save personal bests in this browser.

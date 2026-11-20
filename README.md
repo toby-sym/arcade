@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, Deckhand, Latchkey, Fathom, Fourfold, Pegline, and Tally Market are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, Deckhand, Latchkey, Fathom, Fourfold, Pegline, Tally Market, and Keytrace are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the forty-eight games from the game floor.
+Vite prints the local URL after startup. Choose any of the fifty games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -342,6 +342,12 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Each day, use the shared rack of twelve number tiles to reach the exact totals in Produce, Bakery, and Pantry. Select a tile, then select a basket that can fit it. Leave unused tags on the rack; a basket closes as soon as its target is reached.
 - Tap or click the tile and basket buttons, or reach them with **Tab**, then press **Enter** or **Space**. **Z** or **Undo last tile** returns the last tag and counts as an action. **Escape** pauses or resumes; **R** or **Restart** clears the baskets and adds an action. A new deterministic puzzle arrives at midnight UTC.
 - Daily progress and your fewest-action clear stay saved in this browser and do not sync.
+
+## Keytrace controls
+
+- Type today’s twelve-word strip in order, then press **Enter** or select **Check**. A correct word advances the line; a typo stays on the current word and counts against accuracy. A fresh deterministic strip arrives at midnight UTC.
+- Use the input and check button on touch screens. **Escape** pauses or resumes; **Restart run** gives you the same strip again. A clear needs at least 95% accuracy to qualify for your fastest-time record.
+- Your fastest accurate clear stays saved in this browser and does not sync.
 
 ## Local records and preferences
 
