@@ -59,6 +59,7 @@ const PocketPinballGame = lazy(() => import('./games/PocketPinballGame').then(({
 const NeonRallyGame = lazy(() => import('./games/NeonRallyGame').then(({ NeonRallyGame }) => ({ default: NeonRallyGame })))
 const MoonshotGame = lazy(() => import('./games/MoonshotGame').then(({ MoonshotGame }) => ({ default: MoonshotGame })))
 const BeatBeaconGame = lazy(() => import('./games/BeatBeaconGame').then(({ BeatBeaconGame }) => ({ default: BeatBeaconGame })))
+const TuningForkGame = lazy(() => import('./games/TuningForkGame').then(({ TuningForkGame }) => ({ default: TuningForkGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -108,6 +109,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'neonrally', title: 'Neon Rally', categories: ['arcade'], terms: 'race circuit car driving steering acceleration lap time' },
   { id: 'moonshot', title: 'Moonshot Mini Golf', categories: ['arcade'], terms: 'golf putt aim power walls craters strokes sport' },
   { id: 'beatbeacon', title: 'Beat Beacon', categories: ['arcade'], terms: 'music rhythm drum timing beat sound pads' },
+  { id: 'tuningfork', title: 'Tuning Fork', categories: ['arcade'], terms: 'music pitch intervals higher lower tone notes ear training' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -131,7 +133,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -534,6 +536,7 @@ function App() {
   const openNeonRally = () => setScreen('neonrally')
   const openMoonshot = () => setScreen('moonshot')
   const openBeatBeacon = () => setScreen('beatbeacon')
+  const openTuningFork = () => setScreen('tuningfork')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -617,6 +620,7 @@ function App() {
             onPlayNeonRally={openNeonRally}
             onPlayMoonshot={openMoonshot}
             onPlayBeatBeacon={openBeatBeacon}
+            onPlayTuningFork={openTuningFork}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -880,6 +884,13 @@ function App() {
             onRecordScore={(score) => recordBest('beatBeacon', score)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'tuningfork' ? (
+          <TuningForkGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.tuningFork}
+            onRecordScore={(score) => recordBest('tuningFork', score)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1035,6 +1046,7 @@ function Home({
   onPlayNeonRally,
   onPlayMoonshot,
   onPlayBeatBeacon,
+  onPlayTuningFork,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1087,6 +1099,7 @@ function Home({
   onPlayNeonRally: () => void
   onPlayMoonshot: () => void
   onPlayBeatBeacon: () => void
+  onPlayTuningFork: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1679,6 +1692,21 @@ function Home({
               <h3>Beat Beacon</h3>
               <p>Follow four original drum patterns. Catch the light and land each hit on the beat.</p>
               <div className="card-bottom"><span className="controls-label">Q W E R · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayBeatBeacon}>Play Beat Beacon <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-tuning-fork" hidden={!visibleGameIds.has('tuningfork')}>
+            <div className="card-art tuning-fork-card-art" aria-hidden="true">
+              <span className="tuning-fork-card-staff"><i /><i /><i /><i /><i /></span>
+              <span className="tuning-fork-card-line" />
+              <span className="tuning-fork-card-note note-anchor" />
+              <span className="tuning-fork-card-note note-target" />
+              <span className="card-art-index">38</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">38</span><span className="game-category">PITCH PUZZLE</span></div>
+              <h3>Tuning Fork</h3>
+              <p>Listen to two tones. Find whether the pitch moves up or down by a step or a leap.</p>
+              <div className="card-bottom"><span className="controls-label">1–4 · TOUCH · AUDIO</span><button className="play-card-button" type="button" onClick={onPlayTuningFork}>Play Tuning Fork <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
