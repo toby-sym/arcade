@@ -2986,6 +2986,111 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .neon-rally-view *, .neon-rally-control { animation: none !important; transition: none !important; }
 }
 
+.moonshot-layout { grid-template-columns: minmax(0, 1fr) minmax(300px, .9fr); align-items: start; gap: clamp(28px, 5vw, 64px); }
+.moonshot-copy h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+.moonshot-score { max-width: 430px; margin-top: 15px; grid-template-columns: minmax(0, 1fr); }
+.moonshot-total { color: #d9d0ee; font-size: 2rem; font-variant-numeric: tabular-nums; }
+.moonshot-total i { color: #81778e; font: 800 .72rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.moonshot-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; padding: 13px 0; border-top: 1px solid rgb(140 125 151 / 24%); border-bottom: 1px solid rgb(140 125 151 / 24%); }
+.moonshot-stats > span { display: grid; gap: 4px; min-width: 0; }
+.moonshot-stats small { color: #9d94a8; font: 800 .48rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; }
+.moonshot-stats strong { color: #f3ebdf; font: 800 .72rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+.moonshot-record { color: #d4ff69; font: 800 1.7rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+.moonshot-hole-strip { max-width: 430px; margin-top: 12px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
+.moonshot-hole-chip { min-width: 0; min-height: 48px; padding: 7px 3px; display: grid; align-content: center; gap: 5px; border: 1px solid #41394d; border-radius: 4px; background: #181720; text-align: center; }
+.moonshot-hole-chip span { color: #8d8798; font: 800 .38rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .04em; white-space: nowrap; }
+.moonshot-hole-chip strong { color: #bcb4c6; font: 800 .42rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.2; overflow-wrap: anywhere; }
+.moonshot-hole-chip.is-current { border-color: #bca5ec; box-shadow: inset 0 0 14px rgb(188 165 236 / 9%); }
+.moonshot-hole-chip.is-current span, .moonshot-hole-chip.is-current strong { color: #dcc7ff; }
+.moonshot-hole-chip.is-complete { border-color: #628e8b; }
+.moonshot-hole-chip.is-complete span, .moonshot-hole-chip.is-complete strong { color: #8bd9cd; }
+.moonshot-local-note, .moonshot-control-note { margin: 9px 0 0; color: #afa5ba; font-size: .68rem; line-height: 1.5; }
+.moonshot-console { padding: 12px; border: 3px solid #463958; border-radius: 15px; background: linear-gradient(145deg, #272134, #13131d 72%); box-shadow: 0 5px 0 #08080e, 0 10px 25px rgb(0 0 0 / 40%), inset 0 0 0 1px rgb(195 156 255 / 11%); }
+.moonshot-console .frame-topline { min-height: 23px; padding: 0 3px 9px; }
+.moonshot-field-shell { position: relative; overflow: hidden; width: 100%; aspect-ratio: 640 / 780; border: 1px solid #65567c; border-radius: 7px; background: #17141f; box-shadow: inset 0 0 24px rgb(0 0 0 / 35%); }
+.moonshot-field { display: block; width: 100%; height: 100%; touch-action: none; user-select: none; outline: none; cursor: crosshair; }
+.moonshot-field:focus-visible { outline: 3px solid #55e5f4; outline-offset: 3px; }
+.moonshot-wall rect { fill: #595366; stroke: #aaa0b5; stroke-width: 2; }
+.moonshot-wall path { fill: none; stroke: #d0c4d4; stroke-width: 2; opacity: .45; }
+.moonshot-crater circle:first-child { fill: #302b39; stroke: #797085; stroke-width: 2; }
+.moonshot-crater circle:nth-child(2) { fill: none; stroke: #655b70; stroke-width: 2; stroke-dasharray: 3 5; }
+.moonshot-crater circle:last-child { fill: #4b4354; }
+.moonshot-bumper circle:first-child { fill: #3d3450; stroke: #c3a5f5; stroke-width: 2; opacity: .82; }
+.moonshot-bumper circle:nth-child(2) { fill: #292238; stroke: #e0c5ff; stroke-width: 2; }
+.moonshot-bumper circle:last-child { fill: #e6d2ff; }
+.moonshot-cup circle:first-child { fill: #19151e; stroke: #d4ff69; stroke-width: 4; }
+.moonshot-cup circle:last-child { fill: #d4ff69; }
+.moonshot-flag path:first-child { fill: none; stroke: #d1c4de; stroke-width: 2; }
+.moonshot-flag path:last-child { fill: #fa6f95; stroke: #ffd9e0; stroke-width: 1.5; }
+.moonshot-tee circle:first-child { fill: rgb(180 156 224 / 10%); stroke: #8975a8; stroke-width: 2; stroke-dasharray: 4 5; }
+.moonshot-tee circle:nth-child(2) { fill: #2c2736; stroke: #b19acb; stroke-width: 2; }
+.moonshot-tee path { stroke: #9987ad; stroke-width: 1; opacity: .5; }
+.moonshot-aim line { stroke: #d4ff69; stroke-width: 3; stroke-dasharray: 8 7; opacity: .9; }
+.moonshot-aim path { fill: none; stroke: #d4ff69; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.moonshot-aim text { fill: #e5ff9a; font: 800 9px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.moonshot-drag-origin { fill: none; stroke: #ff83a4; stroke-width: 2; stroke-dasharray: 3 4; }
+.moonshot-ball { filter: drop-shadow(0 2px 4px rgb(0 0 0 / 70%)); pointer-events: none; }
+.moonshot-ball > path { fill: none; stroke: #827788; stroke-width: 1.5; }
+.moonshot-ball-halo { fill: rgb(212 255 105 / 8%); stroke: rgb(212 255 105 / 48%); stroke-width: 1; }
+.moonshot-ball-halo.is-moving { fill: rgb(255 111 150 / 16%); stroke: rgb(255 111 150 / 74%); }
+.moonshot-overlay { position: absolute; inset: 37% 8% auto; min-height: 115px; padding: 16px 12px; display: grid; place-content: center; gap: 7px; border: 1px solid rgb(151 134 176 / 70%); border-radius: 7px; background: rgb(18 16 25 / 93%); box-shadow: 0 8px 30px rgb(0 0 0 / 38%); text-align: center; pointer-events: none; }
+.moonshot-overlay-kicker { color: #d4ff69; font: 800 .5rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .15em; }
+.moonshot-overlay strong { color: #fff5df; font-size: clamp(.85rem, 2.7vw, 1.14rem); line-height: 1.2; }
+.moonshot-overlay > span:last-child { color: #beb6c7; font-size: .66rem; line-height: 1.45; }
+.moonshot-overlay.phase-holeComplete { border-color: #8bd9cd; }
+.moonshot-overlay.phase-won { border-color: #d4ff69; }
+.moonshot-console-footer { padding: 9px 3px 1px; display: flex; justify-content: space-between; gap: 8px; color: #a59aaa; font: 800 .45rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .065em; }
+.moonshot-status { min-height: 30px; margin: 8px 0; color: #c6b8dd; font-size: .68rem; line-height: 1.45; text-align: center; }
+.moonshot-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.moonshot-aim-pad { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.moonshot-aim-pad button, .moonshot-shoot, .moonshot-reset { min-width: 0; min-height: 52px; padding: 7px 10px; display: flex; align-items: center; justify-content: center; gap: 9px; border: 1px solid #5f526f; border-radius: 6px; color: #f1ebdd; background: linear-gradient(#30293b, #211d29); box-shadow: 0 3px 0 #0b0a11; cursor: pointer; touch-action: manipulation; user-select: none; }
+.moonshot-aim-pad button { color: #d4c4ed; font-size: 1.2rem; }
+.moonshot-aim-pad button small, .moonshot-shoot span, .moonshot-reset small { color: #c7b5df; font: 800 .48rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .06em; }
+.moonshot-shoot { color: #17151d; border-color: #d4ff69; background: linear-gradient(#e2ff91, #b9f45a); font: 900 .65rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; }
+.moonshot-shoot span { color: #25251c; font-size: 1rem; }
+.moonshot-reset { border-color: #6b5864; background: linear-gradient(#3e3039, #291f29); }
+.moonshot-reset small { color: #ffb2c0; }
+.moonshot-aim-pad button:disabled, .moonshot-shoot:disabled, .moonshot-reset:disabled { opacity: .42; cursor: default; }
+.moonshot-aim-pad button:active:not(:disabled), .moonshot-shoot:active:not(:disabled), .moonshot-reset:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #0b0a11; }
+.moonshot-aim-pad button:focus-visible, .moonshot-shoot:focus-visible, .moonshot-reset:focus-visible, .moonshot-power-control input:focus-visible { outline: 3px solid #55e5f4; outline-offset: 2px; }
+.moonshot-power-control { grid-column: 1 / -1; padding: 10px 12px; display: grid; gap: 8px; border: 1px solid #4d445c; border-radius: 6px; background: #201d29; }
+.moonshot-power-control > span { display: flex; justify-content: space-between; gap: 10px; color: #b8adca; font: 800 .48rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; }
+.moonshot-power-control b { color: #d4ff69; font-variant-numeric: tabular-nums; }
+.moonshot-power-control input { width: 100%; height: 18px; margin: 0; accent-color: #d4ff69; cursor: pointer; }
+.moonshot-control-note { margin-top: 10px; text-align: center; }
+.moonshot-card-art { background: radial-gradient(ellipse at 50% 48%, #322a3c, #15131e 80%); }
+.moonshot-card-green { position: absolute; inset: 12% 26%; border: 8px solid #4c4559; border-radius: 47%; box-shadow: 0 0 0 2px #8bd9cd, inset 0 0 0 2px #d4ff69; transform: rotate(-13deg); }
+.moonshot-card-cup { position: absolute; top: 27%; right: 34%; width: 15px; height: 15px; border: 3px solid #d4ff69; border-radius: 50%; background: #16141d; box-shadow: 0 0 11px rgb(212 255 105 / 75%); }
+.moonshot-card-ball { position: absolute; bottom: 23%; left: 35%; width: 13px; height: 13px; border: 2px solid #fff4d8; border-radius: 50%; background: #c9b6d5; box-shadow: 0 0 9px rgb(201 182 213 / 65%); }
+.moonshot-card-rail { position: absolute; left: 26%; bottom: 38%; width: 48%; height: 5px; border-radius: 5px; background: #9a8fa9; transform: rotate(-24deg); }
+
+@media (max-width: 760px) {
+  .moonshot-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .moonshot-copy h1 { font-size: clamp(1.9rem, 8vw, 2.6rem); }
+  .moonshot-play-column { width: 100%; max-width: 580px; justify-self: center; }
+  .moonshot-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .moonshot-console .frame-topline { min-height: 20px; padding-bottom: 8px; }
+  .moonshot-console-footer { font-size: .38rem; }
+  .moonshot-aim-pad { gap: 6px; }
+  .moonshot-aim-pad button, .moonshot-shoot, .moonshot-reset { min-height: 52px; }
+}
+@media (max-width: 380px) {
+  .moonshot-console .frame-topline { font-size: .44rem; }
+  .moonshot-console-footer { font-size: .31rem; letter-spacing: .03em; }
+  .moonshot-hole-strip { gap: 3px; }
+  .moonshot-hole-chip { min-height: 45px; padding-inline: 2px; }
+  .moonshot-hole-chip span { font-size: .34rem; }
+  .moonshot-hole-chip strong { font-size: .37rem; }
+  .moonshot-stats { gap: 9px 8px; }
+  .moonshot-stats strong { font-size: .66rem; }
+  .moonshot-aim-pad button, .moonshot-shoot, .moonshot-reset { gap: 5px; padding-inline: 5px; }
+  .moonshot-reset { flex-direction: column; gap: 3px; font-size: .58rem; line-height: 1.1; }
+  .moonshot-reset small { font-size: .38rem; letter-spacing: .025em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .moonshot-view *, .moonshot-aim-pad button, .moonshot-shoot, .moonshot-reset { animation: none !important; transition: none !important; }
+}
+
 @media (max-width: 760px) {
   .gravity-loom-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   .gravity-loom-copy h1 { font-size: clamp(1.9rem, 8vw, 2.55rem); }
