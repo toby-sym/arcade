@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ARCADE_BACKUP_MAX_BYTES, ARCADE_DATA_KEY, clearArcadeBests, emptyArcadeData, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyTideglassGame, withDailyTallyMarketGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withImprovedBest, writeArcadeData } from './arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, ARCADE_DATA_KEY, MAX_FAVOURITE_GAMES, clearArcadeBests, emptyArcadeData, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyTideglassGame, withDailyTallyMarketGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withFavouriteGameIds, withImprovedBest, writeArcadeData } from './arcadeData'
 import { cipherCircuitProgress, cipherCircuitReducer, createCipherCircuitState } from '../games/cipherCircuit'
 import { createGlyphMatchPuzzle } from '../games/glyphMatch'
 import { createVertexPuzzle } from '../games/vertex'
@@ -32,9 +32,14 @@ describe('browser-local Arcade data', () => {
     const backup = emptyArcadeData()
     backup.bests.snake = 24
     backup.preferences.soundEffects = true
+    backup.preferences.favouriteGameIds = ['snake', 'keytrace']
     backup.dailyWordGame = { date: '2026-11-19', guesses: ['CRANE'], phase: 'playing' }
 
     expect(parseArcadeDataBackup(JSON.stringify(backup))).toEqual(backup)
+    const legacyPreferences = { reduceMotion: false, soundEffects: true, pongDifficulty: 'steady' }
+    expect(parseArcadeDataBackup(JSON.stringify({ ...backup, preferences: legacyPreferences }))?.preferences.favouriteGameIds).toEqual([])
+    expect(parseArcadeDataBackup(JSON.stringify({ ...backup, preferences: { ...backup.preferences, favouriteGameIds: ['snake', 'snake'] } }))).toBeNull()
+    expect(parseArcadeDataBackup(JSON.stringify({ ...backup, preferences: { ...backup.preferences, favouriteGameIds: Array.from({ length: MAX_FAVOURITE_GAMES + 1 }, (_, index) => `game${index}`) } }))).toBeNull()
     expect(parseArcadeDataBackup('{bad json')).toBeNull()
     expect(parseArcadeDataBackup(JSON.stringify({ ...backup, version: 2 }))).toBeNull()
     expect(parseArcadeDataBackup(JSON.stringify({ ...backup, bests: { ...backup.bests, snake: -1 } }))).toBeNull()
@@ -117,6 +122,16 @@ describe('browser-local Arcade data', () => {
     expect(parseArcadeDataBackup(' '.repeat(ARCADE_BACKUP_MAX_BYTES + 1))).toBeNull()
   })
 
+  it('keeps favourite game ids unique, capped, and intact when clearing records', () => {
+    const initial = emptyArcadeData()
+    const favourites = withFavouriteGameIds(initial, ['snake', 'snake', 'tallymarket', 'not-a-game'])
+    expect(favourites.preferences.favouriteGameIds).toEqual(['snake', 'tallymarket'])
+    expect(clearArcadeBests(favourites).preferences.favouriteGameIds).toEqual(['snake', 'tallymarket'])
+
+    const maximum = withFavouriteGameIds(initial, Array.from({ length: MAX_FAVOURITE_GAMES + 2 }, (_, index) => `game${index}`))
+    expect(maximum.preferences.favouriteGameIds).toHaveLength(MAX_FAVOURITE_GAMES)
+  })
+
   it('round-trips local bests and the motion preference', () => {
     const storage = new MemoryStorage()
     const saved = {
@@ -142,7 +157,7 @@ describe('browser-local Arcade data', () => {
       dailyTideglassGame: null,
       dailyTallyMarketGame: null,
       bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null },
-      preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
+      preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const, favouriteGameIds: ['snake', 'tallymarket'] },
     }
 
     expect(writeArcadeData(saved, storage)).toBe(true)
@@ -338,7 +353,7 @@ describe('browser-local Arcade data', () => {
       dailyTideglassGame: null,
       dailyTallyMarketGame: null,
       bests: { snake: 12, reaction: 238, pattern: 4, breakout: 120, pong: 3, invaders: 90, asteroids: 220, missileCommand: 340, blockDrop: 420, wordPuzzle: 4, connections: 2, spellingBee: 100, strands: 2, sudoku: 3, miniCrossword: 4, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: 61, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null },
-      preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const },
+      preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' as const, favouriteGameIds: ['snake', 'tallymarket'] },
     }
     expect(clearArcadeBests(initial)).toEqual({
       version: 1,
@@ -363,7 +378,7 @@ describe('browser-local Arcade data', () => {
       dailyTideglassGame: null,
       dailyTallyMarketGame: null,
       bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null },
-      preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick' },
+      preferences: { reduceMotion: true, soundEffects: true, pongDifficulty: 'quick', favouriteGameIds: ['snake', 'tallymarket'] },
     })
     expect(initial.bests.snake).toBe(12)
   })
@@ -404,11 +419,11 @@ describe('browser-local Arcade data', () => {
       dailyTideglassGame: null,
       dailyTallyMarketGame: null,
       bests: { snake: 9, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null },
-      preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
+      preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady', favouriteGameIds: [] },
     })
 
     storage.value = JSON.stringify({ version: 1, preferences: { reduceMotion: true, pongDifficulty: 'quick' } })
-    expect(readArcadeData(storage).preferences).toEqual({ reduceMotion: true, soundEffects: false, pongDifficulty: 'quick' })
+    expect(readArcadeData(storage).preferences).toEqual({ reduceMotion: true, soundEffects: false, pongDifficulty: 'quick', favouriteGameIds: [] })
   })
 
   it('records only valid calendar dates for the shared daily challenge', () => {

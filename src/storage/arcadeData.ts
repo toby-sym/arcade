@@ -21,6 +21,7 @@ import { validTallyMarketProgress, type TallyMarketProgress } from '../games/tal
 
 export const ARCADE_DATA_KEY = 'arcade.local-data.v1'
 export const ARCADE_BACKUP_MAX_BYTES = 1_000_000
+export const MAX_FAVOURITE_GAMES = 8
 
 export interface ArcadeBests {
   snake: number | null
@@ -102,6 +103,7 @@ export interface ArcadeData {
     reduceMotion: boolean
     soundEffects: boolean
     pongDifficulty: PongDifficulty
+    favouriteGameIds: string[]
   }
 }
 
@@ -324,7 +326,14 @@ export function emptyArcadeData(): ArcadeData {
     dailyGravityLoomGame: null,
     dailyTideglassGame: null,
     dailyTallyMarketGame: null,
-    preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady' },
+    preferences: { reduceMotion: false, soundEffects: false, pongDifficulty: 'steady', favouriteGameIds: [] },
+  }
+}
+
+export function withFavouriteGameIds(data: ArcadeData, gameIds: readonly string[]): ArcadeData {
+  return {
+    ...data,
+    preferences: { ...data.preferences, favouriteGameIds: normalizeFavouriteGameIds(gameIds) },
   }
 }
 
@@ -417,7 +426,12 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         tallyMarket: validRecord(bests.tallyMarket),
         keytrace: validRecord(bests.keytrace),
       },
-      preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
+      preferences: {
+        reduceMotion: preferences.reduceMotion === true,
+        soundEffects: preferences.soundEffects === true,
+        pongDifficulty: validPongDifficulty(preferences.pongDifficulty),
+        favouriteGameIds: normalizeFavouriteGameIds(preferences.favouriteGameIds),
+      },
     }
   } catch {
     return emptyArcadeData()
@@ -453,7 +467,8 @@ export function parseArcadeDataBackup(contents: string): ArcadeData | null {
 
     if (typeof preferences.reduceMotion !== 'boolean'
       || typeof preferences.soundEffects !== 'boolean'
-      || (preferences.pongDifficulty !== 'calm' && preferences.pongDifficulty !== 'steady' && preferences.pongDifficulty !== 'quick')) return null
+      || (preferences.pongDifficulty !== 'calm' && preferences.pongDifficulty !== 'steady' && preferences.pongDifficulty !== 'quick')
+      || (preferences.favouriteGameIds !== undefined && !isFavouriteGameIdList(preferences.favouriteGameIds))) return null
 
     const dailyFieldsAreValid = (parsed.dailyPatternCompletedDate === null || validUtcDateKey(parsed.dailyPatternCompletedDate))
       && (parsed.dailyWordGame === null || validDailyWordProgress(parsed.dailyWordGame))
@@ -516,4 +531,22 @@ function validDailyWordProgress(value: unknown): value is DailyWordProgress {
 
 function validPongDifficulty(value: unknown): PongDifficulty {
   return value === 'calm' || value === 'steady' || value === 'quick' ? value : 'steady'
+}
+
+function normalizeFavouriteGameIds(value: unknown): string[] {
+  if (!Array.isArray(value)) return []
+  const ids: string[] = []
+  for (const gameId of value) {
+    if (typeof gameId !== 'string' || !/^[a-z][a-z0-9]*$/.test(gameId) || ids.includes(gameId)) continue
+    ids.push(gameId)
+    if (ids.length === MAX_FAVOURITE_GAMES) break
+  }
+  return ids
+}
+
+function isFavouriteGameIdList(value: unknown): value is string[] {
+  return Array.isArray(value)
+    && value.length <= MAX_FAVOURITE_GAMES
+    && value.every((gameId) => typeof gameId === 'string' && /^[a-z][a-z0-9]*$/.test(gameId))
+    && new Set(value).size === value.length
 }
