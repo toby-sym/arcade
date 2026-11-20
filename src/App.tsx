@@ -63,6 +63,7 @@ const TuningForkGame = lazy(() => import('./games/TuningForkGame').then(({ Tunin
 const MagnetronGame = lazy(() => import('./games/MagnetronGame').then(({ MagnetronGame }) => ({ default: MagnetronGame })))
 const KeystoneGame = lazy(() => import('./games/KeystoneGame').then(({ KeystoneGame }) => ({ default: KeystoneGame })))
 const BeamworksGame = lazy(() => import('./games/BeamworksGame').then(({ BeamworksGame }) => ({ default: BeamworksGame })))
+const RackRunGame = lazy(() => import('./games/RackRunGame').then(({ RackRunGame }) => ({ default: RackRunGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -116,6 +117,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'magnetron', title: 'Magnetron', categories: ['arcade'], terms: 'magnetic polarity pull push puck physics field obstacle course' },
   { id: 'keystone', title: 'Keystone', categories: ['arcade'], terms: 'sokoban blocks crates push switches sockets doors tile logic puzzle' },
   { id: 'beamworks', title: 'Beamworks', categories: ['arcade'], terms: 'laser light mirrors beam reflectors rotate optics puzzle routing' },
+  { id: 'rackrun', title: 'Rack Run', categories: ['arcade'], terms: 'pool billiards cue ball aim pocket call shot table angles collision' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -139,7 +141,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -546,6 +548,7 @@ function App() {
   const openMagnetron = () => setScreen('magnetron')
   const openKeystone = () => setScreen('keystone')
   const openBeamworks = () => setScreen('beamworks')
+  const openRackRun = () => setScreen('rackrun')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -633,6 +636,7 @@ function App() {
             onPlayMagnetron={openMagnetron}
             onPlayKeystone={openKeystone}
             onPlayBeamworks={openBeamworks}
+            onPlayRackRun={openRackRun}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -924,6 +928,13 @@ function App() {
             onRecordTurns={(turns) => recordBest('beamworks', turns)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'rackrun' ? (
+          <RackRunGame
+            onBack={() => setScreen('home')}
+            bestShots={arcadeData.bests.rackRun}
+            onRecordShots={(shots) => recordBest('rackRun', shots)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1083,6 +1094,7 @@ function Home({
   onPlayMagnetron,
   onPlayKeystone,
   onPlayBeamworks,
+  onPlayRackRun,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1139,6 +1151,7 @@ function Home({
   onPlayMagnetron: () => void
   onPlayKeystone: () => void
   onPlayBeamworks: () => void
+  onPlayRackRun: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1793,6 +1806,22 @@ function Home({
               <h3>Beamworks</h3>
               <p>Turn the mirrors, route the light, and connect four original receiver circuits.</p>
               <div className="card-bottom"><span className="controls-label">1–4 · TOUCH · Z UNDO</span><button className="play-card-button" type="button" onClick={onPlayBeamworks}>Play Beamworks <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-rack-run" hidden={!visibleGameIds.has('rackrun')}>
+            <div className="card-art rack-run-card-art" aria-hidden="true">
+              <span className="rack-run-card-rail" />
+              <span className="rack-run-card-ball cue" />
+              <span className="rack-run-card-ball one">1</span>
+              <span className="rack-run-card-ball eight">8</span>
+              <span className="rack-run-card-pocket" />
+              <span className="card-art-index">42</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">42</span><span className="game-category">ARCADE SPORT</span></div>
+              <h3>Rack Run</h3>
+              <p>Call your pocket, bank the colors, and sink the eight ball before the rack runs out.</p>
+              <div className="card-bottom"><span className="controls-label">DRAG · ARROWS · 1–6</span><button className="play-card-button" type="button" onClick={onPlayRackRun}>Play Rack Run <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
