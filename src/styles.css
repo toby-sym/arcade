@@ -4183,6 +4183,105 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
 @media (prefers-reduced-motion: reduce) {
   .pegline-socket { transition: none; }
 }
+
+/* Tally Market: today’s arithmetic, on three painted counters */
+.tallymarket-layout { grid-template-columns: minmax(260px, .82fr) minmax(0, 1.18fr); align-items: start; gap: clamp(24px, 5vw, 64px); }
+.tallymarket-copy h1 { font-size: clamp(2.35rem, 4.7vw, 3.7rem); }
+.tallymarket-score { width: 100%; max-width: 390px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); align-items: start; gap: 12px; }
+.tallymarket-run-stat { min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 8px; }
+.tallymarket-run-stat .score-caption { grid-column: 1 / -1; }
+.tallymarket-score .score-value { font-size: clamp(1.55rem, 3vw, 2.1rem); font-variant-numeric: tabular-nums; }
+.tallymarket-score .score-unit { max-width: 220px; }
+.tallymarket-score .local-best-readout { min-width: 0; grid-column: auto; margin: 0; padding: 0 0 0 12px; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 7px; border-top: 0; border-left: 1px solid var(--line); }
+.tallymarket-score .local-best-readout .score-caption { grid-column: 1 / -1; }
+.tallymarket-score .local-best-readout .score-unit { grid-column: 1 / -1; }
+.tallymarket-local-note { margin: 9px 0 0; color: #a99eb4; font-size: .66rem; line-height: 1.55; }
+.tallymarket-play-column { width: 100%; max-width: 740px; justify-self: end; }
+.tallymarket-console { position: relative; overflow: hidden; padding: 13px; border: 3px solid #657050; border-radius: 15px; color: #f1efdc; background: linear-gradient(145deg, #343a2c, #191923 72%); box-shadow: 0 5px 0 #080711, 0 10px 25px rgb(0 0 0 / 40%), inset 0 0 0 1px rgb(207 217 255 / 9%); }
+.tallymarket-console:focus { outline: none; }
+.tallymarket-console:focus-visible { outline: 3px solid #58def3; outline-offset: 4px; }
+.tallymarket-console .frame-topline { min-height: 23px; padding: 0 3px 9px; }
+.tallymarket-roundline { min-height: 52px; padding: 8px 11px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #5c6949; border-radius: 7px; background: rgb(11 10 21 / 48%); }
+.tallymarket-roundline > div { display: grid; gap: 3px; }
+.tallymarket-roundline > div span, .tallymarket-rack-heading { color: #c3c994; font: 800 .4rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; }
+.tallymarket-roundline > div strong { color: #fff3d9; font-size: .7rem; }
+.tallymarket-roundline > b { color: #d5fa58; font: 900 .9rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.tallymarket-roundline > b small { color: #a99eb4; font-size: .39rem; }
+.tallymarket-baskets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0 15px; }
+.tallymarket-basket { min-width: 0; min-height: 143px; padding: 10px; display: flex; flex-direction: column; align-items: stretch; gap: 8px; border: 1px solid #68694e; border-radius: 8px; color: #f4eed7; background: linear-gradient(155deg, #454832, #272536); text-align: left; cursor: pointer; touch-action: manipulation; transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease; }
+.tallymarket-basket.is-open { border-color: #d8e86a; box-shadow: 0 0 0 2px rgb(213 250 88 / 13%), 0 0 14px rgb(213 250 88 / 12%); }
+.tallymarket-basket.is-open:hover { transform: translateY(-2px); }
+.tallymarket-basket.is-complete { border-color: #69d7b0; background: linear-gradient(155deg, #345344, #202838); }
+.tallymarket-basket:disabled { cursor: default; }
+.tallymarket-basket:focus-visible, .tallymarket-tile:focus-visible, .tallymarket-action:focus-visible { outline: 3px solid #58def3; outline-offset: 3px; z-index: 1; }
+.tallymarket-basket-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 3px; }
+.tallymarket-basket-heading strong { color: #fff3d9; font-size: .6rem; }
+.tallymarket-basket-heading small { color: #c1b9a5; font: 800 .32rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .06em; }
+.tallymarket-basket-total { display: flex; align-items: baseline; gap: 5px; color: #d5fa58; font-variant-numeric: tabular-nums; }
+.tallymarket-basket-total b { font: 900 clamp(1.2rem, 2.6vw, 1.65rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.tallymarket-basket-total i { color: #a9a88a; font-size: .68rem; font-style: normal; }
+.tallymarket-basket-total strong { color: #f0ce7b; font: 800 .78rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.tallymarket-meter { overflow: hidden; width: 100%; height: 5px; border-radius: 4px; background: #191923; box-shadow: inset 0 1px 2px rgb(0 0 0 / 45%); }
+.tallymarket-meter i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #9ab943, #d5fa58); transition: width 180ms ease; }
+.is-complete .tallymarket-meter i { background: linear-gradient(90deg, #42a785, #8be3bd); }
+.tallymarket-basket-items { min-height: 19px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.tallymarket-basket-items i { min-width: 22px; height: 20px; padding: 2px 5px; border: 1px solid #8d8c63; border-radius: 4px; color: #fbf0c9; background: #6d6841; font: 800 .48rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-align: center; font-style: normal; }
+.tallymarket-basket-items em { color: #a8a18e; font: 800 .32rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .045em; font-style: normal; }
+.tallymarket-rack-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 0 2px 7px; }
+.tallymarket-rack-heading small { color: #99938a; font: 800 .33rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.tallymarket-rack { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; padding: 9px; border: 1px solid #595348; border-radius: 8px; background: #1b1a21; }
+.tallymarket-tile { min-width: 0; min-height: 48px; padding: 5px; border: 1px solid #6f6651; border-radius: 5px; color: #f7edce; background: linear-gradient(#786d50, #504936); box-shadow: 0 3px 0 #28251e; font: 900 .75rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; cursor: pointer; touch-action: manipulation; transition: transform 110ms ease, border-color 110ms ease, filter 110ms ease; }
+.tallymarket-tile:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.12); }
+.tallymarket-tile.is-selected { color: #231f15; border-color: #f1d477; background: linear-gradient(#ffe58d, #dcb75d); box-shadow: 0 3px 0 #71502b, 0 0 0 2px rgb(241 212 119 / 28%); transform: translateY(-2px); }
+.tallymarket-tile.is-used { color: #827f74; border-color: #39373b; background: #302f34; box-shadow: none; opacity: .38; text-decoration: line-through; }
+.tallymarket-tile:disabled { cursor: default; }
+.tallymarket-overlay { position: absolute; z-index: 2; inset: 37px 13px 65px; display: grid; place-items: center; padding: 14px; border-radius: 8px; background: rgb(12 12 24 / 78%); backdrop-filter: blur(2px); text-align: center; }
+.tallymarket-overlay > div { max-width: 285px; }
+.tallymarket-overlay span { display: block; margin-bottom: 7px; color: #d5fa58; font: 900 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .15em; }
+.tallymarket-overlay strong { color: #fff3d9; font-size: clamp(1rem, 3vw, 1.55rem); }
+.tallymarket-overlay p { margin: 7px 0 0; color: #c8bfd4; font-size: .58rem; line-height: 1.5; }
+.tallymarket-status { min-height: 36px; margin: 10px 1px 3px; padding: 9px 12px; border-left: 3px solid #e2c068; color: #e2d9ea; background: #211f29; font-size: .6rem; line-height: 1.45; text-align: center; }
+.tallymarket-actions { width: min(100%, 550px); margin: 3px auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 7px; }
+.tallymarket-action { min-height: 44px; padding: 7px 8px; display: flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #5b5671; border-radius: 5px; color: #f1eaf4; background: linear-gradient(#3b3652, #2a273f); box-shadow: 0 3px 0 #0c0b14; cursor: pointer; font: 900 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .035em; text-transform: uppercase; touch-action: manipulation; }
+.tallymarket-action:disabled { opacity: .48; cursor: default; }
+.tallymarket-action-primary { color: #292318; border-color: #c69b53; background: linear-gradient(#f2d387, #d2a852); box-shadow: 0 3px 0 #71502b; }
+.tallymarket-action-pause { color: #19241e; border-color: #8ac9ad; background: linear-gradient(#a9dfc4, #71bd9b); box-shadow: 0 3px 0 #34664d; }
+.tallymarket-action kbd { color: inherit; font: 800 .34rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; opacity: .72; }
+.tallymarket-footnote { margin: 8px 2px; color: #a99eb4; font-size: .64rem; line-height: 1.5; text-align: center; }
+.tallymarket-card-art { overflow: hidden; display: flex; justify-content: center; align-items: center; gap: 11px; background: linear-gradient(145deg, #56543d, #25202d); }
+.tallymarket-card-basket { width: 20%; height: 38%; display: flex; justify-content: center; align-items: flex-end; gap: 3px; padding: 0 3px 8px; border: 1px solid #c0b66c; border-top: 4px solid #d4c87f; border-radius: 2px 2px 9px 9px; background: linear-gradient(transparent 48%, rgb(176 162 80 / 22%) 49%); box-shadow: inset 0 -3px 0 rgb(0 0 0 / 16%); transform: perspective(70px) rotateX(-4deg); }
+.tallymarket-card-basket i { min-width: 18px; padding: 4px 3px; color: #292318; background: #d9c879; font: 900 .38rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-align: center; font-style: normal; box-shadow: 0 2px 3px rgb(0 0 0 / 30%); }
+.tallymarket-card-basket.basket-two { border-color: #69c2bd; border-top-color: #80d8cf; }
+.tallymarket-card-basket.basket-two i { background: #8addd2; }
+.tallymarket-card-basket.basket-three { border-color: #d29b71; border-top-color: #e0b18d; }
+.tallymarket-card-basket.basket-three i { background: #e5b792; }
+@media (max-width: 760px) {
+  .tallymarket-layout { grid-template-columns: 1fr; gap: 22px; }
+  .tallymarket-play-column { max-width: 660px; justify-self: center; }
+}
+@media (max-width: 480px) {
+  .tallymarket-console { padding: 9px; border-width: 2px; border-radius: 10px; }
+  .tallymarket-roundline { min-height: 46px; padding: 6px 8px; }
+  .tallymarket-baskets { gap: 5px; margin: 9px 0 13px; }
+  .tallymarket-basket { min-height: 126px; padding: 7px 6px; gap: 6px; }
+  .tallymarket-basket-heading { display: grid; gap: 2px; }
+  .tallymarket-basket-heading strong { font-size: .54rem; }
+  .tallymarket-basket-heading small { font-size: .29rem; }
+  .tallymarket-basket-total { gap: 3px; }
+  .tallymarket-basket-total b { font-size: 1.08rem; }
+  .tallymarket-basket-total strong { font-size: .67rem; }
+  .tallymarket-basket-items { gap: 3px; }
+  .tallymarket-basket-items i { min-width: 18px; height: 18px; padding: 2px 3px; font-size: .42rem; }
+  .tallymarket-basket-items em { font-size: .28rem; }
+  .tallymarket-rack { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 7px; }
+  .tallymarket-tile { min-height: 43px; }
+  .tallymarket-overlay { inset: 32px 9px 62px; }
+  .tallymarket-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tallymarket-action { min-height: 42px; padding-inline: 4px; font-size: .39rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tallymarket-basket, .tallymarket-meter i, .tallymarket-tile { transition: none; }
+}
 .deckhand-card-mini.mini-one { top: 24%; left: 22%; transform: rotate(-9deg); }
 .deckhand-card-mini.mini-two { top: 28%; left: 37%; transform: rotate(3deg); color: #a33147; }
 .deckhand-card-mini.mini-three { top: 22%; left: 52%; transform: rotate(8deg); }

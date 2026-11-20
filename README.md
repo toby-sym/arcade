@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, Deckhand, Latchkey, Fathom, Fourfold, and Pegline are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, Deckhand, Latchkey, Fathom, Fourfold, Pegline, and Tally Market are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -336,6 +336,12 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Clear three fixed pegboards. Select a peg, then choose a highlighted empty socket two spaces away in a straight line. The peg hops over its neighbor and removes it. Leave one peg on the center target to clear a board.
 - Tap or click the peg and destination. Keyboard users can use **Tab** or the **Arrow keys** to reach a socket, then press **Enter** or **Space**. **Escape** pauses and **R** restarts all three boards.
 - A blocked route can be retried; the route total keeps the moves already used. Your fewest moves to clear all three boards stays saved in this browser and does not sync.
+
+## Tally Market controls
+
+- Each day, use the shared rack of twelve number tiles to reach the exact totals in Produce, Bakery, and Pantry. Select a tile, then select a basket that can fit it. Leave unused tags on the rack; a basket closes as soon as its target is reached.
+- Tap or click the tile and basket buttons, or reach them with **Tab**, then press **Enter** or **Space**. **Z** or **Undo last tile** returns the last tag and counts as an action. **Escape** pauses or resumes; **R** or **Restart** clears the baskets and adds an action. A new deterministic puzzle arrives at midnight UTC.
+- Daily progress and your fewest-action clear stay saved in this browser and do not sync.
 
 ## Local records and preferences
 
