@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, and Skyhook are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, and Pocket Pinball are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the thirty-three games from the game floor.
+Vite prints the local URL after startup. Choose any of the thirty-four games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -209,6 +209,13 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Press **Space** to release the tether. Press it again inside a new anchor's catch ring to latch on; when an anchor is already close, it transfers the tether while keeping the capsule's momentum. Collect all three beacons in order, then enter the gold dock ring.
 - On touch screens, hold the four flight buttons below the field and use **Grapple / release** to manage the tether. **Escape** or **Pause flight** holds the course; **R** or **Restart course** resets it. Shard collisions and the field edge use one of three hull points; damage returns you to the last anchor briefly protected.
 - The same course is used for the UTC date. Your best flight score stays in this browser and does not sync.
+
+## Pocket Pinball controls
+
+- Select **Start game**, then **Launch ball** or press **Space**. Hold **Left / A** and **Right / D** for the matching flippers; the flippers move continuously for as long as each key or touch button is held.
+- Pop bumpers score 75–150 points. Light each of the three upper targets for 250 points; a lower slingshot kicks the ball back up the table.
+- Press **Shift / N** or select **Nudge table** for a timed save. Each nudge costs 100 points and has a short cooldown. Three balls are available per game; a drain sends the next ball to the shooter lane.
+- **Pause table** or **Escape** holds the game; **Restart table** or **R** starts over. Your highest score stays in this browser and does not sync.
 
 ## Letter Boxed controls
 
