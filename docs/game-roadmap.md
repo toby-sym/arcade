@@ -50,11 +50,12 @@ Arcade games use original names, presentation, rules, and puzzle content. Daily 
 | Rack Run | Aim, call a pocket, and clear three colors before the eight ball, with a local fewest-shots record |
 | Pin Parade | Bowl ten original frames with strike and spare bonuses, using lane, power, and spin controls; save a local high score |
 | Deckhand | Play a guaranteed-clear seven-column Klondike deal, build four suit foundations, undo moves, and save the fastest clear |
+| Latchkey | Cross three original platform rooms with single-step controls, pulsed jumps, a key, and an exit; save the fastest route |
 
 ## Next candidates
 
 These ideas are ordered to add mechanics Arcade does not already have. Recheck the shipped catalogue before starting each game.
 
-1. **Latchkey** — cross short side-view platform rooms with deliberate jump pulses, collect a key, and reach the exit; keep the controls tap-friendly and save a local fastest route time.
+1. **Switchback** — navigate compact one-screen cave routes by redirecting rolling light through mirrors while moving a courier between checkpoints; keep all inputs discrete and save a local route record.
 
 Ideas can change as the catalogue grows. Keep each game self-contained, accessible, responsive, and playable offline; save personal bests in this browser.
