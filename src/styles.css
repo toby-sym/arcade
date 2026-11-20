@@ -169,6 +169,134 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .storage-notice { grid-column: 1 / -1; margin: -10px 0 0; color: #99483d; font-size: .73rem; }
 .storage-notice:empty { display: none; }
 
+.local-play-section { margin: 0 0 52px; padding: 20px 24px; border: 1px solid #3e3456; border-radius: 8px; display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 18px; background: linear-gradient(105deg, #211a30, #171321); color: #f7f0de; box-shadow: 0 6px 0 #100d17; }
+.local-play-mark { width: 48px; height: 48px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; transform: rotate(-8deg); }
+.local-play-mark span { background: #4edcf0; }
+.local-play-mark span:nth-child(2n) { background: #ff6682; }
+.local-play-mark span:nth-child(4), .local-play-mark span:nth-child(6) { background: #caff40; }
+.local-play-copy .eyebrow { margin: 0 0 5px; color: #caff40; font-size: .58rem; }
+.local-play-copy h2 { margin: 0; color: #fff6df; font-size: 1.35rem; letter-spacing: -.045em; }
+.local-play-copy p:last-child { max-width: 650px; margin: 5px 0 0; color: #c9bed6; font-size: .78rem; line-height: 1.5; }
+.local-play-actions { display: flex; flex-wrap: wrap; justify-content: end; gap: 8px; }
+.local-play-button { min-height: 44px; border: 1px solid #ff90a2; border-radius: 4px; padding: 0 14px; display: inline-flex; gap: 15px; align-items: center; color: #17101c; background: #ff6682; box-shadow: 0 3px 0 #9d3852; font: 800 .68rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; cursor: pointer; }
+.local-play-button:hover { background: #ff8295; }
+.local-play-button { text-decoration: none; white-space: nowrap; }
+.local-play-button-secondary { border-color: #82e6f0; color: #11151a; background: #4edcf0; box-shadow: 0 3px 0 #287a8c; }
+.local-play-button-secondary:hover { background: #79e8f3; }
+
+.gba-view { padding: 25px 0 64px; }
+.gba-heading { margin: 20px 0 15px; display: flex; justify-content: space-between; align-items: end; gap: 24px; }
+.gba-heading .eyebrow { margin: 0 0 12px; }
+.gba-heading h1 { margin: 0; color: #f7f0de; font-size: clamp(2.1rem, 5vw, 4.5rem); line-height: .98; letter-spacing: -.065em; }
+.gba-lede { max-width: 700px; margin: 15px 0 0; color: #d0c4d9; line-height: 1.6; }
+.gba-open-button { position: relative; flex: 0 0 auto; min-height: 46px; padding: 0 16px; display: inline-flex; align-items: center; color: #18111b; background: #ff6682; box-shadow: 0 4px 0 #9d3852; font: 800 .69rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; cursor: pointer; }
+.gba-open-button:hover { background: #ff8295; }
+.gba-open-button input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.gba-legal-note { margin: 0 0 23px; padding: 11px 14px; border-left: 3px solid #caff40; color: #d4cadd; background: #211a2d; font-size: .75rem; line-height: 1.55; }
+.gba-emulator-credit { margin: -14px 0 17px; color: #9e93ad; font-size: .62rem; }
+.gba-emulator-credit a { margin-left: 4px; color: #65d9ef; }
+.gba-layout { display: grid; grid-template-columns: minmax(0, 1.42fr) minmax(260px, .8fr); align-items: start; gap: 20px; }
+.gba-cabinet, .gba-save-panel { min-width: 0; border: 1px solid #51436b; border-radius: 10px; color: #eee7f3; background: linear-gradient(145deg, #261d34, #191522); box-shadow: 0 6px 0 #0b0911, inset 0 0 0 4px rgb(255 255 255 / 2%); }
+.gba-cabinet { padding: clamp(15px, 2.4vw, 28px); }
+.gba-cabinet-heading { margin: 0 2px 14px; display: flex; justify-content: space-between; gap: 10px; color: #b9adc9; font: 800 .6rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .15em; }
+.gba-status { color: #827990; }
+.gba-status-running { color: #caff40; }
+.gba-status-paused { color: #ffd36a; }
+.gba-bezel { padding: clamp(10px, 2vw, 20px); border: 2px solid #5b4c76; border-radius: 9px; background: #100d16; box-shadow: inset 0 0 0 4px #211b2b, 0 5px 0 #0e0b13; }
+.gba-screen-stage { position: relative; width: 100%; aspect-ratio: 3 / 2; overflow: hidden; background: #08070c; outline: none; }
+.gba-screen-stage:focus-visible { outline: 3px solid #4edcf0; outline-offset: 3px; }
+.gba-screen { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.gba-screen-empty { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; color: #777085; font: 800 .72rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .14em; pointer-events: none; }
+.gba-screen-empty small { color: #a99eb7; font: 500 .7rem ui-sans-serif, system-ui, sans-serif; letter-spacing: 0; }
+.gba-controls { position: relative; min-height: clamp(125px, 19vw, 190px); margin: 12px auto 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.gba-dpad { position: relative; width: clamp(112px, 18vw, 150px); height: clamp(112px, 18vw, 150px); display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); }
+.gba-dpad button, .gba-face-buttons button, .gba-shoulder-buttons button, .gba-system-buttons button { border: 1px solid #897ca0; color: #f7f0de; background: #332945; box-shadow: inset 0 -4px 0 rgb(0 0 0 / 26%), 0 3px 0 #0c0910; cursor: pointer; touch-action: none; user-select: none; }
+.gba-dpad button { z-index: 1; border-radius: 4px; padding: 0; font-size: clamp(1.4rem, 4vw, 2rem); }
+.gba-dpad button:active, .gba-face-buttons button:active, .gba-shoulder-buttons button:active, .gba-system-buttons button:active { transform: translateY(2px); box-shadow: inset 0 2px 2px rgb(0 0 0 / 24%); }
+.gba-dpad-up { grid-area: 1 / 2; }
+.gba-dpad-left { grid-area: 2 / 1; }
+.gba-dpad-center { grid-area: 2 / 2; z-index: 2; border: 1px solid #514663; border-radius: 50%; background: #211b2b; pointer-events: none; }
+.gba-dpad-right { grid-area: 2 / 3; }
+.gba-dpad-down { grid-area: 3 / 2; }
+.gba-face-buttons { display: flex; gap: 10px; transform: rotate(-22deg); }
+.gba-face-buttons button { width: clamp(48px, 8vw, 67px); height: clamp(48px, 8vw, 67px); border-radius: 50%; font: 900 .85rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.gba-button-a { color: #fff0ed !important; background: #c14e70 !important; }
+.gba-button-b { color: #fff4cf !important; background: #c59334 !important; }
+.gba-shoulder-buttons { position: absolute; inset: 0 0 auto; display: flex; justify-content: space-between; }
+.gba-shoulder-buttons button { min-width: 56px; min-height: 26px; border-radius: 5px 5px 2px 2px; font: 800 .59rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.gba-system-buttons { position: absolute; left: 50%; bottom: 0; display: flex; gap: 10px; transform: translateX(-50%); }
+.gba-system-buttons button { min-width: 54px; min-height: 22px; border-radius: 11px; color: #bfb2cf !important; background: #55486b !important; font: 800 .47rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .05em; }
+.gba-key-hint { margin: 9px 0 0; color: #a99eb7; text-align: center; font: 600 .57rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.6; }
+.gba-actions { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px; }
+.gba-actions .button { min-height: 41px; font-size: .7rem; }
+.gba-message { min-height: 1.3em; margin: 12px 0 0; color: #caff40; font-size: .76rem; line-height: 1.5; }
+.gba-save-panel { padding: 20px; }
+.gba-panel-heading { display: flex; justify-content: space-between; align-items: end; }
+.gba-panel-heading .eyebrow { margin: 0 0 6px; color: #b8a9cc; font-size: .55rem; }
+.gba-panel-heading h2 { margin: 0; color: #fff6df; font-size: 1.48rem; letter-spacing: -.05em; }
+.gba-panel-heading > span { color: #4edcf0; font: 800 .75rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.gba-rom-current { margin: 12px 0 0; overflow-wrap: anywhere; color: #caff40; font-size: .75rem; font-weight: 700; }
+.gba-save-tools { margin: 12px 0; }
+.gba-save-tools .button { min-height: 38px; font-size: .68rem; }
+.gba-empty-saves { margin: 13px 0; color: #bdb2c9; font-size: .74rem; line-height: 1.55; }
+.gba-save-list { margin: 0; padding: 0; list-style: none; }
+.gba-save-item { padding: 11px 0; border-top: 1px solid #443a52; display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 10px; }
+.gba-save-thumb { width: 60px; aspect-ratio: 3 / 2; border: 1px solid #5c4f6d; object-fit: cover; image-rendering: pixelated; background: #09080d; }
+.gba-save-copy { min-width: 0; }
+.gba-save-copy strong, .gba-save-copy time { display: block; overflow-wrap: anywhere; }
+.gba-save-copy strong { color: #f8f1dd; font-size: .7rem; }
+.gba-save-copy time { margin-top: 3px; color: #aa9fb5; font-size: .61rem; }
+.gba-save-actions { margin-top: 7px; display: flex; flex-wrap: wrap; gap: 5px 9px; }
+.gba-save-actions button, .gba-save-confirm button, .gba-rename-form button { border: 0; padding: 2px 0; color: #65d9ef; background: transparent; font-size: .61rem; font-weight: 800; cursor: pointer; }
+.gba-save-actions button:last-child, .gba-save-confirm button:first-of-type { color: #ff8da0; }
+.gba-save-actions button:disabled, .gba-save-confirm button:disabled, .gba-rename-form button:disabled { opacity: .5; cursor: wait; }
+.gba-save-confirm { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 5px 10px; align-items: center; color: #e9dff1; font-size: .63rem; }
+.gba-rename-form { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.gba-rename-form input { width: min(160px, 100%); min-height: 28px; border: 1px solid #5b4c76; padding: 4px 6px; color: #fff; background: #15111d; font-size: .69rem; }
+.gba-storage-note { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid #443a52; color: #aa9fb5; font-size: .66rem; line-height: 1.55; }
+.gba-recent-list { margin-top: 20px; padding-top: 15px; border-top: 1px solid #443a52; }
+.gba-recent-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.gba-recent-heading h3 { margin: 0 0 8px; color: #e6dff0; font-size: .82rem; }
+.gba-recent-heading button { margin-bottom: 7px; border: 1px solid #51455f; border-radius: 3px; padding: 5px 7px; color: #bdafcc; background: #201a2a; font: 700 .52rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; cursor: pointer; }
+.gba-recent-heading button:hover { border-color: #ff8295; color: #ff9cab; }
+.gba-recent-list > p { margin: 0; color: #aa9fb5; font-size: .68rem; }
+.gba-recent-list ul { margin: 0; padding: 0; list-style: none; }
+.gba-recent-list li { padding: 7px 0; border-bottom: 1px solid rgb(255 255 255 / 5%); display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.gba-recent-list li strong, .gba-recent-list li small { display: block; overflow-wrap: anywhere; }
+.gba-recent-list li strong { color: #e5ddeb; font-size: .68rem; }
+.gba-recent-list li small, .gba-recent-list > small { color: #988da5; font-size: .58rem; }
+.gba-recent-list li small { margin-top: 3px; }
+.gba-local-tag, .gba-current-tag { flex: 0 0 auto; color: #8e829b; font: 700 .48rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.gba-current-tag { color: #caff40; }
+
+@media (max-width: 760px) {
+  .local-play-section { grid-template-columns: 42px minmax(0, 1fr); gap: 13px; padding: 17px; }
+  .local-play-mark { width: 40px; height: 40px; }
+  .local-play-actions { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .local-play-button { grid-column: 1 / -1; justify-content: center; }
+  .gba-heading { align-items: start; flex-direction: column; }
+  .gba-layout { grid-template-columns: 1fr; }
+  .gba-controls { min-height: 156px; }
+  .gba-dpad { width: 124px; height: 124px; }
+  .gba-face-buttons button { width: 54px; height: 54px; }
+  .gba-save-panel { padding: 17px; }
+}
+
+@media (max-width: 380px) {
+  .local-play-actions { grid-template-columns: 1fr; }
+  .gba-cabinet { padding: 11px; }
+  .gba-controls { min-height: 136px; gap: 5px; }
+  .gba-dpad { width: 105px; height: 105px; }
+  .gba-face-buttons { gap: 6px; }
+  .gba-face-buttons button { width: 46px; height: 46px; }
+  .gba-actions .button { flex: 1 1 calc(50% - 8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .local-play-button, .gba-open-button, .gba-dpad button, .gba-face-buttons button, .gba-shoulder-buttons button, .gba-system-buttons button { transition: none; }
+  .gba-dpad button:active, .gba-face-buttons button:active, .gba-shoulder-buttons button:active, .gba-system-buttons button:active { transform: none; }
+}
+
 .snake-view { padding: 28px 0 58px; }
 .back-link { border: 0; padding: 8px 0; display: inline-flex; gap: 8px; align-items: center; color: #73766d; background: transparent; font-size: .8rem; cursor: pointer; }
 .back-link:hover { color: var(--ink); }

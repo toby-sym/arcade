@@ -138,6 +138,15 @@ describe('Arcade navigation and game controls', () => {
     expect(screen.getByRole('group', { name: 'Snake playfield' })).toBeInTheDocument()
   })
 
+  it('offers local GBA and Nintendo DS cabinets without adding either to the original game count', () => {
+    render(<App />)
+
+    const localPlay = screen.getByRole('region', { name: 'Bring your own game' })
+    expect(within(localPlay).getByRole('button', { name: /open gba cabinet/i })).toBeInTheDocument()
+    expect(within(localPlay).getByRole('link', { name: /open nintendo ds cabinet/i })).toHaveAttribute('href', '/nds/')
+    expect(screen.getByText('53 PLAYABLE')).toBeInTheDocument()
+  })
+
   it('pins games to a local shelf, launches them, and enforces the eight-game limit', async () => {
     render(<App />)
     const shelf = screen.getByRole('region', { name: 'Your favourites' })
