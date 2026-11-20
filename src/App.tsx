@@ -64,6 +64,7 @@ const MagnetronGame = lazy(() => import('./games/MagnetronGame').then(({ Magnetr
 const KeystoneGame = lazy(() => import('./games/KeystoneGame').then(({ KeystoneGame }) => ({ default: KeystoneGame })))
 const BeamworksGame = lazy(() => import('./games/BeamworksGame').then(({ BeamworksGame }) => ({ default: BeamworksGame })))
 const RackRunGame = lazy(() => import('./games/RackRunGame').then(({ RackRunGame }) => ({ default: RackRunGame })))
+const PinParadeGame = lazy(() => import('./games/PinParadeGame').then(({ PinParadeGame }) => ({ default: PinParadeGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
@@ -118,6 +119,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'keystone', title: 'Keystone', categories: ['arcade'], terms: 'sokoban blocks crates push switches sockets doors tile logic puzzle' },
   { id: 'beamworks', title: 'Beamworks', categories: ['arcade'], terms: 'laser light mirrors beam reflectors rotate optics puzzle routing' },
   { id: 'rackrun', title: 'Rack Run', categories: ['arcade'], terms: 'pool billiards cue ball aim pocket call shot table angles collision' },
+  { id: 'pinparade', title: 'Pin Parade', categories: ['arcade'], terms: 'bowling ten-pin strikes spares lane hook spin frames score' },
 ] satisfies Array<{ id: string; title: string; categories: GameFloorCategory[]; terms: string }>
 
 type BeforeInstallPromptEvent = Event & {
@@ -141,7 +143,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -549,6 +551,7 @@ function App() {
   const openKeystone = () => setScreen('keystone')
   const openBeamworks = () => setScreen('beamworks')
   const openRackRun = () => setScreen('rackrun')
+  const openPinParade = () => setScreen('pinparade')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -637,6 +640,7 @@ function App() {
             onPlayKeystone={openKeystone}
             onPlayBeamworks={openBeamworks}
             onPlayRackRun={openRackRun}
+            onPlayPinParade={openPinParade}
             reduceMotion={arcadeData.preferences.reduceMotion}
             onReduceMotionChange={setReduceMotion}
             soundEffects={arcadeData.preferences.soundEffects}
@@ -935,6 +939,13 @@ function App() {
             onRecordShots={(shots) => recordBest('rackRun', shots)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'pinparade' ? (
+          <PinParadeGame
+            onBack={() => setScreen('home')}
+            bestScore={arcadeData.bests.pinParade}
+            onRecordScore={(score) => recordBest('pinParade', score)}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1095,6 +1106,7 @@ function Home({
   onPlayKeystone,
   onPlayBeamworks,
   onPlayRackRun,
+  onPlayPinParade,
   reduceMotion,
   onReduceMotionChange,
   soundEffects,
@@ -1152,6 +1164,7 @@ function Home({
   onPlayKeystone: () => void
   onPlayBeamworks: () => void
   onPlayRackRun: () => void
+  onPlayPinParade: () => void
   reduceMotion: boolean
   onReduceMotionChange: (reduceMotion: boolean) => void
   soundEffects: boolean
@@ -1822,6 +1835,22 @@ function Home({
               <h3>Rack Run</h3>
               <p>Call your pocket, bank the colors, and sink the eight ball before the rack runs out.</p>
               <div className="card-bottom"><span className="controls-label">DRAG · ARROWS · 1–6</span><button className="play-card-button" type="button" onClick={onPlayRackRun}>Play Rack Run <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-pin-parade" hidden={!visibleGameIds.has('pinparade')}>
+            <div className="card-art pin-parade-card-art" aria-hidden="true">
+              <span className="pin-parade-card-lane" />
+              <span className="pin-parade-card-pin pin-one">1</span>
+              <span className="pin-parade-card-pin pin-two">2</span>
+              <span className="pin-parade-card-pin pin-three">3</span>
+              <span className="pin-parade-card-ball" />
+              <span className="card-art-index">43</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">43</span><span className="game-category">ARCADE SPORT</span></div>
+              <h3>Pin Parade</h3>
+              <p>Set your line, power, and spin. Bowl ten frames for the high score.</p>
+              <div className="card-bottom"><span className="controls-label">DRAG · ARROWS · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayPinParade}>Play Pin Parade <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
