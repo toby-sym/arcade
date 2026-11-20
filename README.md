@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, and Rack Run are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, and Pin Parade are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the forty-two games from the game floor.
+Vite prints the local URL after startup. Choose any of the forty-three games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -310,6 +310,13 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Call a pocket with **1–6** or tap its button. Pull back from the cue ball and release to set aim and power. You can also adjust aim with **Left / Right** or **A / D**, change power with **Up / Down** or **W / S**, then shoot with **Space** or **Enter**.
 - **Escape** pauses or resumes. **R** or **Restart** resets the rack. A cue scratch returns the cue ball to the kitchen and counts as a foul.
 - Your fewest shots for a clean rack stay saved in this browser and do not sync.
+
+## Pin Parade controls
+
+- Bowl all ten frames. A strike clears the rack on one ball; a spare clears it across two. Strike and spare bonuses are scored using the standard rules, including the tenth-frame bonus balls.
+- Pull back from the ball and release to set line and power. You can also aim with **Left / Right** or **A / D**, set power with **Up / Down** or **W / S**, adjust spin with **Q / E**, then bowl with **Space** or **Enter**.
+- **Escape** pauses or resumes. **R** or **Restart** resets the game. Use the sliders and buttons for touch controls.
+- Your highest ten-frame score stays saved in this browser and does not sync.
 
 ## Local records and preferences
 
