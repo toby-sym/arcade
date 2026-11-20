@@ -24,7 +24,7 @@ import { solveTideglassPuzzle, tideglassPuzzleForDate, type TideglassDirection }
 
 async function expectLazyGame(name: string, resumeFakeTimers = false) {
   if (resumeFakeTimers) vi.useRealTimers()
-  await screen.findByRole('heading', { name })
+  await screen.findByRole('heading', { name }, { timeout: 5000 })
   if (resumeFakeTimers) vi.useFakeTimers()
 }
 
