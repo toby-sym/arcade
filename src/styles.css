@@ -2900,6 +2900,92 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
   .pinball-console *, .pinball-flipper-button, .pinball-action-button { animation: none !important; transition: none !important; }
 }
 
+.neon-rally-layout { grid-template-columns: minmax(0, 1fr) minmax(300px, .92fr); align-items: start; gap: clamp(28px, 5vw, 66px); }
+.neon-rally-copy h1 { font-size: clamp(2.3rem, 5vw, 4.2rem); }
+.neon-rally-score { max-width: 430px; margin-top: 15px; grid-template-columns: minmax(0, 1fr); }
+.neon-rally-time { font-size: clamp(1.7rem, 5vw, 2.25rem); letter-spacing: -.06em; font-variant-numeric: tabular-nums; }
+.neon-rally-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; padding: 14px 0; border-top: 1px solid rgb(140 125 151 / 24%); border-bottom: 1px solid rgb(140 125 151 / 24%); }
+.neon-rally-stats > span { display: grid; gap: 4px; min-width: 0; }
+.neon-rally-stats small { color: #9f97a7; font: 800 .5rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .09em; }
+.neon-rally-stats strong { color: #f4ead6; font: 800 .86rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+.neon-rally-stats strong i { color: #b6acbd; font: 700 .55rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.neon-rally-lap-strip { max-width: 430px; margin-top: 12px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.neon-rally-lap { min-width: 0; padding: 8px 5px; display: grid; gap: 5px; border: 1px solid #433d4e; border-radius: 4px; background: #181720; text-align: center; }
+.neon-rally-lap span { color: #8f8998; font: 800 .43rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; }
+.neon-rally-lap strong { color: #bdb6c2; font: 750 .62rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.neon-rally-lap.is-current { border-color: #b9f45a; box-shadow: inset 0 0 15px rgb(185 244 90 / 7%); }
+.neon-rally-lap.is-current span, .neon-rally-lap.is-current strong { color: #b9f45a; }
+.neon-rally-lap.is-complete { border-color: #3c8f8b; }
+.neon-rally-lap.is-complete span, .neon-rally-lap.is-complete strong { color: #75dfe0; }
+.neon-rally-local-note, .neon-rally-control-note { margin: 9px 0 0; color: #afa5ba; font-size: .68rem; line-height: 1.5; }
+.neon-rally-console { padding: 12px; border: 3px solid #413653; border-radius: 15px; background: linear-gradient(145deg, #252133, #13131d 72%); box-shadow: 0 5px 0 #08080e, 0 10px 25px rgb(0 0 0 / 40%), inset 0 0 0 1px rgb(195 156 255 / 11%); }
+.neon-rally-console .frame-topline { min-height: 23px; padding: 0 3px 9px; }
+.neon-rally-field { position: relative; overflow: hidden; width: 100%; aspect-ratio: 640 / 780; border: 1px solid #54887b; border-radius: 7px; outline: none; background: #12221f; box-shadow: inset 0 0 25px rgb(0 0 0 / 32%); }
+.neon-rally-field:focus-visible { outline: 3px solid #55e5f4; outline-offset: 3px; }
+.neon-rally-map { display: block; width: 100%; height: 100%; }
+.neon-rally-infield-title { fill: #6ca496; font: 800 14px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .25em; }
+.neon-rally-infield-subtitle { fill: #628b80; font: 700 8px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .19em; }
+.neon-rally-gate { color: #6c7779; }
+.neon-rally-gate line { stroke: currentColor; stroke-width: 3; stroke-dasharray: 4 4; opacity: .55; }
+.neon-rally-gate text { fill: currentColor; font: 800 8px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.neon-rally-gate.is-passed { color: #66c9c6; }
+.neon-rally-gate.is-passed line { stroke-dasharray: none; opacity: .8; }
+.neon-rally-gate.is-active { color: #d4ff69; filter: url(#rally-glow); }
+.neon-rally-gate.is-active line { stroke-width: 5; stroke-dasharray: none; opacity: 1; }
+.neon-rally-gate.is-active text { fill: #f3ffaf; }
+.neon-rally-gate.is-active circle { fill: #d4ff69; }
+.neon-rally-car { filter: drop-shadow(0 0 6px rgb(255 83 128 / 65%)); }
+.neon-rally-car-body { fill: #fb537c; stroke: #ffe3c4; stroke-width: 2; }
+.neon-rally-car-window { fill: #29434a; stroke: #e6c5b3; stroke-width: 1.3; }
+.neon-rally-car-nose { fill: #d9ff6a; }
+.neon-rally-taillight { fill: #ffd579; }
+.neon-rally-car.is-offroad .neon-rally-car-body { fill: #f4a248; }
+.neon-rally-overlay { position: absolute; inset: 35% 8% auto; min-height: 112px; padding: 17px 14px; display: grid; place-content: center; gap: 7px; border: 1px solid rgb(141 185 160 / 64%); border-radius: 7px; background: rgb(14 22 24 / 91%); box-shadow: 0 8px 30px rgb(0 0 0 / 38%); text-align: center; pointer-events: none; }
+.neon-rally-overlay-kicker { color: #d4ff69; font: 800 .52rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .16em; }
+.neon-rally-overlay strong { color: #fff5df; font-size: clamp(.88rem, 2.8vw, 1.18rem); line-height: 1.2; }
+.neon-rally-overlay > span:last-child { color: #beb6c7; font-size: .68rem; line-height: 1.45; }
+.neon-rally-overlay.phase-won { border-color: #d4ff69; }
+.neon-rally-console-footer { padding: 9px 3px 1px; display: flex; justify-content: space-between; gap: 8px; color: #a59aaa; font: 800 .46rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .07em; }
+.neon-rally-status { min-height: 30px; margin: 8px 0; color: #b8e9ca; font-size: .68rem; line-height: 1.45; text-align: center; }
+.neon-rally-touch-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.neon-rally-control { min-width: 0; min-height: 54px; padding: 7px 8px; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid #42635b; border-radius: 6px; color: #f1ebdd; background: linear-gradient(#24352f, #192520); box-shadow: 0 3px 0 #0b1111; cursor: pointer; touch-action: none; user-select: none; }
+.neon-rally-control > span { color: #d4ff69; font-size: 1.14rem; line-height: 1; }
+.neon-rally-control small { color: #d6d0c4; font: 800 .48rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .06em; }
+.neon-rally-control.accelerate { border-color: #647e39; background: linear-gradient(#3c4c2c, #293122); }
+.neon-rally-control.brake { border-color: #63505d; background: linear-gradient(#45313c, #2b222b); }
+.neon-rally-control.brake > span { color: #ff8da2; }
+.neon-rally-control.is-held { border-color: #d4ff69; background: linear-gradient(#475138, #2b3426); box-shadow: 0 0 14px rgb(212 255 105 / 20%), 0 3px 0 #0b1111; }
+.neon-rally-control.brake.is-held { border-color: #ff8da2; box-shadow: 0 0 14px rgb(255 141 162 / 20%), 0 3px 0 #0b1111; }
+.neon-rally-control:disabled { opacity: .45; cursor: default; }
+.neon-rally-control:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #0b1111; }
+.neon-rally-control:focus-visible { outline: 3px solid #55e5f4; outline-offset: 2px; }
+.neon-rally-card-art { background: radial-gradient(ellipse at 50% 50%, #253a34, #11161e 80%); }
+.neon-rally-card-track { position: absolute; inset: 15% 29%; border: 8px solid #30343c; border-radius: 50%; box-shadow: 0 0 0 2px #61ccc2, inset 0 0 0 2px #cf5d79; }
+.neon-rally-card-car { position: absolute; top: 48%; left: 32%; width: 14px; height: 22px; border: 2px solid #ffe4cb; border-radius: 4px; background: #f4527c; transform: rotate(-38deg); box-shadow: 0 0 12px #ff5c80; }
+.neon-rally-card-gate { position: absolute; top: 19%; left: 50%; height: 20px; border-left: 3px dashed #d4ff69; box-shadow: 0 0 8px #d4ff69; }
+.neon-rally-view[data-reduce-motion="true"] .neon-rally-gate.is-active { filter: none; }
+
+@media (max-width: 760px) {
+  .neon-rally-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .neon-rally-copy h1 { font-size: clamp(1.9rem, 8vw, 2.65rem); }
+  .neon-rally-play-column { width: 100%; max-width: 580px; justify-self: center; }
+  .neon-rally-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .neon-rally-console .frame-topline { min-height: 20px; padding-bottom: 8px; }
+  .neon-rally-console-footer { font-size: .4rem; }
+  .neon-rally-control { min-height: 54px; }
+}
+@media (max-width: 380px) {
+  .neon-rally-console .frame-topline { font-size: .44rem; }
+  .neon-rally-console-footer { font-size: .34rem; letter-spacing: .035em; }
+  .neon-rally-stats { gap: 9px 8px; }
+  .neon-rally-stats strong { font-size: .78rem; }
+  .neon-rally-control { min-height: 51px; gap: 5px; padding-inline: 4px; }
+  .neon-rally-control small { font-size: .42rem; letter-spacing: .025em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .neon-rally-view *, .neon-rally-control { animation: none !important; transition: none !important; }
+}
+
 @media (max-width: 760px) {
   .gravity-loom-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   .gravity-loom-copy h1 { font-size: clamp(1.9rem, 8vw, 2.55rem); }
