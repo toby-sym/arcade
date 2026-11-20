@@ -58,6 +58,7 @@ export interface ArcadeBests {
   pocketPinball: number | null
   neonRally: number | null
   moonshot: number | null
+  beatBeacon: number | null
 }
 
 export interface ArcadeData {
@@ -90,7 +91,7 @@ export interface ArcadeData {
 }
 
 export function withImprovedBest(data: ArcadeData, game: keyof ArcadeBests, candidate: number): ArcadeData | null {
-  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && game !== 'letterBoxed' && game !== 'dominoLogic' && game !== 'glyphMatch' && game !== 'vertex' && game !== 'tiles' && game !== 'pips' && game !== 'crossword' && game !== 'minesweeper' && game !== 'cipherCircuit' && game !== 'colorConduit' && game !== 'gravityLoom' && game !== 'tideglass' && game !== 'neonRally' && game !== 'moonshot' && candidate === 0)) return null
+  if (!Number.isSafeInteger(candidate) || candidate < 0 || (game !== 'reaction' && game !== 'wordPuzzle' && game !== 'connections' && game !== 'strands' && game !== 'sudoku' && game !== 'miniCrossword' && game !== 'letterBoxed' && game !== 'dominoLogic' && game !== 'glyphMatch' && game !== 'vertex' && game !== 'tiles' && game !== 'pips' && game !== 'crossword' && game !== 'minesweeper' && game !== 'cipherCircuit' && game !== 'colorConduit' && game !== 'gravityLoom' && game !== 'tideglass' && game !== 'neonRally' && game !== 'moonshot' && game !== 'beatBeacon' && candidate === 0)) return null
   const previous = data.bests[game]
   const lowerIsBetter = game === 'reaction' || game === 'wordPuzzle' || game === 'connections' || game === 'strands' || game === 'sudoku' || game === 'miniCrossword' || game === 'letterBoxed' || game === 'dominoLogic' || game === 'glyphMatch' || game === 'vertex' || game === 'tiles' || game === 'pips' || game === 'crossword' || game === 'minesweeper' || game === 'cipherCircuit' || game === 'colorConduit' || game === 'gravityLoom' || game === 'tideglass' || game === 'neonRally' || game === 'moonshot'
   const improved = previous === null || (lowerIsBetter ? candidate < previous : candidate > previous)
@@ -274,7 +275,7 @@ type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 export function emptyArcadeData(): ArcadeData {
   return {
     version: 1,
-    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null },
+    bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null },
     dailyPatternCompletedDate: null,
     dailyWordGame: null,
     dailyConnectionsGame: null,
@@ -299,7 +300,7 @@ export function emptyArcadeData(): ArcadeData {
 }
 
 export function clearArcadeBests(data: ArcadeData): ArcadeData {
-  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null } }
+  return { ...data, bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null } }
 }
 
 export function readArcadeData(storage?: StorageLike): ArcadeData {
@@ -371,6 +372,7 @@ export function readArcadeData(storage?: StorageLike): ArcadeData {
         pocketPinball: validRecord(bests.pocketPinball),
         neonRally: validRecord(bests.neonRally),
         moonshot: validRecord(bests.moonshot),
+        beatBeacon: validRecord(bests.beatBeacon),
       },
       preferences: { reduceMotion: preferences.reduceMotion === true, soundEffects: preferences.soundEffects === true, pongDifficulty: validPongDifficulty(preferences.pongDifficulty) },
     }
@@ -401,7 +403,7 @@ export function parseArcadeDataBackup(contents: string): ArcadeData | null {
 
     const empty = emptyArcadeData()
     if (!Object.keys(empty).filter((key) => key !== 'dailyMinesweeperGame' && key !== 'dailyCipherCircuitGame' && key !== 'dailyColorConduitGame' && key !== 'dailyGravityLoomGame' && key !== 'dailyTideglassGame').every((key) => key in parsed)) return null
-    if (!Object.keys(empty.bests).filter((key) => key !== 'minesweeper' && key !== 'mazeDash' && key !== 'skylineSkip' && key !== 'cipherCircuit' && key !== 'orbitCourier' && key !== 'colorConduit' && key !== 'switchyard' && key !== 'prismDash' && key !== 'gravityLoom' && key !== 'tideglass' && key !== 'skyhook' && key !== 'pocketPinball' && key !== 'neonRally' && key !== 'moonshot').every((key) => {
+    if (!Object.keys(empty.bests).filter((key) => key !== 'minesweeper' && key !== 'mazeDash' && key !== 'skylineSkip' && key !== 'cipherCircuit' && key !== 'orbitCourier' && key !== 'colorConduit' && key !== 'switchyard' && key !== 'prismDash' && key !== 'gravityLoom' && key !== 'tideglass' && key !== 'skyhook' && key !== 'pocketPinball' && key !== 'neonRally' && key !== 'moonshot' && key !== 'beatBeacon').every((key) => {
       const record = bests[key]
       return record === null || (typeof record === 'number' && Number.isSafeInteger(record) && record >= 0)
     })) return null
