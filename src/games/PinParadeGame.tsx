@@ -83,6 +83,11 @@ export function PinParadeGame({
     playSound('hit')
   }
 
+  function nextRoll() {
+    commit(nextPinParadeRoll(stateRef.current))
+    focusLane()
+  }
+
   function togglePause() {
     const current = stateRef.current
     commit(current.phase === 'paused' ? resumePinParade(current) : pausePinParade(current))
@@ -213,7 +218,7 @@ export function PinParadeGame({
 
         <div className="play-column pin-parade-play-column">
           <div className={`pin-parade-console phase-${state.phase}`}>
-            <div className="frame-topline"><span>LANE 43</span><span className="frame-light"><i /> {phaseLabel}</span></div>
+            <div className="frame-topline"><span>TEN-PIN BOWLING</span><span className="frame-light"><i /> {phaseLabel}</span></div>
             <div className="pin-parade-roundline">
               <div><span>FRAME {String(Math.min(state.frameIndex + 1, 10)).padStart(2, '0')} / 10</span><strong>{frameRolls.length ? rollsLabel(frameRolls) : 'SET YOUR APPROACH'}</strong></div>
               <b>{String(score.total).padStart(3, '0')}<small> PTS</small></b>
@@ -272,7 +277,7 @@ export function PinParadeGame({
 
             <div className="pin-parade-actions">
               {state.phase === 'ready' ? <button className="pin-parade-action pin-parade-action-primary" type="button" onClick={start}>Start game <span aria-hidden="true">▶</span></button>
-                : state.phase === 'result' ? <button className="pin-parade-action pin-parade-action-primary" type="button" onClick={() => commit(nextPinParadeRoll(stateRef.current))}>{pinParadeNextRollLabel(state)} <span aria-hidden="true">→</span></button>
+                : state.phase === 'result' ? <button className="pin-parade-action pin-parade-action-primary" type="button" onClick={nextRoll}>{pinParadeNextRollLabel(state)} <span aria-hidden="true">→</span></button>
                   : state.phase === 'complete' ? <button className="pin-parade-action pin-parade-action-primary" type="button" onClick={start}>Play again <span aria-hidden="true">↻</span></button>
                     : <button className="pin-parade-action pin-parade-action-pause" type="button" onClick={togglePause}>{state.phase === 'paused' ? 'Resume lane' : 'Pause lane'} <kbd>ESC</kbd></button>}
               <button className="pin-parade-action pin-parade-action-bowl" type="button" onClick={bowl} disabled={state.phase !== 'aiming'}>Bowl <kbd>SPACE</kbd></button>
