@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, and Pin Parade are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, and Deckhand are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -317,6 +317,12 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Pull back from the ball and release to set line and power. You can also aim with **Left / Right** or **A / D**, set power with **Up / Down** or **W / S**, adjust spin with **Q / E**, then bowl with **Space** or **Enter**.
 - **Escape** pauses or resumes. **R** or **Restart** resets the game. Use the sliders and buttons for touch controls.
 - Your highest ten-frame score stays saved in this browser and does not sync.
+
+## Deckhand controls
+
+- Select a face-up card or run, then select its destination column or suit foundation. Build tableaus downward in alternating colors; empty columns take kings. Draw one card from the stock, then recycle the waste when it runs out. Deals are generated locally with a clear path through all 52 cards.
+- Use **Tab**, **Enter**, and **Space** to reach and activate the card controls. Press **Z** to undo, **Escape** to pause, and **R** to restart the same deal.
+- Your fastest clear stays in this browser and does not sync.
 
 ## Local records and preferences
 

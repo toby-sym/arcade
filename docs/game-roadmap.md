@@ -49,11 +49,12 @@ Arcade games use original names, presentation, rules, and puzzle content. Daily 
 | Beamworks | Rotate mirrors to route a beam into four receivers, with a local fewest-turns record |
 | Rack Run | Aim, call a pocket, and clear three colors before the eight ball, with a local fewest-shots record |
 | Pin Parade | Bowl ten original frames with strike and spare bonuses, using lane, power, and spin controls; save a local high score |
+| Deckhand | Play a guaranteed-clear seven-column Klondike deal, build four suit foundations, undo moves, and save the fastest clear |
 
 ## Next candidates
 
 These ideas are ordered to add mechanics Arcade does not already have. Recheck the shipped catalogue before starting each game.
 
-1. **Deckhand** — play an original single-player card table with an undoable seven-column deal, keyboard and touch moves, and a local fastest-clear record. Keep the rules familiar and the deal generator solvable.
+1. **Latchkey** — cross short side-view platform rooms with deliberate jump pulses, collect a key, and reach the exit; keep the controls tap-friendly and save a local fastest route time.
 
 Ideas can change as the catalogue grows. Keep each game self-contained, accessible, responsive, and playable offline; save personal bests in this browser.
