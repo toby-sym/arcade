@@ -3357,3 +3357,90 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
 @media (prefers-reduced-motion: reduce) {
   .tuning-fork-view *, .tuning-fork-choice, .tuning-fork-start, .tuning-fork-pause, .tuning-fork-restart, .tuning-fork-replay { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+.magnetron-layout { grid-template-columns: minmax(260px, .82fr) minmax(0, 1.18fr); align-items: start; gap: clamp(24px, 5vw, 64px); }
+.magnetron-copy h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+.magnetron-score { gap: 14px; }
+.magnetron-score .score-value { font-size: clamp(1.45rem, 3vw, 2rem); font-variant-numeric: tabular-nums; }
+.magnetron-score .score-unit { max-width: 230px; }
+.magnetron-score .local-best-readout strong { font-size: clamp(.88rem, 1.6vw, 1.12rem); font-variant-numeric: tabular-nums; }
+.magnetron-local-note { margin: 9px 0 0; color: #a99eb4; font-size: .66rem; line-height: 1.55; }
+.magnetron-play-column { width: 100%; max-width: 760px; justify-self: end; }
+.magnetron-console { padding: 13px; border: 3px solid #463958; border-radius: 15px; background: linear-gradient(145deg, #272134, #13131d 72%); box-shadow: 0 5px 0 #08080e, 0 10px 25px rgb(0 0 0 / 40%), inset 0 0 0 1px rgb(195 156 255 / 11%); }
+.magnetron-console .frame-topline { min-height: 23px; padding: 0 3px 9px; }
+.magnetron-roundline { min-height: 54px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #4c425b; border-radius: 6px; background: #1b1823; }
+.magnetron-roundline > div { display: grid; gap: 4px; }
+.magnetron-roundline span { color: #a9a0b5; font: 800 .45rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; }
+.magnetron-roundline strong { color: #fff1d8; font-size: .94rem; line-height: 1.1; }
+.magnetron-roundline > b { color: #d8ff70; font: 900 .91rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+.magnetron-board-wrap { margin-top: 9px; overflow: hidden; border: 1px solid #494253; border-radius: 7px; background: #171b28; }
+.magnetron-board-wrap:focus-visible { outline: 3px solid #72e0eb; outline-offset: 2px; }
+.magnetron-board { display: block; width: 100%; height: auto; }
+.magnetron-wall { fill: #463e50; stroke: #857294; stroke-width: 2; }
+.magnetron-exit-halo { fill: rgb(216 255 112 / 9%); stroke: #d8ff70; stroke-width: 2; stroke-dasharray: 5 5; }
+.magnetron-exit { fill: rgb(216 255 112 / 15%); stroke: #e6ff93; stroke-width: 3; }
+.magnetron-exit-cross { stroke: #fff8de; stroke-width: 3; stroke-linecap: round; }
+.magnetron-pole .magnetron-field-ring { fill: none; stroke-width: 2; stroke-dasharray: 3 4; opacity: .65; }
+.magnetron-pole.is-pull .magnetron-field-ring { stroke: #d8ff70; }
+.magnetron-pole.is-push .magnetron-field-ring { stroke: #72e0eb; }
+.magnetron-pole .magnetron-pole-core { stroke-width: 3; }
+.magnetron-pole.is-pull .magnetron-pole-core { fill: #b9df55; stroke: #efffa7; }
+.magnetron-pole.is-push .magnetron-pole-core { fill: #368e9f; stroke: #94f0f4; }
+.magnetron-pole > path { stroke: #fff8de; stroke-width: 2.5; stroke-linecap: round; }
+.magnetron-pole > text { fill: #fff3dc; font: 900 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; paint-order: stroke; stroke: #17151e; stroke-width: 4px; }
+.magnetron-puck-halo { fill: rgb(114 224 235 / 13%); stroke: rgb(114 224 235 / 30%); stroke-width: 1; }
+.magnetron-puck { fill: url(#magnetron-puck); stroke: #fff7dc; stroke-width: 2; filter: drop-shadow(0 0 7px rgb(114 224 235 / 80%)); }
+.magnetron-status { min-height: 32px; margin: 7px 2px 9px; color: #c8bade; font-size: .66rem; line-height: 1.5; text-align: center; }
+.magnetron-pole-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+.magnetron-pole-button { position: relative; min-width: 0; min-height: 61px; padding: 6px 8px 6px 44px; display: flex; align-items: center; gap: 9px; border: 1px solid #4d4658; border-radius: 6px; color: #f5ecd9; background: linear-gradient(#292532, #1d1a26); box-shadow: 0 3px 0 #0b0a11; cursor: pointer; text-align: left; touch-action: manipulation; }
+.magnetron-pole-button.is-pull { border-left: 3px solid #d8ff70; }
+.magnetron-pole-button.is-push { border-left: 3px solid #72e0eb; }
+.magnetron-pole-button:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #0b0a11; }
+.magnetron-pole-button:disabled { opacity: .57; cursor: default; }
+.magnetron-pole-button:focus-visible, .magnetron-action:focus-visible { outline: 3px solid #72e0eb; outline-offset: 3px; }
+.magnetron-pole-key { position: absolute; top: 5px; right: 7px; color: #a99db5; font: 800 .46rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.magnetron-polarity { width: 28px; height: 28px; display: grid; place-items: center; flex: 0 0 auto; border: 1px solid currentColor; border-radius: 50%; font: 900 1.1rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.is-pull .magnetron-polarity { color: #d8ff70; }
+.is-push .magnetron-polarity { color: #72e0eb; }
+.magnetron-pole-button > span:last-child { min-width: 0; display: grid; gap: 3px; }
+.magnetron-pole-button strong { overflow: hidden; color: #f5ecd9; font: 800 .55rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-overflow: ellipsis; white-space: nowrap; }
+.magnetron-pole-button small { color: #a99fb4; font: 800 .42rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; }
+.magnetron-actions { margin-top: 9px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(92px, auto) minmax(82px, auto); gap: 7px; }
+.magnetron-action { min-height: 48px; padding: 7px 10px; display: flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #554965; border-radius: 5px; color: #e8d9ef; background: linear-gradient(#342b3d, #241e2c); box-shadow: 0 3px 0 #0b0a11; cursor: pointer; font: 900 .55rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .035em; text-transform: uppercase; touch-action: manipulation; }
+.magnetron-action-primary { color: #19151a; border-color: #77614c; background: linear-gradient(#ff819d, #ec5378); box-shadow: 0 3px 0 #8a2e4d; }
+.magnetron-action-pause { color: #18171d; border-color: #bacb71; background: linear-gradient(#e0fb86, #b6e651); box-shadow: 0 3px 0 #52672c; }
+.magnetron-action kbd, .magnetron-action small { color: inherit; font: 800 .42rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; opacity: .74; }
+.magnetron-action:active { transform: translateY(2px); box-shadow: 0 1px 0 #0b0a11; }
+.magnetron-console-footer { min-height: 19px; padding: 9px 3px 0; display: flex; justify-content: space-between; gap: 8px; color: #a79bad; font: 800 .4rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .055em; }
+.magnetron-footnote { margin: 8px 2px; color: #a99eb4; font-size: .64rem; line-height: 1.5; text-align: center; }
+.magnetron-card-art { overflow: hidden; background: radial-gradient(ellipse at 50% 50%, #252939, #14131c 78%); }
+.magnetron-card-rail { position: absolute; top: 14%; width: 8%; height: 72%; border: 2px solid #806c8e; border-radius: 3px; background: linear-gradient(90deg, #332d3e, #53455e, #332d3e); }
+.magnetron-card-rail.rail-one { left: 37%; }
+.magnetron-card-rail.rail-two { left: 63%; }
+.magnetron-card-pole { position: absolute; top: 30%; width: 29px; height: 29px; display: grid; place-items: center; border: 2px solid; border-radius: 50%; font: 900 1rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.magnetron-card-pole.pole-pull { left: 23%; color: #d8ff70; border-color: #d8ff70; background: #384326; }
+.magnetron-card-pole.pole-push { right: 23%; top: 59%; color: #72e0eb; border-color: #72e0eb; background: #1d3a43; }
+.magnetron-card-puck { position: absolute; top: 49%; left: 50%; width: 19px; height: 19px; border: 2px solid #fff7dc; border-radius: 50%; background: #72e0eb; box-shadow: 0 0 12px #72e0eb; }
+
+@media (max-width: 760px) {
+  .magnetron-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .magnetron-copy h1 { font-size: clamp(2.1rem, 8vw, 2.8rem); }
+  .magnetron-play-column { max-width: 680px; justify-self: center; }
+  .magnetron-console { padding: 9px; border-width: 2px; border-radius: 10px; }
+}
+
+@media (max-width: 380px) {
+  .magnetron-score { padding: 11px; gap: 8px; }
+  .magnetron-score .score-unit { font-size: .55rem; }
+  .magnetron-pole-button { min-height: 56px; padding-left: 37px; gap: 6px; }
+  .magnetron-polarity { width: 25px; height: 25px; }
+  .magnetron-pole-button strong { font-size: .48rem; }
+  .magnetron-actions { grid-template-columns: minmax(0, 1fr) minmax(74px, auto); gap: 6px; }
+  .magnetron-action { min-height: 46px; padding-inline: 6px; font-size: .48rem; }
+  .magnetron-console-footer { font-size: .35rem; letter-spacing: .035em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .magnetron-view *, .magnetron-pole-button, .magnetron-action { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .magnetron-puck { filter: none; }
+}

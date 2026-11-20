@@ -44,11 +44,12 @@ Arcade games use original names, presentation, rules, and puzzle content. Daily 
 | Moonshot Mini Golf | Aim and bank putts around five original lunar greens, using walls and slow craters to sink the ball in fewer strokes |
 | Beat Beacon | Match four original eight-beat drum patterns across four pads, with timing grades and a locally saved best score |
 | Tuning Fork | Identify eight original rising and falling pitch intervals by ear or visual contour, and save a local accuracy score |
+| Magnetron | Reverse field-post polarity to steer a puck through three obstacle courses and save a local best time |
 
 ## Next candidates
 
 These ideas are ordered to add mechanics Arcade does not already have. Recheck the shipped catalogue before starting each game.
 
-1. **Magnetron** — switch the polarity of field posts to pull or push a puck through an obstacle course, then save a local best time.
+1. **Keystone** — push blocks onto floor switches to open doors and solve four compact original chambers, with a local fewest-moves record.
 
 Ideas can change as the catalogue grows. Keep each game self-contained, accessible, responsive, and playable offline; save personal bests in this browser.
