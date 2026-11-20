@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { ARCADE_DATA_KEY, emptyArcadeData } from './storage/arcadeData'
@@ -134,6 +134,29 @@ describe('Arcade navigation and game controls', () => {
     expect(screen.getByRole('heading', { name: 'Snake' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /start game/i })).toBeInTheDocument()
     expect(screen.getByRole('group', { name: 'Snake playfield' })).toBeInTheDocument()
+  })
+
+  it('pins games to a local shelf, launches them, and enforces the eight-game limit', async () => {
+    render(<App />)
+    const shelf = screen.getByRole('region', { name: 'Your favourites' })
+    fireEvent.click(within(shelf).getByText('Manage favourites'))
+
+    const picker = within(shelf)
+    for (const title of ['Snake', 'Reaction', 'Pattern Memory', 'Breakout', 'Pong', 'Space Invaders', 'Asteroids', 'Missile Command']) {
+      fireEvent.click(picker.getByRole('checkbox', { name: new RegExp(`^${title}`) }))
+    }
+    expect(picker.getByRole('checkbox', { name: /^Block Drop/ })).toBeDisabled()
+    expect(picker.getByText('8 / 8 PINNED')).toBeInTheDocument()
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').preferences.favouriteGameIds).toEqual([
+      'snake', 'reaction', 'pattern', 'breakout', 'pong', 'invaders', 'asteroids', 'missile',
+    ])
+
+    fireEvent.click(picker.getByRole('button', { name: 'Play Snake' }))
+    await expectLazyGame('Snake')
+    fireEvent.click(screen.getByRole('button', { name: /all games/i }))
+    fireEvent.click(within(shelf).getByRole('button', { name: 'Unpin Snake' }))
+    expect(picker.getByRole('checkbox', { name: /^Block Drop/ })).toBeEnabled()
+    expect(JSON.parse(window.localStorage.getItem(ARCADE_DATA_KEY) ?? '{}').preferences.favouriteGameIds).not.toContain('snake')
   })
 
   it('starts, steers, pauses, resumes, restarts, and returns to the game floor', async () => {
@@ -1696,7 +1719,7 @@ describe('Arcade navigation and game controls', () => {
     window.localStorage.setItem(ARCADE_DATA_KEY, JSON.stringify({
       version: 1,
       bests: { snake: 8, reaction: 240, pattern: 3, breakout: 120, pong: 2, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null },
-      preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
+      preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady', favouriteGameIds: ['snake', 'reaction'] },
     }))
     render(<App />)
 
@@ -1728,7 +1751,7 @@ describe('Arcade navigation and game controls', () => {
       dailyTideglassGame: null,
       dailyTallyMarketGame: null,
       bests: { snake: null, reaction: null, pattern: null, breakout: null, pong: null, invaders: null, asteroids: null, missileCommand: null, blockDrop: null, wordPuzzle: null, connections: null, spellingBee: null, strands: null, sudoku: null, miniCrossword: null, letterBoxed: null, dominoLogic: null, glyphMatch: null, vertex: null, tiles: null, pips: null, crossword: null, minesweeper: null, mazeDash: null, skylineSkip: null, cipherCircuit: null, orbitCourier: null, colorConduit: null, switchyard: null, prismDash: null, gravityLoom: null, tideglass: null, skyhook: null, pocketPinball: null, neonRally: null, moonshot: null, beatBeacon: null, tuningFork: null, magnetron: null, keystone: null, beamworks: null, rackRun: null, pinParade: null, deckhand: null, latchkey: null, fathom: null, fourfold: null, pegline: null, tallyMarket: null, keytrace: null },
-      preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady' },
+      preferences: { reduceMotion: true, soundEffects: false, pongDifficulty: 'steady', favouriteGameIds: ['snake', 'reaction'] },
     })
     expect(screen.getByText('No saved records.')).toBeInTheDocument()
   })
