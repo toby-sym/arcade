@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, Deckhand, Latchkey, Fathom, Fourfold, Pegline, Tally Market, Keytrace, and Pixel Mosaic are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, Deckhand, Latchkey, Fathom, Fourfold, Pegline, Tally Market, Keytrace, Pixel Mosaic, and Minute Hand are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the fifty-one games from the game floor.
+Vite prints the local URL after startup. Choose any of the fifty-two games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -403,3 +403,10 @@ Coolify deploys from the `release` branch through the existing push webhook. Arc
 - Use **Left / Right** or **A / D** to step and **Up**, **W**, or **Space** to jump. On a phone, tap the direction controls. Each press makes one deliberate move; holding a key does not repeat movement.
 - **Escape** pauses or resumes. **R** restarts the route.
 - Your fastest three-room route stays saved in this browser and does not sync.
+
+## Minute Hand controls
+
+- Read the daily clue, then adjust the analog clock and select **Ring the bell** to check it. Set all five clocks to complete today’s locally generated puzzle.
+- **Left / Right** or the matching buttons move the minute hand by five minutes. **Up / Down** or their buttons move the hour hand by one hour. You can also use the controls by touch.
+- **Escape** pauses or resumes; **R** restarts today’s set. The puzzle pauses when the browser tab is hidden.
+- The fewest-adjustment clear stays saved in this browser and does not sync.
