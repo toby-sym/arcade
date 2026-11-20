@@ -1,6 +1,6 @@
 # Arcade
 
-A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, and Moonshot Mini Golf are ready for free play.
+A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, and Beat Beacon are ready for free play.
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL after startup. Choose any of the thirty-six games from the game floor.
+Vite prints the local URL after startup. Choose any of the thirty-seven games from the game floor.
 
 Use **Find a game** to search titles and game types, or filter the floor to **Arcade** games or **Daily puzzles**. The search and filters work together; choose **All games** to clear the category filter.
 
@@ -266,6 +266,14 @@ Each reaction time is measured locally with a high-resolution browser timer. Onl
 - Pull back from the ball and release to aim and set shot power. You can also aim with **Left / Right** or **A / D**, change power with **Up / Down** or **W / S**, then shoot with **Space** or **Enter**.
 - On touch screens, drag from the ball or use the aim buttons and power slider. **Return to tee** resets the current hole and adds one penalty stroke.
 - Escape pauses. **R** restarts the tour. Your fewest strokes stay saved in this browser and do not sync.
+
+## Beat Beacon controls
+
+- Select **Start the set** and follow the four-beat count-in. The pad that lights is the beat cue; hit that pad as close to the pulse as you can.
+- Use **Q**, **W**, **E**, and **R** for Kick, Snare, Hi-hat, and Tom, or tap the four pads. The four original eight-beat patterns get quicker each round.
+- A hit within 45 ms earns **Perfect**, within 105 ms earns **Good**, and within 180 ms earns **Close**. Wrong pads and missed beats score zero.
+- **Pause set** or **Escape** pauses the set; the browser also pauses it when the tab is hidden. **Restart** begins a fresh four-pattern set.
+- The highest timing score is saved as a local personal best. Optional synthesized beat cues use Arcade sounds; the cues are also shown visually.
 
 ## Local records and preferences
 

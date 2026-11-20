@@ -42,11 +42,12 @@ Arcade games use original names, presentation, rules, and puzzle content. Daily 
 | Pocket Pinball | Hold live flippers, bank shots off bumpers, light upper targets, and save a high score |
 | Neon Rally | Hold a car on the racing line, follow twelve checkpoint gates, and set a three-lap time |
 | Moonshot Mini Golf | Aim and bank putts around five original lunar greens, using walls and slow craters to sink the ball in fewer strokes |
+| Beat Beacon | Match four original eight-beat drum patterns across four pads, with timing grades and a locally saved best score |
 
 ## Next candidates
 
 These ideas are ordered to add mechanics Arcade does not already have. Recheck the shipped catalogue before starting each game.
 
-1. **Beat Beacon** — follow original short drum patterns across four pads, read visual beat cues, and improve a locally saved timing grade.
+1. **Tuning Fork** — build short note sequences by matching pitch intervals, then play them back with keyboard or touch and improve a locally saved accuracy score.
 
 Ideas can change as the catalogue grows. Keep each game self-contained, accessible, responsive, and playable offline; save personal bests in this browser.
