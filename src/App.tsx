@@ -72,11 +72,13 @@ const FourfoldGame = lazy(() => import('./games/FourfoldGame').then(({ FourfoldG
 const PeglineGame = lazy(() => import('./games/PeglineGame').then(({ PeglineGame }) => ({ default: PeglineGame })))
 const TallyMarketGame = lazy(() => import('./games/TallyMarketGame').then(({ TallyMarketGame }) => ({ default: TallyMarketGame })))
 const KeytraceGame = lazy(() => import('./games/KeytraceGame').then(({ KeytraceGame }) => ({ default: KeytraceGame })))
+const PixelMosaicGame = lazy(() => import('./games/PixelMosaicGame').then(({ PixelMosaicGame }) => ({ default: PixelMosaicGame })))
 import type { MinesweeperProgress } from './games/minesweeper'
 import { createTallyMarketState, type TallyMarketProgress } from './games/tallyMarket'
+import { createPixelMosaicState, type PixelMosaicProgress } from './games/pixelMosaic'
 import { ArcadeAudioProvider, playArcadeSound, setArcadeAudioEnabled } from './audio/arcadeAudio'
 import type { PongDifficulty } from './games/pong'
-import { ARCADE_BACKUP_MAX_BYTES, MAX_FAVOURITE_GAMES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyTideglassGame, withDailyTallyMarketGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withFavouriteGameIds, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
+import { ARCADE_BACKUP_MAX_BYTES, MAX_FAVOURITE_GAMES, clearArcadeBests, parseArcadeDataBackup, readArcadeData, withDailyCipherCircuitGame, withDailyColorConduitGame, withDailyGravityLoomGame, withDailyTideglassGame, withDailyTallyMarketGame, withDailyPixelMosaicGame, withDailyConnectionsGame, withDailyCrosswordGame, withDailyDominoLogicGame, withDailyGlyphMatchGame, withDailyLetterBoxedGame, withDailyMiniCrosswordGame, withDailyMinesweeperGame, withDailyPipsGame, withDailyPatternCompletion, withDailySpellingBeeGame, withDailyStrandsGame, withDailySudokuGame, withDailyTilesGame, withDailyVertexGame, withDailyWordGame, withFavouriteGameIds, withImprovedBest, writeArcadeData, type ArcadeBests, type ArcadeData } from './storage/arcadeData'
 
 const version = import.meta.env.VITE_APP_VERSION || 'Development'
 const versionLabel = version === 'Development' ? version : `v${version}`
@@ -135,6 +137,7 @@ const GAME_FLOOR_ITEMS = [
   { id: 'pegline', title: 'Pegline', categories: ['arcade'], terms: 'peg solitaire marble jump hop remove board logic puzzle' },
   { id: 'tallymarket', title: 'Tally Market', categories: ['daily'], terms: 'number tiles arithmetic sums targets baskets daily puzzle' },
   { id: 'keytrace', title: 'Keytrace', categories: ['daily'], terms: 'typing words keyboard speed accuracy daily challenge' },
+  { id: 'pixelmosaic', title: 'Pixel Mosaic', categories: ['daily'], terms: 'picture logic nonogram pixel runs grid numbers daily puzzle' },
 ] as const satisfies ReadonlyArray<{ id: string; title: string; categories: readonly GameFloorCategory[]; terms: string }>
 
 type GameFloorId = (typeof GAME_FLOOR_ITEMS)[number]['id']
@@ -165,7 +168,7 @@ const directionKeys: Record<string, Direction> = {
 }
 
 function App() {
-  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline' | 'tallymarket' | 'keytrace'>('home')
+  const [screen, setScreen] = useState<'home' | 'snake' | 'reaction' | 'pattern' | 'breakout' | 'pong' | 'invaders' | 'asteroids' | 'missile' | 'blockdrop' | 'wordgame' | 'connections' | 'spellingbee' | 'strands' | 'sudoku' | 'minicrossword' | 'letterboxed' | 'dominologic' | 'glyphmatch' | 'vertex' | 'tiles' | 'pips' | 'crossword' | 'minesweeper' | 'mazedash' | 'skylineskip' | 'ciphercircuit' | 'orbitcourier' | 'colorconduit' | 'switchyard' | 'prismdash' | 'gravityloom' | 'tideglass' | 'skyhook' | 'pocketpinball' | 'neonrally' | 'moonshot' | 'beatbeacon' | 'tuningfork' | 'magnetron' | 'keystone' | 'beamworks' | 'rackrun' | 'pinparade' | 'deckhand' | 'latchkey' | 'fathom' | 'fourfold' | 'pegline' | 'tallymarket' | 'keytrace' | 'pixelmosaic'>('home')
   const [snake, dispatch] = useReducer(snakeReducer, undefined, () => createSnakeState())
   const [arcadeData, setArcadeData] = useState(readArcadeData)
   const [storageNotice, setStorageNotice] = useState('')
@@ -487,6 +490,17 @@ function App() {
     setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
   }
 
+  const saveDailyPixelMosaicGame = (progress: PixelMosaicProgress) => {
+    const withProgress = withDailyPixelMosaicGame(arcadeData, progress)
+    if (!withProgress) return
+    const completed = createPixelMosaicState(progress.date, progress)
+    const next = completed.phase === 'complete'
+      ? withImprovedBest(withProgress, 'pixelMosaic', completed.elapsedMs) ?? withProgress
+      : withProgress
+    setArcadeData(next)
+    setStorageNotice(writeArcadeData(next) ? '' : 'This browser could not save Arcade data.')
+  }
+
   useEffect(() => {
     document.documentElement.dataset.reduceMotion = String(arcadeData.preferences.reduceMotion)
   }, [arcadeData.preferences.reduceMotion])
@@ -603,6 +617,7 @@ function App() {
   const openPegline = () => setScreen('pegline')
   const openTallyMarket = () => setScreen('tallymarket')
   const openKeytrace = () => setScreen('keytrace')
+  const openPixelMosaic = () => setScreen('pixelmosaic')
 
   const handleGameKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const direction = directionKeys[event.key]
@@ -699,6 +714,7 @@ function App() {
             onPlayPegline={openPegline}
             onPlayTallyMarket={openTallyMarket}
             onPlayKeytrace={openKeytrace}
+            onPlayPixelMosaic={openPixelMosaic}
             favouriteGameIds={arcadeData.preferences.favouriteGameIds.filter(isGameFloorId)}
             onToggleFavourite={toggleFavourite}
             reduceMotion={arcadeData.preferences.reduceMotion}
@@ -1056,6 +1072,14 @@ function App() {
             onRecordTime={(milliseconds) => recordBest('keytrace', milliseconds)}
             reduceMotion={arcadeData.preferences.reduceMotion}
           />
+        ) : screen === 'pixelmosaic' ? (
+          <PixelMosaicGame
+            onBack={() => setScreen('home')}
+            bestTimeMs={arcadeData.bests.pixelMosaic}
+            progress={arcadeData.dailyPixelMosaicGame}
+            onSaveProgress={saveDailyPixelMosaicGame}
+            reduceMotion={arcadeData.preferences.reduceMotion}
+          />
         ) : (
           <section className="snake-view" aria-labelledby="snake-title">
             <button className="back-link" type="button" onClick={() => setScreen('home')}>
@@ -1224,6 +1248,7 @@ function Home({
   onPlayPegline,
   onPlayTallyMarket,
   onPlayKeytrace,
+  onPlayPixelMosaic,
   favouriteGameIds,
   onToggleFavourite,
   reduceMotion,
@@ -1291,6 +1316,7 @@ function Home({
   onPlayPegline: () => void
   onPlayTallyMarket: () => void
   onPlayKeytrace: () => void
+  onPlayPixelMosaic: () => void
   favouriteGameIds: GameFloorId[]
   onToggleFavourite: (gameId: GameFloorId) => void
   reduceMotion: boolean
@@ -1371,6 +1397,7 @@ function Home({
     pegline: onPlayPegline,
     tallymarket: onPlayTallyMarket,
     keytrace: onPlayKeytrace,
+    pixelmosaic: onPlayPixelMosaic,
   } satisfies Record<GameFloorId, () => void>
   const favouriteGames = favouriteGameIds.flatMap((gameId) => {
     const game = GAME_FLOOR_ITEMS.find((candidate) => candidate.id === gameId)
@@ -2194,6 +2221,19 @@ function Home({
               <h3>Keytrace</h3>
               <p>Type today’s twelve-word strip. Find a smooth rhythm and beat your fastest accurate time.</p>
               <div className="card-bottom"><span className="controls-label">KEYBOARD · TOUCH</span><button className="play-card-button" type="button" onClick={onPlayKeytrace}>Play Keytrace <span className="arrow-mark" aria-hidden="true" /></button></div>
+            </div>
+          </article>
+          <article className="game-card game-card-pixelmosaic" hidden={!visibleGameIds.has('pixelmosaic')}>
+            <div className="card-art pixelmosaic-card-art" aria-hidden="true">
+              <span className="pixelmosaic-card-pixels">{Array.from({ length: 16 }, (_, index) => <i key={index} />)}</span>
+              <span className="pixelmosaic-card-clue">2 · 4 · 2</span>
+              <span className="card-art-index">51</span>
+            </div>
+            <div className="card-info">
+              <div className="card-heading-line"><span className="game-number">51</span><span className="game-category">DAILY PICTURE LOGIC</span></div>
+              <h3>Pixel Mosaic</h3>
+              <p>Read the row and column runs to light today’s hidden pixel picture.</p>
+              <div className="card-bottom"><span className="controls-label">TOUCH · ARROWS · SPACE · X</span><button className="play-card-button" type="button" onClick={onPlayPixelMosaic}>Play Pixel Mosaic <span className="arrow-mark" aria-hidden="true" /></button></div>
             </div>
           </article>
         </div>
