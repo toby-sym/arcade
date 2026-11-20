@@ -2699,6 +2699,106 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
 .tideglass-card-buoy-two { right: 34%; bottom: 27%; color: #baffeb; background: #4eb9b0; }
 .tideglass-card-dock { position: absolute; top: 24%; right: 32%; width: 18px; height: 18px; border: 2px dashed #f1cf6b; border-radius: 50%; }
 
+.skyhook-layout { grid-template-columns: minmax(260px, .72fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+.skyhook-copy h1 { font-size: clamp(2rem, 4vw, 3.1rem); }
+.skyhook-play-column { min-width: 0; }
+.skyhook-console { padding: 14px; border: 3px solid #514269; border-radius: 14px; background: linear-gradient(145deg, #221d31, #12121d 75%); box-shadow: 0 0 0 2px #090910, 0 12px 30px rgb(0 0 0 / 35%), inset 0 1px rgb(255 255 255 / 8%); }
+.skyhook-console .frame-topline { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 24px; padding: 0 2px 10px; color: #c7b9d7; font: 700 .55rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; }
+.skyhook-console .frame-light { display: inline-flex; align-items: center; gap: 6px; color: #9ca6b5; }
+.skyhook-console .frame-light i { width: 7px; height: 7px; border-radius: 50%; background: #708091; box-shadow: 0 0 8px currentColor; }
+.skyhook-console .phase-playing i { background: #b9f45a; color: #b9f45a; }
+.skyhook-console .phase-won i { background: #55e5f4; color: #55e5f4; }
+.skyhook-console .phase-over i { background: #ff597f; color: #ff597f; }
+.skyhook-field { position: relative; overflow: hidden; width: 100%; aspect-ratio: 8 / 5; border: 1px solid #685780; border-radius: 5px; outline: none; background: #0b101a; box-shadow: inset 0 0 30px rgb(0 0 0 / 42%); }
+.skyhook-field:focus-visible { outline: 3px solid #55e5f4; outline-offset: 3px; }
+.skyhook-map { display: block; width: 100%; height: 100%; }
+.skyhook-star { fill: #c9c8e0; opacity: .3; }
+.skyhook-star.is-bright { fill: #fff3c8; opacity: .82; }
+.skyhook-field-corners { fill: none; stroke: #738797; stroke-width: 2; opacity: .5; }
+.skyhook-catch-range { fill: rgb(85 229 244 / 3%); stroke: rgb(85 229 244 / 20%); stroke-width: 1.4; stroke-dasharray: 5 10; }
+.skyhook-anchor-ring { fill: #181727; stroke: #c39cff; stroke-width: 3; }
+.skyhook-anchor-core { fill: #fff0bd; filter: url(#skyhook-glow); }
+.skyhook-anchor-cross { stroke: #e2c5ff; stroke-width: 2; opacity: .85; }
+.skyhook-anchor-label { fill: #dfcafa; font: 700 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 1.3px; }
+.skyhook-anchor.is-attached .skyhook-anchor-ring { stroke: #b9f45a; stroke-width: 4; filter: url(#skyhook-glow); }
+.skyhook-anchor.is-attached .skyhook-catch-range { fill: rgb(185 244 90 / 5%); stroke: rgb(185 244 90 / 34%); }
+.skyhook-hazard-glow { fill: rgb(255 89 127 / 7%); stroke: rgb(255 89 127 / 23%); stroke-dasharray: 3 8; }
+.skyhook-hazard-rock { fill: #6d5868; stroke: #ff7797; stroke-width: 2; }
+.skyhook-hazard-crater { fill: #302936; }
+.skyhook-beacon-orbit { fill: rgb(85 229 244 / 7%); stroke: #55e5f4; stroke-width: 2; stroke-dasharray: 4 5; }
+.skyhook-beacon-glyph { fill: #55e5f4; }
+.skyhook-beacon.is-next .skyhook-beacon-orbit { fill: rgb(85 229 244 / 15%); stroke-width: 3; filter: url(#skyhook-glow); }
+.skyhook-beacon.is-collected .skyhook-beacon-orbit { fill: rgb(185 244 90 / 15%); stroke: #b9f45a; stroke-dasharray: none; }
+.skyhook-beacon.is-collected .skyhook-beacon-glyph { fill: #b9f45a; }
+.skyhook-dock-outer { fill: rgb(255 208 99 / 4%); stroke: #8b744b; stroke-width: 2; stroke-dasharray: 5 8; }
+.skyhook-dock-core { fill: #151625; stroke: #82705a; stroke-width: 2; }
+.skyhook-dock-mark { stroke: #e6c267; stroke-width: 3; }
+.skyhook-dock.is-live .skyhook-dock-outer { fill: rgb(255 208 99 / 12%); stroke: #ffd063; stroke-width: 4; filter: url(#skyhook-glow); }
+.skyhook-dock.is-live .skyhook-dock-core { stroke: #ffd063; }
+.skyhook-tether-line { stroke: #c39cff; stroke-width: 3; stroke-dasharray: 8 5; opacity: .9; }
+.skyhook-capsule-hull { fill: #fff4dc; stroke: #55e5f4; stroke-width: 2; }
+.skyhook-capsule-window { fill: #ff597f; }
+.skyhook-capsule-hook { fill: #b9f45a; }
+.skyhook-capsule.is-blinking { opacity: .4; }
+.skyhook-engine-flame { fill: #ffb04d; filter: url(#skyhook-glow); }
+.skyhook-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 18px; background: rgb(9 12 21 / 72%); text-align: center; }
+.skyhook-overlay > strong { color: #b9f45a; font: 900 clamp(.9rem, 3vw, 1.35rem) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .13em; text-shadow: 0 0 15px rgb(185 244 90 / 35%); }
+.skyhook-overlay > span { max-width: 310px; color: #e2d9e9; font-size: clamp(.62rem, 1.4vw, .78rem); line-height: 1.5; }
+.skyhook-console-footer { display: flex; justify-content: space-between; gap: 8px; padding: 11px 2px 0; color: #c4b2d8; font: 700 .48rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .09em; }
+.skyhook-score { margin-top: 15px; }
+.skyhook-route-card { margin-top: 12px; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 5px 12px; border: 1px solid #4b3e61; border-radius: 6px; background: linear-gradient(120deg, rgb(66 50 85 / 34%), rgb(21 20 34 / 64%)); }
+.skyhook-route-card .score-caption { grid-column: 1 / -1; }
+.skyhook-route-card strong { color: #55e5f4; font: 800 .92rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.skyhook-route-card > span:last-child { align-self: center; color: #c3b6ce; font-size: .7rem; text-align: right; }
+.skyhook-local-note { margin: 9px 0 0; color: #b3a8bf; font-size: .68rem; line-height: 1.5; }
+.skyhook-keyboard-hint { margin: 12px 0; color: #a99eb6; font-size: .64rem; line-height: 1.5; text-align: center; }
+.skyhook-touch-controls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.skyhook-control-button { min-width: 0; min-height: 58px; padding: 7px 3px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 3px; border: 1px solid #66527c; border-radius: 6px; color: #f3eafa; background: linear-gradient(#322743, #211b30); box-shadow: 0 3px 0 #0b0a11; cursor: pointer; touch-action: none; user-select: none; }
+.skyhook-control-button > span { color: #55e5f4; font-size: 1.15rem; line-height: 1; }
+.skyhook-control-button small { color: #c7bad2; font: 700 .42rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .03em; }
+.skyhook-control-button:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #0b0a11; background: #403052; }
+.skyhook-control-button:disabled { opacity: .45; cursor: default; }
+.skyhook-control-button:focus-visible, .skyhook-tether-button:focus-visible { outline: 3px solid #55e5f4; outline-offset: 2px; }
+.skyhook-tether-button { width: 100%; min-height: 52px; margin-top: 11px; padding: 8px 12px; display: flex; justify-content: center; align-items: center; gap: 10px; border: 1px solid #b04770; border-radius: 5px; color: #1a101c; background: linear-gradient(#ff7898, #ed4f79); box-shadow: 0 4px 0 #8d2c50; font: 900 .62rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .07em; cursor: pointer; touch-action: manipulation; }
+.skyhook-tether-button > span { font-size: 1.15rem; }
+.skyhook-tether-button kbd { margin-left: auto; padding: 3px 5px; border: 1px solid rgb(35 15 28 / 35%); border-radius: 3px; font: inherit; }
+.skyhook-tether-button:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #8d2c50; }
+.skyhook-tether-button:disabled { opacity: .55; cursor: default; }
+.skyhook-card-art { background: radial-gradient(ellipse at 50% 48%, #302548, #11121f 78%); }
+.skyhook-card-orbit { position: absolute; border: 1px solid rgb(85 229 244 / 36%); border-radius: 50%; transform: rotate(-24deg); }
+.skyhook-card-orbit-one { inset: 18% 23%; }
+.skyhook-card-orbit-two { inset: 29% 34%; border-color: rgb(195 156 255 / 48%); }
+.skyhook-card-anchor { position: absolute; width: 10px; height: 10px; border: 2px solid #c39cff; border-radius: 50%; background: #151521; box-shadow: 0 0 8px #c39cff; }
+.skyhook-card-anchor-one { top: 27%; left: 29%; }
+.skyhook-card-anchor-two { right: 27%; bottom: 27%; }
+.skyhook-card-tether { position: absolute; top: 35%; left: 31%; width: 40%; height: 35%; border-top: 2px dashed #c39cff; border-right: 2px dashed #c39cff; border-radius: 0 65% 0 0; transform: rotate(9deg); }
+.skyhook-card-capsule { position: absolute; top: 43%; left: 51%; color: #b9f45a; font-size: 1.15rem; text-shadow: 0 0 10px #b9f45a; transform: rotate(35deg); }
+
+@media (max-width: 760px) {
+  .skyhook-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .skyhook-copy h1 { font-size: clamp(1.9rem, 8vw, 2.55rem); }
+  .skyhook-play-column { width: 100%; max-width: 640px; justify-self: center; }
+  .skyhook-console { padding: 8px; border-width: 2px; border-radius: 10px; }
+  .skyhook-console .frame-topline { min-height: 20px; padding-bottom: 8px; }
+  .skyhook-console-footer { font-size: .4rem; }
+  .skyhook-touch-controls { gap: 6px; }
+  .skyhook-control-button { min-height: 54px; }
+  .skyhook-control-button small { font-size: .38rem; }
+}
+@media (max-width: 380px) {
+  .skyhook-score { grid-template-columns: minmax(0, 1fr); }
+  .skyhook-route-card { padding: 9px; }
+  .skyhook-route-card > span:last-child { font-size: .62rem; }
+  .skyhook-touch-controls { gap: 4px; }
+  .skyhook-control-button { min-height: 50px; }
+  .skyhook-control-button small { font-size: .33rem; letter-spacing: 0; }
+  .skyhook-console .frame-topline { font-size: .44rem; }
+  .skyhook-console-footer { font-size: .34rem; letter-spacing: .04em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skyhook-console *, .skyhook-control-button, .skyhook-tether-button { animation: none !important; transition: none !important; }
+}
+
 @media (max-width: 760px) {
   .gravity-loom-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   .gravity-loom-copy h1 { font-size: clamp(1.9rem, 8vw, 2.55rem); }
