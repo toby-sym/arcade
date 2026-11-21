@@ -32,6 +32,8 @@ curl --fail --silent --output /dev/null "http://127.0.0.1:${port}/"
 curl --fail --silent --output /dev/null "http://127.0.0.1:${port}/container-route-check"
 curl --fail --silent --output /dev/null "http://127.0.0.1:${port}/nds/"
 curl --fail --silent --output /dev/null "http://127.0.0.1:${port}/nds/LICENSE"
+curl --fail --silent --output /dev/null "http://127.0.0.1:${port}/wii/"
+curl --fail --silent --output /dev/null "http://127.0.0.1:${port}/wii/LICENSE"
 
 nds_headers=$(curl --fail --silent --head "http://127.0.0.1:${port}/nds/" | tr -d '\r')
 grep --ignore-case --quiet --line-regexp 'Cross-Origin-Opener-Policy: same-origin' <<<"$nds_headers"
@@ -41,10 +43,18 @@ grep --ignore-case --quiet --line-regexp 'Cross-Origin-Resource-Policy: same-ori
 wasm_type=$(curl --fail --silent --head "http://127.0.0.1:${port}/nds/dist/melonds.wasm" | tr -d '\r' | awk -F': ' 'tolower($1) == "content-type" { print $2 }')
 [[ "$wasm_type" == "application/wasm" ]]
 
+wii_headers=$(curl --fail --silent --head "http://127.0.0.1:${port}/wii/" | tr -d '\r')
+grep --ignore-case --quiet --line-regexp 'Cross-Origin-Opener-Policy: same-origin' <<<"$wii_headers"
+grep --ignore-case --quiet --line-regexp 'Cross-Origin-Embedder-Policy: require-corp' <<<"$wii_headers"
+grep --ignore-case --quiet --line-regexp 'Cross-Origin-Resource-Policy: same-origin' <<<"$wii_headers"
+
+wii_wasm_type=$(curl --fail --silent --head "http://127.0.0.1:${port}/wii/cores/dolphin/dolphin-core-upstream.wasm" | tr -d '\r' | awk -F': ' 'tolower($1) == "content-type" { print $2 }')
+[[ "$wii_wasm_type" == "application/wasm" ]]
+
 root_headers=$(curl --fail --silent --head "http://127.0.0.1:${port}/" | tr -d '\r')
 if grep --ignore-case --quiet '^Cross-Origin-Embedder-Policy:' <<<"$root_headers"; then
-  echo "Cross-origin isolation must stay limited to the Nintendo DS route." >&2
+  echo "Cross-origin isolation must stay limited to emulator routes." >&2
   exit 1
 fi
 
-echo "Arcade container health, client-route fallback, and isolated Nintendo DS player checks passed."
+echo "Arcade container health, client-route fallback, and isolated emulator checks passed."

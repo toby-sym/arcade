@@ -86,9 +86,23 @@ jobs:
         id: promotion
         run: bash scripts/promote-release.sh
 
+      - name: Build matching Wii emulator corresponding source
+        run: |
+          set -euo pipefail
+          source_revision="$(cat public/wii/wasm-dolphin-revision.txt)"
+          source_dir="$RUNNER_TEMP/wasm-dolphin-source"
+          git init "$source_dir"
+          git -C "$source_dir" remote add origin https://github.com/dougchansan/wasm-dolphin.git
+          git -C "$source_dir" fetch --depth 1 origin "$source_revision"
+          git -C "$source_dir" checkout --detach FETCH_HEAD
+          npm --prefix "$source_dir" run fetch:dolphin
+          npm --prefix "$source_dir" run patch:upstream
+          npm --prefix "$source_dir" run dist:source
+          cp "$source_dir"/dist/wasm-dolphin-corresponding-source-*.tar.gz "$RUNNER_TEMP/wasm-dolphin-corresponding-source.tar.gz"
+
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.promotion.outputs.tag }}
           RELEASE_VERSION: ${{ steps.promotion.outputs.version }}
-        run: gh release create "$RELEASE_TAG" --title "Arcade ${RELEASE_TAG}" --generate-notes
+        run: gh release create "$RELEASE_TAG" "$RUNNER_TEMP/wasm-dolphin-corresponding-source.tar.gz#wasm-dolphin-corresponding-source.tar.gz" --title "Arcade ${RELEASE_TAG}" --generate-notes

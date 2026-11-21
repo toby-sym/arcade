@@ -2,7 +2,7 @@
 
 A personal browser arcade with a neon-lit cabinet feel. Snake, Reaction, Pattern Memory, Breakout, Pong, Space Invaders, Asteroids, Missile Command, Block Drop, Word Guess, Connections, Spelling Bee, Strands, Sudoku, Mini Crossword, Daily Crossword, Letter Boxed, Domino Logic, Glyph Match, Vertex, Tiles, Pips, Minesweeper, Maze Dash, Skyline Skip, Cipher Circuit, Orbit Courier, Color Conduit, Switchyard, Prism Dash, Gravity Loom, Tideglass, Skyhook, Pocket Pinball, Neon Rally, Moonshot Mini Golf, Beat Beacon, Tuning Fork, Magnetron, Keystone, Beamworks, Rack Run, Pin Parade, Deckhand, Latchkey, Fathom, Fourfold, Pegline, Tally Market, Keytrace, Pixel Mosaic, Minute Hand, and Pocket Orbit are ready for free play.
 
-Arcade also includes local Game Boy Advance and Nintendo DS cabinets for game files you provide yourself. The emulator roadmap is in [docs/game-roadmap.md](docs/game-roadmap.md).
+Arcade also includes local Game Boy Advance, Nintendo DS, and experimental Wii/GameCube cabinets for game files you provide yourself. The emulator roadmap is in [docs/game-roadmap.md](docs/game-roadmap.md).
 
 See the [game roadmap](docs/game-roadmap.md) for the shipped catalogue and original game ideas queued next.
 
@@ -39,6 +39,14 @@ The GBA runtime is provided by `@gba-kit/gba-browser` 0.9.0 and its `@gba-kit` d
 The DS player requires a secure browser context with `SharedArrayBuffer`, WebGL2, and cross-origin isolation. Local Vite development and the production container set the needed COOP/COEP headers on `/nds/` only.
 
 Use **Fullscreen** while a game is loaded to expand the cabinet. iOS Safari uses a safe-area-aware viewport layout because it does not provide element fullscreen for this player; Safari’s own browser controls remain visible.
+
+## Wii & GameCube cabinet
+
+- Open **Wii & GameCube** and choose a disc image (`.iso`, `.gcm`, `.rvz`, `.wbfs`, `.wad`, `.dol`, or `.elf`). The file is read in the browser tab and is never uploaded. Use only games you have the right to play; Arcade does not include game files.
+- Emulation runs on your device’s CPU. Supported desktop browsers can also use the device GPU for rendering. This is demanding work and performance, heat, and battery use depend on your hardware; this experimental cabinet is intended for desktop Chromium, not phones.
+- A standard browser gamepad is supported for GameCube controls. Keyboard controls are **arrows** for the D-pad, **WASD** for the main stick, **X / Z / S / A** for A / B / X / Y, **Q / E / C** for L / R / Z, and **Enter** for Start. Wii Remote input is not implemented, so Wii titles requiring it cannot be played. Wii compatibility is partial and title-dependent.
+- Pause/resume, reset, audio, save states, aspect ratio, and fullscreen are available in the cabinet. Browsers must support cross-origin isolation and the emulator’s required graphics APIs; Arcade scopes COOP/COEP headers to `/wii/`.
+- The Wii/GameCube cabinet is a separate **GPL-2.0-or-later** component based on wasm-dolphin and Dolphin. This notice applies to that component; Arcade’s own source code is not being relicensed under GPL-2.0. Its full license is linked in the cabinet. The matching corresponding source for the bundled emulator core is attached to the Arcade GitHub release as [`wasm-dolphin-corresponding-source.tar.gz`](https://github.com/toby-sym/arcade/releases/latest/download/wasm-dolphin-corresponding-source.tar.gz); its build and provenance are pinned in [`public/wii`](public/wii/).
 
 Vite prints the local URL after startup. Choose from the available games on the game floor.
 
