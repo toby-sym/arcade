@@ -76,6 +76,7 @@ const PixelMosaicGame = lazy(() => import('./games/PixelMosaicGame').then(({ Pix
 const MinuteHandGame = lazy(() => import('./games/MinuteHandGame').then(({ MinuteHandGame }) => ({ default: MinuteHandGame })))
 const PocketOrbitGame = lazy(() => import('./games/PocketOrbitGame').then(({ PocketOrbitGame }) => ({ default: PocketOrbitGame })))
 const GbaConsole = lazy(() => import('./emulator/GbaConsole').then(({ GbaConsole }) => ({ default: GbaConsole })))
+import { EmulatorShelf } from './emulator/EmulatorShelf'
 import type { MinesweeperProgress } from './games/minesweeper'
 import { createTallyMarketState, type TallyMarketProgress } from './games/tallyMarket'
 import { createPixelMosaicState, type PixelMosaicProgress } from './games/pixelMosaic'
@@ -1522,18 +1523,7 @@ function Home({
         </details>
       </section>
 
-      <section className="local-play-section" aria-labelledby="local-play-title">
-        <div className="local-play-mark" aria-hidden="true"><span /><span /><span /><span /><span /><span /></div>
-        <div className="local-play-copy">
-          <p className="eyebrow">YOUR FILES · YOUR DEVICE</p>
-          <h2 id="local-play-title">Bring your own game</h2>
-          <p>Open a Game Boy Advance or Nintendo DS game from this device. ROM files stay in your browser and are never uploaded.</p>
-        </div>
-        <div className="local-play-actions">
-          <button className="local-play-button" type="button" onClick={onPlayEmulator}>Open GBA cabinet <span className="arrow-mark" aria-hidden="true" /></button>
-          <a className="local-play-button local-play-button-secondary" href="/nds/">Open Nintendo DS cabinet <span className="arrow-mark" aria-hidden="true" /></a>
-        </div>
-      </section>
+      <EmulatorShelf onOpenGba={onPlayEmulator} />
 
       <section className="game-section" aria-labelledby="games-title">
         <div className="section-heading">
