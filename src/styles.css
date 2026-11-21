@@ -170,21 +170,6 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .storage-notice { grid-column: 1 / -1; margin: -10px 0 0; color: #99483d; font-size: .73rem; }
 .storage-notice:empty { display: none; }
 
-.local-play-section { margin: 0 0 52px; padding: 20px 24px; border: 1px solid #3e3456; border-radius: 8px; display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 18px; background: linear-gradient(105deg, #211a30, #171321); color: #f7f0de; box-shadow: 0 6px 0 #100d17; }
-.local-play-mark { width: 48px; height: 48px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; transform: rotate(-8deg); }
-.local-play-mark span { background: #4edcf0; }
-.local-play-mark span:nth-child(2n) { background: #ff6682; }
-.local-play-mark span:nth-child(4), .local-play-mark span:nth-child(6) { background: #caff40; }
-.local-play-copy .eyebrow { margin: 0 0 5px; color: #caff40; font-size: .58rem; }
-.local-play-copy h2 { margin: 0; color: #fff6df; font-size: 1.35rem; letter-spacing: -.045em; }
-.local-play-copy p:last-child { max-width: 650px; margin: 5px 0 0; color: #c9bed6; font-size: .78rem; line-height: 1.5; }
-.local-play-actions { display: flex; flex-wrap: wrap; justify-content: end; gap: 8px; }
-.local-play-button { min-height: 44px; border: 1px solid #ff90a2; border-radius: 4px; padding: 0 14px; display: inline-flex; gap: 15px; align-items: center; color: #17101c; background: #ff6682; box-shadow: 0 3px 0 #9d3852; font: 800 .68rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; cursor: pointer; }
-.local-play-button:hover { background: #ff8295; }
-.local-play-button { text-decoration: none; white-space: nowrap; }
-.local-play-button-secondary { border-color: #82e6f0; color: #11151a; background: #4edcf0; box-shadow: 0 3px 0 #287a8c; }
-.local-play-button-secondary:hover { background: #79e8f3; }
-
 .gba-view { padding: 25px 0 64px; }
 .gba-heading { margin: 20px 0 15px; display: flex; justify-content: space-between; align-items: end; gap: 24px; }
 .gba-heading .eyebrow { margin: 0 0 12px; }
@@ -272,10 +257,6 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 .gba-current-tag { color: #caff40; }
 
 @media (max-width: 760px) {
-  .local-play-section { grid-template-columns: 42px minmax(0, 1fr); gap: 13px; padding: 17px; }
-  .local-play-mark { width: 40px; height: 40px; }
-  .local-play-actions { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .local-play-button { grid-column: 1 / -1; justify-content: center; }
   .gba-heading { align-items: start; flex-direction: column; }
   .gba-layout { grid-template-columns: 1fr; }
   .gba-controls { min-height: 156px; }
@@ -285,7 +266,6 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 }
 
 @media (max-width: 380px) {
-  .local-play-actions { grid-template-columns: 1fr; }
   .gba-cabinet { padding: 11px; }
   .gba-controls { min-height: 136px; gap: 5px; }
   .gba-dpad { width: 105px; height: 105px; }
@@ -295,7 +275,7 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .local-play-button, .gba-open-button, .gba-dpad button, .gba-face-buttons button, .gba-shoulder-buttons button, .gba-system-buttons button { transition: none; }
+  .gba-open-button, .gba-dpad button, .gba-face-buttons button, .gba-shoulder-buttons button, .gba-system-buttons button { transition: none; }
   .gba-dpad button:active, .gba-face-buttons button:active, .gba-shoulder-buttons button:active, .gba-system-buttons button:active { transform: none; }
 }
 
@@ -4904,4 +4884,44 @@ button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible { outline: 3
 }
 @media (prefers-reduced-motion: reduce) {
   .pocketorbit-view *, .pocketorbit-view *::before, .pocketorbit-view *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* Local console shelf */
+.emulator-section { margin: 0 0 52px; }
+.emulator-section-heading { margin-bottom: 8px; align-items: end; }
+.emulator-section-heading > div { min-width: 0; }
+.emulator-section-intro { max-width: 710px; margin: 0 0 18px; color: #c2bad2; font-size: .83rem; line-height: 1.6; }
+.emulator-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.emulator-card { min-width: 0; }
+.emulator-card:hover { border-color: #9b82cf; box-shadow: 0 9px 0 #090811, 0 14px 26px rgb(0 0 0 / 34%), 0 0 20px rgb(187 150 255 / 15%); }
+.emulator-card-art { aspect-ratio: 2.25; display: grid; place-items: center; overflow: hidden; }
+.emulator-card-art svg { width: 100%; height: 100%; max-height: 180px; }
+.gba-console-art { background: radial-gradient(ellipse at 50% 52%, #36304e, #171425 78%); }
+.ds-console-art { background: radial-gradient(ellipse at 50% 52%, #35304e, #171425 78%); }
+.wii-console-art { background: radial-gradient(ellipse at 50% 52%, #39304f, #171425 78%); }
+.emulator-experimental-label { color: var(--amber); font-size: .52rem; }
+.emulator-card .card-info { min-height: 238px; }
+.emulator-card .card-info p { min-height: 3.3em; }
+.emulator-card .card-bottom { gap: 8px; }
+.emulator-card .controls-label { max-width: 60%; line-height: 1.55; }
+.emulator-card .play-card-button { flex: 0 0 auto; text-decoration: none; }
+
+@media (max-width: 900px) {
+  .emulator-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 650px) {
+  .emulator-section { margin-bottom: 36px; }
+  .emulator-section-heading { align-items: start; gap: 8px; }
+  .emulator-section-intro { font-size: .76rem; }
+  .emulator-card-grid { grid-template-columns: minmax(0, 1fr); gap: 15px; }
+  .emulator-card { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .emulator-card .card-art { width: 100%; min-width: 0; min-height: 0; height: auto; flex: none; }
+  .emulator-card .card-info { min-height: 210px; }
+  .emulator-card-art { aspect-ratio: 2.1; }
+  .emulator-experimental-label { font-size: .46rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emulator-card { transition: none; }
 }

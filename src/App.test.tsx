@@ -138,12 +138,13 @@ describe('Arcade navigation and game controls', () => {
     expect(screen.getByRole('group', { name: 'Snake playfield' })).toBeInTheDocument()
   })
 
-  it('offers local GBA and Nintendo DS cabinets without adding either to the original game count', () => {
+  it('offers local emulator cabinets without adding them to the game count', () => {
     render(<App />)
 
-    const localPlay = screen.getByRole('region', { name: 'Bring your own game' })
-    expect(within(localPlay).getByRole('button', { name: /open gba cabinet/i })).toBeInTheDocument()
-    expect(within(localPlay).getByRole('link', { name: /open nintendo ds cabinet/i })).toHaveAttribute('href', '/nds/')
+    const cabinets = screen.getByRole('region', { name: 'Local console cabinets' })
+    expect(within(cabinets).getByRole('button', { name: /open gba/i })).toBeInTheDocument()
+    expect(within(cabinets).getByRole('link', { name: /open ds/i })).toHaveAttribute('href', '/nds/')
+    expect(within(cabinets).getByRole('link', { name: /open wii/i })).toHaveAttribute('href', '/wii/')
     expect(screen.getByText('53 PLAYABLE')).toBeInTheDocument()
   })
 
